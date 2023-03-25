@@ -23,14 +23,6 @@ function some(mixed $value): Option
     return new Some($value);
 }
 
-/**
- * @return Option<never>
- */
-function none(): Option
-{
-    return none;
-}
-
 const none = new None();
 
 /**
@@ -41,7 +33,7 @@ const none = new None();
  */
 function fromNullable(mixed $value): Option
 {
-    return null !== $value ? some($value) : none();
+    return null !== $value ? some($value) : none;
 }
 
 /**
@@ -55,7 +47,7 @@ function tryCatch(callable $callback): Option
     try {
         return some($callback());
     } catch (Throwable) {
-        return none();
+        return none;
     }
 }
 
@@ -134,7 +126,7 @@ function map(callable $callback): Closure
 {
     return fn(Option $option) => isSome($option)
         ? some($callback($option->value))
-        : none();
+        : none;
 }
 
 /**
@@ -148,7 +140,7 @@ function flatMap(callable $callback): Closure
 {
     return fn(Option $option) => isSome($option)
         ? $callback($option->value)
-        : none();
+        : none;
 }
 
 // endregion: ops

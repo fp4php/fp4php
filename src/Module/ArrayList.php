@@ -78,7 +78,7 @@ function last(): Closure
 
         return null !== $lastKey
             ? O\some($list[$lastKey])
-            : O\none();
+            : O\none;
     };
 }
 
