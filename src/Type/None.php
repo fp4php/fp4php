@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Fp4\PHP\Type;
 
 /**
- * @phpstan-immutable
- * @extends Option<never>
+ * @psalm-immutable
+ * @implements Option<never>
  */
-final class None extends Option
+final class None implements Option
 {
     /**
      * @internal

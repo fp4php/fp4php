@@ -1,0 +1,10 @@
+version: '3.6'
+services:
+  php:
+    container_name: php-functional-next
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - ./:/app

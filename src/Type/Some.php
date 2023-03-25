@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Fp4\PHP\Type;
 
 /**
- * @phpstan-immutable
+ * @psalm-immutable
  * @template-covariant A
- * @extends Option<A>
+ * @implements Option<A>
  */
-final class Some extends Option
+final class Some implements Option
 {
     /**
      * @param A $value

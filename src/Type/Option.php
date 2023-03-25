@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Fp4\PHP\Type;
 
 /**
- * @phpstan-immutable
+ * @psalm-immutable
  * @template-covariant A
  */
-abstract class Option
+interface Option
 {
 }

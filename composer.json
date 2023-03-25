@@ -16,27 +16,27 @@
     "php": "^8.1",
     "ext-simplexml": "*"
   },
-  "require-dev": {
-    "phpunit/phpunit": "^10",
-    "phpstan/phpstan": "^1.10",
-    "phpstan/extension-installer": "^1.2",
-    "phpstan/phpstan-strict-rules": "^1.5"
-  },
   "autoload": {
     "psr-4": {
       "Fp4\\PHP\\": "src/"
     },
     "files": [
+      "src/Module/Functions.php",
+      "src/Module/Option.php",
+      "src/Module/ArrayList.php"
     ]
   },
   "autoload-dev": {
     "psr-4": {
-      "Fp4\\PHP\\": "tests/"
+      "Fp4\\PHP\\PsalmIntegration\\": "psalm/"
     }
   },
   "config": {
     "allow-plugins": {
       "phpstan/extension-installer": true
     }
+  },
+  "require-dev": {
+    "vimeo/psalm": "^5.8"
   }
 }
