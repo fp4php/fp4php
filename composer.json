@@ -28,7 +28,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Fp4\\PHP\\PsalmIntegration\\": "psalm/"
+      "Fp4\\PHP\\PsalmIntegration\\": "psalm/",
+      "Fp4\\PHP\\Test\\": "tests/"
     }
   },
   "config": {
@@ -37,6 +38,7 @@
     }
   },
   "require-dev": {
-    "vimeo/psalm": "^5.8"
+    "vimeo/psalm": "^5.8",
+    "phpunit/phpunit": "^10.0"
   }
 }
