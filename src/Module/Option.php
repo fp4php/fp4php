@@ -143,4 +143,18 @@ function flatMap(callable $callback): Closure
         : none;
 }
 
+/**
+ * @template A
+ * @template B
+ *
+ * @param callable(): Option<B> $callback
+ * @return Closure(Option<A>): Option<A|B>
+ */
+function orElse(callable $callback): Closure
+{
+    return fn (Option $option) => isSome($option)
+        ? some($option->value)
+        : $callback();
+}
+
 // endregion: ops
