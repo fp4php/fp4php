@@ -32,11 +32,6 @@
       "Fp4\\PHP\\Test\\": "tests/"
     }
   },
-  "config": {
-    "allow-plugins": {
-      "phpstan/extension-installer": true
-    }
-  },
   "require-dev": {
     "vimeo/psalm": "^5.8",
     "phpunit/phpunit": "^10.0",
