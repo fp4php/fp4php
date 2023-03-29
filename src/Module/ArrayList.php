@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Fp4\PHP\Module\ArrayList;
 
 use Closure;
-use Fp4\PHP\Type\Option;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Type\Option;
 
 // region: ops
 
@@ -19,7 +19,7 @@ use Fp4\PHP\Module\Option as O;
  */
 function map(callable $callback): Closure
 {
-    return function(array $a) use ($callback) {
+    return function (array $a) use ($callback) {
         $b = [];
 
         foreach ($a as $v) {
@@ -39,7 +39,7 @@ function map(callable $callback): Closure
  */
 function mapKV(callable $callback): Closure
 {
-    return function(array $a) use ($callback) {
+    return function (array $a) use ($callback) {
         $b = [];
 
         foreach ($a as $k => $v) {
@@ -59,7 +59,7 @@ function mapKV(callable $callback): Closure
  */
 function prepend(mixed $item): Closure
 {
-    return fn(array $list) => [$item, ...$list];
+    return fn (array $list) => [$item, ...$list];
 }
 
 // endregion: ops
@@ -73,7 +73,7 @@ function prepend(mixed $item): Closure
  */
 function last(): Closure
 {
-    return function(array $list) {
+    return function (array $list) {
         $lastKey = array_key_last($list) ?? null;
 
         return null !== $lastKey

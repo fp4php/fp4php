@@ -62,7 +62,7 @@ function tryCatch(callable $callback): Option
  */
 function getOrNull(): Closure
 {
-    return fn(Option $option) => isSome($option)
+    return fn (Option $option) => isSome($option)
         ? $option->value
         : null;
 }
@@ -78,7 +78,7 @@ function getOrNull(): Closure
  */
 function fold(callable $ifNone, callable $ifSome): Closure
 {
-    return fn(Option $option) => isSome($option)
+    return fn (Option $option) => isSome($option)
         ? $ifSome($option->value)
         : $ifNone();
 }
@@ -124,7 +124,7 @@ function isNone(Option $option): bool
  */
 function map(callable $callback): Closure
 {
-    return fn(Option $option) => isSome($option)
+    return fn (Option $option) => isSome($option)
         ? some($callback($option->value))
         : none;
 }
@@ -138,7 +138,7 @@ function map(callable $callback): Closure
  */
 function flatMap(callable $callback): Closure
 {
-    return fn(Option $option) => isSome($option)
+    return fn (Option $option) => isSome($option)
         ? $callback($option->value)
         : none;
 }

@@ -35,13 +35,13 @@ final class NoneConstWidening implements AfterExpressionAnalysisInterface
             new TGenericObject(Option::class, [
                 new Union([
                     new TNever(),
-                ])
-            ])
+                ]),
+            ]),
         ]);
     }
 
     private static function isNoneFetch(Expr $expr): bool
     {
-        return $expr instanceof ConstFetch && $expr->name->getAttribute('resolvedName') === 'Fp4\PHP\Module\Option\none';
+        return $expr instanceof ConstFetch && 'Fp4\PHP\Module\Option\none' === $expr->name->getAttribute('resolvedName');
     }
 }
