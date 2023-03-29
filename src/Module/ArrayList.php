@@ -54,6 +54,28 @@ function mapKV(callable $callback): Closure
  * @template A
  * @template B
  *
+ * @param callable(A): list<B> $callback
+ * @return Closure(list<A>): list<B>
+ */
+function flatMap(callable $callback): Closure
+{
+    return function (array $a) use ($callback) {
+        $b = [];
+
+        foreach ($a as $v) {
+            foreach ($callback($v) as $nested) {
+                $b[] = $nested;
+            }
+        }
+
+        return $b;
+    };
+}
+
+/**
+ * @template A
+ * @template B
+ *
  * @param B $item
  * @return Closure(list<A>): list<A|B>
  */
@@ -62,9 +84,37 @@ function prepend(mixed $item): Closure
     return fn (array $list) => [$item, ...$list];
 }
 
+/**
+ * @template A
+ * @template B
+ *
+ * @param B $item
+ * @return Closure(list<A>): list<A|B>
+ */
+function append(mixed $item): Closure
+{
+    return fn (array $list) => [...$list, $item];
+}
+
 // endregion: ops
 
 // region: terminal ops
+
+/**
+ * @template A
+ *
+ * @return Closure(list<A>): Option<A>
+ */
+function first(): Closure
+{
+    return function (array $list) {
+        $firstKey = array_key_first($list) ?? null;
+
+        return null !== $firstKey
+            ? O\some($list[$firstKey])
+            : O\none;
+    };
+}
 
 /**
  * @template A
