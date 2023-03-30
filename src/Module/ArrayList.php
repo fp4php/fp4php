@@ -76,6 +76,28 @@ function flatMap(callable $callback): Closure
  * @template A
  * @template B
  *
+ * @param callable(int, A): list<B> $callback
+ * @return Closure(list<A>): list<B>
+ */
+function flatMapKV(callable $callback): Closure
+{
+    return function (array $a) use ($callback) {
+        $b = [];
+
+        foreach ($a as $k => $v) {
+            foreach ($callback($k, $v) as $nested) {
+                $b[] = $nested;
+            }
+        }
+
+        return $b;
+    };
+}
+
+/**
+ * @template A
+ * @template B
+ *
  * @param B $item
  * @return Closure(list<A>): list<A|B>
  */
