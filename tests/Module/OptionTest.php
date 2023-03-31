@@ -18,6 +18,9 @@ use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertInstanceOf;
 use function PHPUnit\Framework\assertTrue;
 
+/**
+ * @api
+ */
 final class OptionTest extends TestCase
 {
     #[Test]

@@ -10,6 +10,9 @@ use Fp4\PHP\Module\ArrayList as L;
 use function Fp4\PHP\Module\Functions\pipe;
 use function PHPUnit\Framework\assertEquals;
 
+/**
+ * @api
+ */
 final class ArrayListTest extends TestCase
 {
     #[Test]
@@ -79,12 +82,18 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function prepend(): void
     {
+        /** @var list<int> */
+        $emptyList = [];
+
+        /** @var list<int> */
+        $nonEmptyList = [43, 44];
+
         assertEquals([42], pipe(
-            [],
+            $emptyList,
             L\prepend(42),
         ));
         assertEquals([42, 43, 44], pipe(
-            [43, 44],
+            $nonEmptyList,
             L\prepend(42),
         ));
     }
@@ -92,12 +101,19 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function append(): void
     {
+        /** @var list<int> */
+        $emptyList = [];
+
+        /** @var list<int> */
+        $nonEmptyList = [40, 41];
+
         assertEquals([42], pipe(
-            [],
+            $emptyList,
             L\append(42),
         ));
+
         assertEquals([40, 41, 42], pipe(
-            [40, 41],
+            $nonEmptyList,
             L\append(42),
         ));
     }

@@ -16,6 +16,9 @@ use stdClass;
 use function Fp4\PHP\Module\Functions\pipe;
 use function PHPUnit\Framework\assertEquals;
 
+/**
+ * @api
+ */
 final class EvidenceTest extends TestCase
 {
     private const NULL = null;
