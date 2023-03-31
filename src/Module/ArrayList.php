@@ -8,6 +8,27 @@ use Closure;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Option;
 
+// region: constructor
+
+/**
+ * @template A
+ *
+ * @param iterable<A> $iterable
+ * @return list<A>
+ */
+function fromIterable(iterable $iterable): array
+{
+    $list = [];
+
+    foreach ($iterable as $item) {
+        $list[] = $item;
+    }
+
+    return $list;
+}
+
+// endregion: constructor
+
 // region: ops
 
 /**

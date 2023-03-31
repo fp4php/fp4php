@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\Test\Module;
 
 use Fp4\PHP\Module\ArrayList as L;
+use Generator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -16,6 +17,21 @@ use function PHPUnit\Framework\assertEquals;
  */
 final class ArrayListTest extends TestCase
 {
+    #[Test]
+    public static function fromIterable(): void
+    {
+        $generator = function (): Generator {
+            yield 1;
+            yield 2;
+            yield 3;
+        };
+
+        assertEquals(
+            [1, 2, 3],
+            L\fromIterable($generator()),
+        );
+    }
+
     #[Test]
     public static function map(): void
     {
