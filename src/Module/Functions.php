@@ -16,3 +16,11 @@ function pipe(mixed $a, callable $head, callable ...$tail): mixed
 
     return $a;
 }
+
+/**
+ * @psalm-return null
+ */
+function constNull(): mixed
+{
+    return null;
+}
