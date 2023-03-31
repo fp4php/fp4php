@@ -11,6 +11,7 @@ use Fp4\PHP\Type\Some;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use stdClass;
 
 use function Fp4\PHP\Module\Functions\pipe;
 use function PHPUnit\Framework\assertEquals;
@@ -122,6 +123,26 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
+    public static function tap(): void
+    {
+        $expected = new stdClass();
+        $expected->value = 42;
+
+        $actual = new stdClass();
+
+        assertInstanceOf(Some::class, pipe(
+            O\some($actual),
+            O\tap(fn ($obj) => $obj->value = 42),
+        ));
+        assertEquals($expected, $actual);
+
+        assertInstanceOf(None::class, pipe(
+            O\none,
+            O\tap(fn (stdClass $obj) => print_r($obj)),
+        ));
+    }
+
+    #[Test]
     public static function flatMap(): void
     {
         /** @var Option<int> */
@@ -152,6 +173,26 @@ final class OptionTest extends TestCase
         assertEquals(42, pipe(
             O\none,
             O\orElse(fn () => O\some(42)),
+            O\getOrNull(),
+        ));
+    }
+
+    #[Test]
+    public static function filter(): void
+    {
+        assertInstanceOf(None::class, pipe(
+            O\some(42),
+            O\filter(fn ($i) => $i > 50),
+        ));
+
+        assertInstanceOf(None::class, pipe(
+            O\none,
+            O\filter(fn ($i) => $i >= 42),
+        ));
+
+        assertEquals(42, pipe(
+            O\some(42),
+            O\filter(fn ($i) => $i >= 42),
             O\getOrNull(),
         ));
     }

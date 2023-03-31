@@ -131,6 +131,25 @@ function map(callable $callback): Closure
 
 /**
  * @template A
+ *
+ * @param callable(A): void $callback
+ * @return Closure(Option<A>): Option<A>
+ */
+function tap(callable $callback): Closure
+{
+    return function (Option $option) use ($callback) {
+        if (isSome($option)) {
+            $callback($option->value);
+
+            return some($option->value);
+        }
+
+        return none;
+    };
+}
+
+/**
+ * @template A
  * @template B
  *
  * @param callable(A): Option<B> $callback
@@ -155,6 +174,19 @@ function orElse(callable $callback): Closure
     return fn (Option $option) => isSome($option)
         ? some($option->value)
         : $callback();
+}
+
+/**
+ * @template A
+ *
+ * @param callable(A): bool $callback
+ * @return Closure(Option<A>): Option<A>
+ */
+function filter(callable $callback): Closure
+{
+    return fn (Option $a) => isSome($a) && $callback($a->value)
+        ? some($a->value)
+        : none;
 }
 
 // endregion: ops
