@@ -38,6 +38,8 @@ return (new PhpCsFixer\Config())
             'allow_single_line_anonymous_class_with_empty_body' => true,
             'allow_single_line_closure' => true,
         ],
+        'php_unit_internal_class' => false,
+        'php_unit_test_class_requires_covers' => false,
         'comment_to_phpdoc' => ['ignored_tags' => ['fixme']],
         'date_time_immutable' => true,
         'final_class' => true,

@@ -10,8 +10,8 @@ use Fp4\PHP\Type\Option;
 use Fp4\PHP\Type\Some;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-
 use RuntimeException;
+
 use function Fp4\PHP\Module\Functions\pipe;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertFalse;
@@ -63,12 +63,12 @@ final class OptionTest extends TestCase
     public static function tryCatch(): void
     {
         assertEquals(null, pipe(
-            O\tryCatch(fn() => throw new RuntimeException()),
+            O\tryCatch(fn () => throw new RuntimeException()),
             O\getOrNull(),
         ));
 
         assertEquals(42, pipe(
-            O\tryCatch(fn() => 42),
+            O\tryCatch(fn () => 42),
             O\getOrNull(),
         ));
     }
@@ -78,12 +78,12 @@ final class OptionTest extends TestCase
     {
         assertEquals('none', pipe(
             O\none,
-            O\fold(fn() => 'none', fn() => 'some'),
+            O\fold(fn () => 'none', fn () => 'some'),
         ));
 
         assertEquals('some: 42', pipe(
             O\some(42),
-            O\fold(fn() => 'none', fn($value) => "some: {$value}"),
+            O\fold(fn () => 'none', fn ($value) => "some: {$value}"),
         ));
     }
 
@@ -110,13 +110,13 @@ final class OptionTest extends TestCase
     {
         assertEquals(42, pipe(
             O\some(0),
-            O\map(fn($i) => $i + 42),
+            O\map(fn ($i) => $i + 42),
             O\getOrNull(),
         ));
 
         assertEquals(null, pipe(
             O\none,
-            O\map(fn($i) => $i + 42),
+            O\map(fn ($i) => $i + 42),
             O\getOrNull(),
         ));
     }
@@ -129,13 +129,13 @@ final class OptionTest extends TestCase
 
         assertEquals(42, pipe(
             $option,
-            O\flatMap(fn($i) => $i === 0 ? O\some($i + 42) : O\none),
+            O\flatMap(fn ($i) => 0 === $i ? O\some($i + 42) : O\none),
             O\getOrNull(),
         ));
 
         assertEquals(null, pipe(
             $option,
-            O\flatMap(fn($i) => $i !== 0 ? O\some($i + 42) : O\none),
+            O\flatMap(fn ($i) => 0 !== $i ? O\some($i + 42) : O\none),
             O\getOrNull(),
         ));
     }
@@ -145,13 +145,13 @@ final class OptionTest extends TestCase
     {
         assertEquals(42, pipe(
             O\some(42),
-            O\orElse(fn() => O\some(0)),
+            O\orElse(fn () => O\some(0)),
             O\getOrNull(),
         ));
 
         assertEquals(42, pipe(
             O\none,
-            O\orElse(fn() => O\some(42)),
+            O\orElse(fn () => O\some(42)),
             O\getOrNull(),
         ));
     }
