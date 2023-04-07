@@ -58,9 +58,9 @@ final class PipeFunctionStorageProvider implements DynamicFunctionStorageProvide
 
         $storage->return_type = pipe(
             $pipeCallables,
-            L\last(),
+            L\last(...),
             O\map(fn (TCallable $fn) => $fn->return_type),
-            O\getOrNull(),
+            O\getOrNull(...),
         );
 
         $storage->templates = pipe(

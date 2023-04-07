@@ -32,7 +32,7 @@ final class OptionTest extends TestCase
         assertInstanceOf(Some::class, $option);
         assertEquals(42, pipe(
             $option,
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
     }
 
@@ -42,7 +42,7 @@ final class OptionTest extends TestCase
         assertInstanceOf(None::class, O\none);
         assertEquals(null, pipe(
             O\none,
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
     }
 
@@ -51,12 +51,12 @@ final class OptionTest extends TestCase
     {
         assertEquals(null, pipe(
             O\fromNullable(null),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
 
         assertEquals(42, pipe(
             O\fromNullable(42),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
     }
 
@@ -65,12 +65,12 @@ final class OptionTest extends TestCase
     {
         assertEquals(null, pipe(
             O\tryCatch(fn () => throw new RuntimeException()),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
 
         assertEquals(42, pipe(
             O\tryCatch(fn () => 42),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
     }
 
@@ -91,19 +91,27 @@ final class OptionTest extends TestCase
     #[Test]
     public static function isSome(): void
     {
-        $isSome = O\isSome(...);
-
-        assertFalse(pipe(O\none, $isSome));
-        assertTrue(pipe(O\some(42), $isSome));
+        assertFalse(pipe(
+            O\none,
+            O\isSome(...),
+        ));
+        assertTrue(pipe(
+            O\some(42),
+            O\isSome(...),
+        ));
     }
 
     #[Test]
     public static function isNone(): void
     {
-        $isNone = O\isNone(...);
-
-        assertFalse(pipe(O\some(42), $isNone));
-        assertTrue(pipe(O\none, $isNone));
+        assertFalse(pipe(
+            O\some(42),
+            O\isNone(...),
+        ));
+        assertTrue(pipe(
+            O\none,
+            O\isNone(...),
+        ));
     }
 
     #[Test]
@@ -112,13 +120,13 @@ final class OptionTest extends TestCase
         assertEquals(42, pipe(
             O\some(0),
             O\map(fn ($i) => $i + 42),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
 
         assertEquals(null, pipe(
             O\none,
             O\map(fn ($i) => $i + 42),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
     }
 
@@ -151,13 +159,13 @@ final class OptionTest extends TestCase
         assertEquals(42, pipe(
             $option,
             O\flatMap(fn ($i) => 0 === $i ? O\some($i + 42) : O\none),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
 
         assertEquals(null, pipe(
             $option,
             O\flatMap(fn ($i) => 0 !== $i ? O\some($i + 42) : O\none),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
     }
 
@@ -167,13 +175,13 @@ final class OptionTest extends TestCase
         assertEquals(42, pipe(
             O\some(42),
             O\orElse(fn () => O\some(0)),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
 
         assertEquals(42, pipe(
             O\none,
             O\orElse(fn () => O\some(42)),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
     }
 
@@ -193,7 +201,7 @@ final class OptionTest extends TestCase
         assertEquals(42, pipe(
             O\some(42),
             O\filter(fn ($i) => $i >= 42),
-            O\getOrNull(),
+            O\getOrNull(...),
         ));
     }
 }

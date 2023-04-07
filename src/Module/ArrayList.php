@@ -146,33 +146,31 @@ function append(mixed $item): Closure
 /**
  * @template A
  *
- * @return Closure(list<A>): Option<A>
+ * @param list<A> $list
+ * @return Option<A>
  */
-function first(): Closure
+function first(array $list): Option
 {
-    return function (array $list) {
-        $firstKey = array_key_first($list) ?? null;
+    $firstKey = array_key_first($list) ?? null;
 
-        return null !== $firstKey
-            ? O\some($list[$firstKey])
-            : O\none;
-    };
+    return null !== $firstKey
+        ? O\some($list[$firstKey])
+        : O\none;
 }
 
 /**
  * @template A
  *
- * @return Closure(list<A>): Option<A>
+ * @param list<A> $list
+ * @return Option<A>
  */
-function last(): Closure
+function last(array $list): Option
 {
-    return function (array $list) {
-        $lastKey = array_key_last($list) ?? null;
+    $lastKey = array_key_last($list) ?? null;
 
-        return null !== $lastKey
-            ? O\some($list[$lastKey])
-            : O\none;
-    };
+    return null !== $lastKey
+        ? O\some($list[$lastKey])
+        : O\none;
 }
 
 // endregion: terminal ops

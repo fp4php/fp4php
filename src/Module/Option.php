@@ -58,11 +58,12 @@ function tryCatch(callable $callback): Option
 /**
  * @template A
  *
- * @return Closure(Option<A>): (A|null)
+ * @param Option<A> $option
+ * @return A|null
  */
-function getOrNull(): Closure
+function getOrNull(Option $option): mixed
 {
-    return fn (Option $option) => isSome($option)
+    return isSome($option)
         ? $option->value
         : null;
 }
