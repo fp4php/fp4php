@@ -3,6 +3,7 @@
   "description": "PHP Functional Programming library",
   "type": "library",
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "authors": [
     {
       "name": "Klimenko Andrew (klimick)",
