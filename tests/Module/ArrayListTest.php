@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\Test\Module;
 
 use Fp4\PHP\Module\ArrayList as L;
+use Fp4\PHP\Module\Option as O;
 use Generator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -132,6 +133,40 @@ final class ArrayListTest extends TestCase
         assertEquals([40, 41, 42], pipe(
             $nonEmptyList,
             L\append(42),
+        ));
+    }
+
+    #[Test]
+    public static function last(): void
+    {
+        assertEquals(O\none, pipe(
+            [],
+            L\last(...),
+        ));
+        assertEquals(O\some(1), pipe(
+            [1],
+            L\last(...),
+        ));
+        assertEquals(O\some(3), pipe(
+            [1, 2, 3],
+            L\last(...),
+        ));
+    }
+
+    #[Test]
+    public static function first(): void
+    {
+        assertEquals(O\none, pipe(
+            [],
+            L\first(...),
+        ));
+        assertEquals(O\some(1), pipe(
+            [1],
+            L\first(...),
+        ));
+        assertEquals(O\some(1), pipe(
+            [1, 2, 3],
+            L\first(...),
         ));
     }
 }

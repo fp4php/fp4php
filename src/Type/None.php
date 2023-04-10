@@ -12,6 +12,7 @@ final class None implements Option
 {
     /**
      * @internal
+     * @codeCoverageIgnore
      */
     public function __construct()
     {
