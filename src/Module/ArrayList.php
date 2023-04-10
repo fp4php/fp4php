@@ -173,4 +173,55 @@ function last(array $list): Option
         : O\none;
 }
 
+/**
+ * @template A
+ * @template B
+ *
+ * @param callable(A): Option<B> $callback
+ * @return Closure(list<A>): Option<list<B>>
+ */
+function traverseOption(callable $callback): Closure
+{
+    return function (array $list) use ($callback) {
+        $out = [];
+
+        foreach ($list as $item) {
+            $option = $callback($item);
+
+            if (O\isSome($option)) {
+                $out[] = $option->value;
+            } else {
+                return O\none;
+            }
+        }
+
+        return O\some($out);
+    };
+}
+
+/**
+ * @template A
+ *
+ * @param list<(Closure(): Option<A>) | Option<A>> $list
+ * @return Option<list<A>>
+ */
+function sequenceOption(array $list): Option
+{
+    $out = [];
+
+    foreach ($list as $option) {
+        if (!$option instanceof Option) {
+            $option = $option();
+        }
+
+        if (O\isSome($option)) {
+            $out[] = $option->value;
+        } else {
+            return O\none;
+        }
+    }
+
+    return O\some($out);
+}
+
 // endregion: terminal ops

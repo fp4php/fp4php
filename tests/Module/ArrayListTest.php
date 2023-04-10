@@ -6,6 +6,7 @@ namespace Fp4\PHP\Test\Module;
 
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Type\Option;
 use Generator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -139,16 +140,25 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function last(): void
     {
+        /** @var list<int> */
+        $empty = [];
+
+        /** @var list<int> */
+        $withOneElement = [1];
+
+        /** @var list<int> */
+        $withMultipleElements = [1, 2, 3];
+
         assertEquals(O\none, pipe(
-            [],
+            $empty,
             L\last(...),
         ));
         assertEquals(O\some(1), pipe(
-            [1],
+            $withOneElement,
             L\last(...),
         ));
         assertEquals(O\some(3), pipe(
-            [1, 2, 3],
+            $withMultipleElements,
             L\last(...),
         ));
     }
@@ -156,17 +166,68 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function first(): void
     {
+        /** @var list<int> */
+        $empty = [];
+
+        /** @var list<int> */
+        $withOneElement = [1];
+
+        /** @var list<int> */
+        $withMultipleElements = [1, 2, 3];
+
         assertEquals(O\none, pipe(
-            [],
+            $empty,
             L\first(...),
         ));
         assertEquals(O\some(1), pipe(
-            [1],
+            $withOneElement,
             L\first(...),
         ));
         assertEquals(O\some(1), pipe(
-            [1, 2, 3],
+            $withMultipleElements,
             L\first(...),
+        ));
+    }
+
+    #[Test]
+    public static function traverseOption(): void
+    {
+        /** @var list<int> */
+        $allNumbers = [1, 2, 3];
+
+        /** @var list<int> */
+        $evenNumbers = [2, 4, 6];
+
+        $proveEven = fn (int $i): Option => 0 === $i % 2
+            ? O\some($i)
+            : O\none;
+
+        assertEquals(O\none, pipe(
+            $allNumbers,
+            L\traverseOption($proveEven),
+        ));
+        assertEquals(O\some($evenNumbers), pipe(
+            $evenNumbers,
+            L\traverseOption($proveEven),
+        ));
+    }
+
+    #[Test]
+    public static function sequenceOption(): void
+    {
+        /** @var list<Option<int>> */
+        $withNone = [O\some(1), O\some(2), O\none];
+
+        /** @var list<Option<int>> */
+        $allSome = [O\some(1), O\some(2), O\some(3)];
+
+        assertEquals(O\none, pipe(
+            $withNone,
+            L\sequenceOption(...),
+        ));
+        assertEquals(O\some([1, 2, 3]), pipe(
+            $allSome,
+            L\sequenceOption(...),
         ));
     }
 }
