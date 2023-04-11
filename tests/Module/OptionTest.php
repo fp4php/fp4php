@@ -27,11 +27,10 @@ final class OptionTest extends TestCase
     #[Test]
     public static function some(): void
     {
-        $option = O\some(42);
+        assertInstanceOf(Some::class, O\some(42));
 
-        assertInstanceOf(Some::class, $option);
         assertEquals(42, pipe(
-            $option,
+            O\some(42),
             O\getOrNull(...),
         ));
     }
@@ -40,6 +39,7 @@ final class OptionTest extends TestCase
     public static function none(): void
     {
         assertInstanceOf(None::class, O\none);
+
         assertEquals(null, pipe(
             O\none,
             O\getOrNull(...),
@@ -95,6 +95,7 @@ final class OptionTest extends TestCase
             O\none,
             O\isSome(...),
         ));
+
         assertTrue(pipe(
             O\some(42),
             O\isSome(...),
@@ -108,6 +109,7 @@ final class OptionTest extends TestCase
             O\some(42),
             O\isNone(...),
         ));
+
         assertTrue(pipe(
             O\none,
             O\isNone(...),
@@ -142,6 +144,7 @@ final class OptionTest extends TestCase
             O\some($actual),
             O\tap(fn ($obj) => $obj->value = 42),
         ));
+
         assertEquals($expected, $actual);
 
         assertInstanceOf(None::class, pipe(
@@ -153,17 +156,14 @@ final class OptionTest extends TestCase
     #[Test]
     public static function flatMap(): void
     {
-        /** @var Option<int> */
-        $option = O\some(0);
-
         assertEquals(42, pipe(
-            $option,
+            O\some(0),
             O\flatMap(fn ($i) => 0 === $i ? O\some($i + 42) : O\none),
             O\getOrNull(...),
         ));
 
         assertEquals(null, pipe(
-            $option,
+            O\some(0),
             O\flatMap(fn ($i) => 0 !== $i ? O\some($i + 42) : O\none),
             O\getOrNull(...),
         ));

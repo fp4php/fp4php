@@ -6,6 +6,7 @@ namespace Fp4\PHP\PsalmIntegration;
 
 use Fp4\PHP\PsalmIntegration\ArrayList\FromIterableCallWidening;
 use Fp4\PHP\PsalmIntegration\Option\NoneConstWidening;
+use Fp4\PHP\PsalmIntegration\Option\SomeCallWidening;
 use Fp4\PHP\PsalmIntegration\Pipe\PipeFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Types;
@@ -27,6 +28,9 @@ final class Plugin implements PluginEntryPointInterface
         }
         if (class_exists(FromIterableCallWidening::class)) {
             $registration->registerHooksFromClass(FromIterableCallWidening::class);
+        }
+        if (class_exists(SomeCallWidening::class)) {
+            $registration->registerHooksFromClass(SomeCallWidening::class);
         }
     }
 }
