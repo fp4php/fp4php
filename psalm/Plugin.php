@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration;
 
+use Fp4\PHP\PsalmIntegration\ArrayList\FromIterableCallWidening;
 use Fp4\PHP\PsalmIntegration\Option\NoneConstWidening;
 use Fp4\PHP\PsalmIntegration\Pipe\PipeFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
-use Fp4\PHP\PsalmIntegration\PsalmUtils\Types;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Types;
 use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;
 use SimpleXMLElement;
@@ -23,6 +24,9 @@ final class Plugin implements PluginEntryPointInterface
         }
         if (class_exists(NoneConstWidening::class)) {
             $registration->registerHooksFromClass(NoneConstWidening::class);
+        }
+        if (class_exists(FromIterableCallWidening::class)) {
+            $registration->registerHooksFromClass(FromIterableCallWidening::class);
         }
     }
 }
