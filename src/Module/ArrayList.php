@@ -8,6 +8,8 @@ use Closure;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Option;
 
+use function in_array;
+
 // region: constructor
 
 /**
@@ -25,6 +27,18 @@ function fromIterable(iterable $iterable): array
         $list[] = $item;
     }
 
+    return $list;
+}
+
+/**
+ * @template A
+ *
+ * @param list<A> $list
+ * @return list<A>
+ * @psalm-return ($list is non-empty-array<A> ? non-empty-list<A> : list<A>)
+ */
+function from(array $list): array
+{
     return $list;
 }
 
@@ -167,6 +181,14 @@ function append(mixed $item): Closure
 // endregion: ops
 
 // region: terminal ops
+
+/**
+ * @return Closure(list<mixed>): bool
+ */
+function contains(mixed $item): Closure
+{
+    return fn (array $list) => in_array($item, $list, strict: true);
+}
 
 /**
  * @template A
