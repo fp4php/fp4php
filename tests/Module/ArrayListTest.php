@@ -198,5 +198,33 @@ final class ArrayListTest extends TestCase
             L\from([O\some(1), O\some(2), O\some(3)]),
             L\sequenceOption(...),
         ));
+
+        assertEquals(O\some([1, 2, 3]), pipe(
+            L\from([
+                fn() => O\some(1),
+                fn() => O\some(2),
+                fn() => O\some(3),
+            ]),
+            L\sequenceOption(...),
+        ));
+    }
+
+    #[Test]
+    public static function contains(): void
+    {
+        assertEquals(false, pipe(
+            L\from([]),
+            L\contains(42),
+        ));
+
+        assertEquals(false, pipe(
+            L\from([1, 2, 3]),
+            L\contains(42),
+        ));
+
+        assertEquals(true, pipe(
+            L\from([40, 41, 42]),
+            L\contains(42),
+        ));
     }
 }
