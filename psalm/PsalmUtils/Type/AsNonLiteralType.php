@@ -82,7 +82,7 @@ final class AsNonLiteralType
             return $keyed->properties[0]->possibly_undefined;
         }
 
-        return $keyed->is_list;
+        return false;
     }
 
     private static function isNonEmptyList(TKeyedArray $keyed): bool
