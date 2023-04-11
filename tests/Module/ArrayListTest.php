@@ -201,9 +201,9 @@ final class ArrayListTest extends TestCase
 
         assertEquals(O\some([1, 2, 3]), pipe(
             L\from([
-                fn() => O\some(1),
-                fn() => O\some(2),
-                fn() => O\some(3),
+                fn () => O\some(1),
+                fn () => O\some(2),
+                fn () => O\some(3),
             ]),
             L\sequenceOption(...),
         ));

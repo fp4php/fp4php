@@ -8,9 +8,12 @@ use Closure;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
+use Psalm\NodeTypeProvider;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\StatementsSource;
 use Psalm\Type\Union;
+
+use function Fp4\PHP\Module\Functions\pipe;
 
 final class Types
 {
@@ -20,12 +23,7 @@ final class Types
     public function setExprType(Union $type, AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
         return function (Expr $expr) use ($type, $scope): void {
-            $types = match (true) {
-                $scope instanceof StatementsSource => $scope->getNodeTypeProvider(),
-                $scope instanceof AfterExpressionAnalysisEvent => $scope->getStatementsSource()->getNodeTypeProvider(),
-            };
-
-            $types->setType($expr, $type);
+            self::getNodeTypeProvider($scope)->setType($expr, $type);
         };
     }
 
@@ -35,12 +33,7 @@ final class Types
     public function setType(Expr $expr, AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
         return function (Union $type) use ($expr, $scope): void {
-            $types = match (true) {
-                $scope instanceof StatementsSource => $scope->getNodeTypeProvider(),
-                $scope instanceof AfterExpressionAnalysisEvent => $scope->getStatementsSource()->getNodeTypeProvider(),
-            };
-
-            $types->setType($expr, $type);
+            self::getNodeTypeProvider($scope)->setType($expr, $type);
         };
     }
 
@@ -49,18 +42,22 @@ final class Types
      */
     public function getExprType(AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
-        return function (Expr $expr) use ($scope): Option {
-            $types = match (true) {
-                $scope instanceof StatementsSource => $scope->getNodeTypeProvider(),
-                $scope instanceof AfterExpressionAnalysisEvent => $scope->getStatementsSource()->getNodeTypeProvider(),
-            };
-
-            return O\fromNullable($types->getType($expr));
-        };
+        return fn (Expr $expr) => pipe(
+            self::getNodeTypeProvider($scope)->getType($expr),
+            O\fromNullable(...),
+        );
     }
 
     public function asNonLiteralType(Union $type): Union
     {
         return AsNonLiteralType::transform($type);
+    }
+
+    private static function getNodeTypeProvider(AfterExpressionAnalysisEvent|StatementsSource $scope): NodeTypeProvider
+    {
+        return match (true) {
+            $scope instanceof StatementsSource => $scope->getNodeTypeProvider(),
+            $scope instanceof AfterExpressionAnalysisEvent => $scope->getStatementsSource()->getNodeTypeProvider(),
+        };
     }
 }
