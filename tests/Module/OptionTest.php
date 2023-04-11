@@ -6,7 +6,6 @@ namespace Fp4\PHP\Test\Module;
 
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\None;
-use Fp4\PHP\Type\Option;
 use Fp4\PHP\Type\Some;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
