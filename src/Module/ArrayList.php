@@ -15,6 +15,7 @@ use Fp4\PHP\Type\Option;
  *
  * @param iterable<A> $iterable
  * @return list<A>
+ * @psalm-return ($iterable is non-empty-array<A> ? non-empty-list<A> : list<A>)
  */
 function fromIterable(iterable $iterable): array
 {
@@ -34,9 +35,15 @@ function fromIterable(iterable $iterable): array
 /**
  * @template A
  * @template B
+ * @template TIn of list<A>
  *
  * @param callable(A): B $callback
  * @return Closure(list<A>): list<B>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? non-empty-list<B>
+ *         : list<B>
+ * ))
  */
 function map(callable $callback): Closure
 {
@@ -54,9 +61,15 @@ function map(callable $callback): Closure
 /**
  * @template A
  * @template B
+ * @template TIn of list<A>
  *
  * @param callable(int, A): B $callback
  * @return Closure(list<A>): list<B>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? non-empty-list<B>
+ *         : list<B>
+ * ))
  */
 function mapKV(callable $callback): Closure
 {
@@ -74,9 +87,15 @@ function mapKV(callable $callback): Closure
 /**
  * @template A
  * @template B
+ * @template TIn of list<A>
  *
  * @param callable(A): list<B> $callback
  * @return Closure(list<A>): list<B>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? non-empty-list<B>
+ *         : list<B>
+ * ))
  */
 function flatMap(callable $callback): Closure
 {
@@ -96,9 +115,15 @@ function flatMap(callable $callback): Closure
 /**
  * @template A
  * @template B
+ * @template TIn of list<A>
  *
  * @param callable(int, A): list<B> $callback
  * @return Closure(list<A>): list<B>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? non-empty-list<B>
+ *         : list<B>
+ * ))
  */
 function flatMapKV(callable $callback): Closure
 {
@@ -120,7 +145,7 @@ function flatMapKV(callable $callback): Closure
  * @template B
  *
  * @param B $item
- * @return Closure(list<A>): list<A|B>
+ * @return Closure(list<A>): non-empty-list<A|B>
  */
 function prepend(mixed $item): Closure
 {
@@ -132,7 +157,7 @@ function prepend(mixed $item): Closure
  * @template B
  *
  * @param B $item
- * @return Closure(list<A>): list<A|B>
+ * @return Closure(list<A>): non-empty-list<A|B>
  */
 function append(mixed $item): Closure
 {
@@ -176,9 +201,15 @@ function last(array $list): Option
 /**
  * @template A
  * @template B
+ * @template TIn of list<A>
  *
  * @param callable(A): Option<B> $callback
  * @return Closure(list<A>): Option<list<B>>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? Option<non-empty-list<B>>
+ *         : Option<list<B>>
+ * ))
  */
 function traverseOption(callable $callback): Closure
 {
@@ -204,6 +235,9 @@ function traverseOption(callable $callback): Closure
  *
  * @param list<(Closure(): Option<A>) | Option<A>> $list
  * @return Option<list<A>>
+ * @psalm-return ($list is non-empty-list<(Closure(): Option<A>) | Option<A>>
+ *     ? Option<non-empty-list<A>>
+ *     : Option<list<A>>)
  */
 function sequenceOption(array $list): Option
 {
