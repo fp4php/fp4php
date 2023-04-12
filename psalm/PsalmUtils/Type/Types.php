@@ -11,6 +11,7 @@ use PhpParser\Node\Expr;
 use Psalm\NodeTypeProvider;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\StatementsSource;
+use Psalm\Type\Atomic;
 use Psalm\Type\Union;
 
 use function Fp4\PHP\Module\Functions\pipe;
@@ -51,6 +52,18 @@ final class Types
     public function asNonLiteralType(Union $type): Union
     {
         return AsNonLiteralType::transform($type);
+    }
+
+    /**
+     * @return Option<Atomic>
+     */
+    public function asSingleAtomic(Union $type): Option
+    {
+        return pipe(
+            O\some($type),
+            O\filter(fn (Union $t) => $t->isSingle()),
+            O\map(fn (Union $t) => $t->getSingleAtomic()),
+        );
     }
 
     private static function getNodeTypeProvider(AfterExpressionAnalysisEvent|StatementsSource $scope): NodeTypeProvider

@@ -82,6 +82,20 @@ function getOrNull(Option $option): mixed
 
 /**
  * @template A
+ * @template B
+ *
+ * @param callable(): B $call
+ * @return Closure(Option<A>): (A|B)
+ */
+function getOrCall(callable $call): Closure
+{
+    return fn (Option $option) => isSome($option)
+        ? $option->value
+        : $call();
+}
+
+/**
+ * @template A
  * @template TNone
  * @template TSome
  *
