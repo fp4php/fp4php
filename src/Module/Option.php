@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\Module\Option;
 
 use Closure;
+use Fp4\PHP\Type\Bindable;
 use Fp4\PHP\Type\None;
 use Fp4\PHP\Type\Option;
 use Fp4\PHP\Type\Some;
@@ -21,6 +22,17 @@ use Throwable;
 function some(mixed $value): Option
 {
     return new Some($value);
+}
+
+/**
+ * @template A
+ *
+ * @param A $value
+ * @return Option<A>
+ */
+function fromLiteral(mixed $value): Option
+{
+    return some($value);
 }
 
 const none = new None();
@@ -191,3 +203,42 @@ function filter(callable $callback): Closure
 }
 
 // endregion: ops
+
+// region: bindable
+
+/**
+ * @return Option<Bindable>
+ */
+function bindable(): Option
+{
+    return some(new Bindable());
+}
+
+/**
+ * @param Closure(Bindable): Option ...$params
+ * @return Closure(Option<Bindable>): Option<Bindable>
+ */
+function bind(Closure ...$params): Closure
+{
+    return function (Option $optionBindable) use ($params) {
+        if (isSome($optionBindable)) {
+            $bindable = $optionBindable->value;
+        } else {
+            return none;
+        }
+
+        foreach ($params as $key => $param) {
+            $result = $param($bindable);
+
+            if (isSome($result)) {
+                $bindable = $bindable->with((string) $key, $result->value);
+            } else {
+                return none;
+            }
+        }
+
+        return some($bindable);
+    };
+}
+
+// endregion: bindable

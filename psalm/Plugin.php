@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration;
 
 use Fp4\PHP\PsalmIntegration\ArrayList\FromIterableCallWidening;
+use Fp4\PHP\PsalmIntegration\Bindable\BindablePropertiesResolver;
+use Fp4\PHP\PsalmIntegration\Bindable\BindFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\Option\NoneConstWidening;
 use Fp4\PHP\PsalmIntegration\Option\SomeCallWidening;
 use Fp4\PHP\PsalmIntegration\Pipe\PipeFunctionStorageProvider;
@@ -31,6 +33,12 @@ final class Plugin implements PluginEntryPointInterface
         }
         if (class_exists(SomeCallWidening::class)) {
             $registration->registerHooksFromClass(SomeCallWidening::class);
+        }
+        if (class_exists(BindFunctionStorageProvider::class)) {
+            $registration->registerHooksFromClass(BindFunctionStorageProvider::class);
+        }
+        if (class_exists(BindablePropertiesResolver::class)) {
+            $registration->registerHooksFromClass(BindablePropertiesResolver::class);
         }
     }
 }
