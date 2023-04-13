@@ -66,6 +66,11 @@ final class Types
         );
     }
 
+    public function asUnion(Atomic $atomic): Union
+    {
+        return new Union([$atomic]);
+    }
+
     private static function getNodeTypeProvider(AfterExpressionAnalysisEvent|StatementsSource $scope): NodeTypeProvider
     {
         return match (true) {

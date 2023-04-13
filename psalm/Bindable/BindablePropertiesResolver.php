@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\Bindable;
 
+use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\ArrayDictionary as D;
 use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
@@ -32,8 +33,8 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
 
         return pipe(
             O\some($event->getExpr()),
-            O\filter(fn () => Bindable::class === $context->self),
-            Ev\proveOf(PropertyFetch::class),
+            O\filter(fn () => Bindable::class !== $context->self),
+            O\flatMap(Ev\proveOf(PropertyFetch::class)),
             O\flatMap(fn (PropertyFetch $expr) => pipe(
                 $expr->name,
                 Ev\proveOf(Identifier::class),
@@ -42,15 +43,18 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
                     $expr->var,
                     PsalmApi::$types->getExprType($event),
                     O\flatMap(self::foldBindableContext(...)),
-                    O\flatMap(D\get($property)),
-                    O\orElse(function () use ($expr, $source) {
-                        IssueBuffer::maybeAdd(
-                            e: PropertyIsNotDefinedInScope::create($expr, $source),
-                            suppressed_issues: $source->getSuppressedIssues(),
-                        );
+                    O\flatMap(fn (array $context) => pipe(
+                        $context,
+                        D\get($property),
+                        O\orElse(function () use ($expr, $source) {
+                            IssueBuffer::maybeAdd(
+                                e: PropertyIsNotDefinedInScope::create($expr, $source),
+                                suppressed_issues: $source->getSuppressedIssues(),
+                            );
 
-                        return O\none;
-                    }),
+                            return O\none;
+                        }),
+                    )),
                 )),
             )),
             O\tap(PsalmApi::$types->setType($event->getExpr(), $event)),
@@ -69,8 +73,9 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
             O\flatMap(Ev\proveOf(TGenericObject::class)),
             O\filter(fn (TGenericObject $bindable) => Bindable::class === $bindable->value),
             O\map(fn (TGenericObject $bindable) => pipe(
-                O\fromNullable($bindable->extra_types['object'] ?? null),
-                O\map(fn (Atomic $intersection) => [
+                O\fromNullable($bindable->extra_types[Bindable::class . '<object>'] ?? null),
+                O\flatMap(Ev\proveOf(TGenericObject::class)),
+                O\map(fn (TGenericObject $intersection) => [
                     ...self::getProperties($bindable),
                     ...self::getProperties($intersection),
                 ]),
@@ -82,10 +87,15 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
     /**
      * @return Union[]
      */
-    private static function getProperties(Atomic $bindable): array
+    private static function getProperties(TGenericObject $bindable): array
     {
-        return $bindable instanceof TObjectWithProperties
-            ? $bindable->properties
-            : [];
+        return pipe(
+            $bindable->type_params,
+            L\first(...),
+            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
+            O\flatMap(Ev\proveOf(TObjectWithProperties::class)),
+            O\map(fn (TObjectWithProperties $object) => $object->properties),
+            O\getOrCall(fn () => []),
+        );
     }
 }
