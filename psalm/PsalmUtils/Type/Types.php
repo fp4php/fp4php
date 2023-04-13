@@ -21,20 +21,26 @@ final class Types
     /**
      * @return Closure(Expr): void
      */
-    public function setExprType(Union $type, AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
+    public function setExprType(Union|Atomic $type, AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
         return function (Expr $expr) use ($type, $scope): void {
-            self::getNodeTypeProvider($scope)->setType($expr, $type);
+            self::getNodeTypeProvider($scope)->setType(
+                node: $expr,
+                type: $type instanceof Atomic ? new Union([$type]) : $type,
+            );
         };
     }
 
     /**
-     * @return Closure(Union): void
+     * @return Closure(Union|Atomic): void
      */
     public function setType(Expr $expr, AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
-        return function (Union $type) use ($expr, $scope): void {
-            self::getNodeTypeProvider($scope)->setType($expr, $type);
+        return function (Union|Atomic $type) use ($expr, $scope): void {
+            self::getNodeTypeProvider($scope)->setType(
+                node: $expr,
+                type: $type instanceof Atomic ? new Union([$type]) : $type,
+            );
         };
     }
 
