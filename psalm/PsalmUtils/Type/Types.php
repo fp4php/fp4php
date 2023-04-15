@@ -10,6 +10,7 @@ use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
 use Psalm\NodeTypeProvider;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
+use Psalm\Plugin\EventHandler\Event\MethodReturnTypeProviderEvent;
 use Psalm\StatementsSource;
 use Psalm\Type\Atomic;
 use Psalm\Type\Union;
@@ -21,7 +22,7 @@ final class Types
     /**
      * @return Closure(Expr): void
      */
-    public function setExprType(Union|Atomic $type, AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
+    public function setExprType(Union|Atomic $type, MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
         return function (Expr $expr) use ($type, $scope): void {
             self::getNodeTypeProvider($scope)->setType(
@@ -34,7 +35,7 @@ final class Types
     /**
      * @return Closure(Union|Atomic): void
      */
-    public function setType(Expr $expr, AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
+    public function setType(Expr $expr, MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
         return function (Union|Atomic $type) use ($expr, $scope): void {
             self::getNodeTypeProvider($scope)->setType(
@@ -47,7 +48,7 @@ final class Types
     /**
      * @return Closure(Expr): Option<Union>
      */
-    public function getExprType(AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
+    public function getExprType(MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
         return fn (Expr $expr) => pipe(
             self::getNodeTypeProvider($scope)->getType($expr),
@@ -77,11 +78,12 @@ final class Types
         return new Union([$atomic]);
     }
 
-    private static function getNodeTypeProvider(AfterExpressionAnalysisEvent|StatementsSource $scope): NodeTypeProvider
+    private static function getNodeTypeProvider(MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): NodeTypeProvider
     {
         return match (true) {
             $scope instanceof StatementsSource => $scope->getNodeTypeProvider(),
             $scope instanceof AfterExpressionAnalysisEvent => $scope->getStatementsSource()->getNodeTypeProvider(),
+            $scope instanceof MethodReturnTypeProviderEvent => $scope->getSource()->getNodeTypeProvider(),
         };
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration;
 
 use Fp4\PHP\PsalmIntegration\ArrayList\FromIterableCallWidening;
+use Fp4\PHP\PsalmIntegration\Bindable\BindableGetReturnTypeProvider;
 use Fp4\PHP\PsalmIntegration\Bindable\BindablePropertiesResolver;
 use Fp4\PHP\PsalmIntegration\Bindable\BindFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\Option\NoneConstWidening;
@@ -39,6 +40,9 @@ final class Plugin implements PluginEntryPointInterface
         }
         if (class_exists(BindablePropertiesResolver::class)) {
             $registration->registerHooksFromClass(BindablePropertiesResolver::class);
+        }
+        if (class_exists(BindableGetReturnTypeProvider::class)) {
+            $registration->registerHooksFromClass(BindableGetReturnTypeProvider::class);
         }
     }
 }

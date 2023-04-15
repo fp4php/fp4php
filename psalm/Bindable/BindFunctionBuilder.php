@@ -83,7 +83,14 @@ final class BindFunctionBuilder
             type: new Union([
                 new TCallable(
                     value: 'callable',
-                    params: [$this->currentContextParam()],
+                    params: [
+                        new FunctionLikeParameter(
+                            name: 'context',
+                            by_ref: false,
+                            type: $this->compiledBindable(),
+                            is_optional: false,
+                        ),
+                    ],
                     return_type: new Union([
                         new TGenericObject(Option::class, [
                             $this->nextReturnTypeFor($property->toString()),
@@ -91,16 +98,6 @@ final class BindFunctionBuilder
                     ]),
                 ),
             ]),
-            is_optional: false,
-        );
-    }
-
-    private function currentContextParam(): FunctionLikeParameter
-    {
-        return new FunctionLikeParameter(
-            name: 'context',
-            by_ref: false,
-            type: $this->compiledBindable(),
             is_optional: false,
         );
     }
