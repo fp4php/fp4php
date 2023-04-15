@@ -51,6 +51,17 @@ function fromNullable(mixed $value): Option
 /**
  * @template A
  *
+ * @param A|null $value
+ * @return Option<A>
+ */
+function fromNullableLiteral(mixed $value): Option
+{
+    return fromNullable($value);
+}
+
+/**
+ * @template A
+ *
  * @param callable(): A $callback
  * @return Option<A>
  */
