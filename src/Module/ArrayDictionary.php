@@ -206,6 +206,32 @@ function append(mixed $key, mixed $value): Closure
 // region: terminal ops
 
 /**
+ * @template K of array-key
+ * @template V
+ *
+ * @param array<K, V> $dictionary
+ * @return list<K>
+ * @psalm-return ($dictionary is non-empty-array<K, V> ? non-empty-list<K> : list<K>)
+ */
+function keys(array $dictionary): array
+{
+    return array_keys($dictionary);
+}
+
+/**
+ * @template K of array-key
+ * @template V
+ *
+ * @param array<K, V> $dictionary
+ * @return list<V>
+ * @psalm-return ($dictionary is non-empty-array<K, V> ? non-empty-list<V> : list<V>)
+ */
+function values(array $dictionary): array
+{
+    return array_values($dictionary);
+}
+
+/**
  * @return Closure(array<array-key, mixed>): bool
  */
 function keyExists(string|int $key): Closure
