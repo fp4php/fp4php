@@ -16,6 +16,9 @@ use function Fp4\PHP\Module\Functions\pipe;
 
 final class PropertyIsNotDefinedInScope extends CodeIssue
 {
+    /**
+     * @return Option<never>
+     */
     public static function raise(array $context, string $property, MethodReturnTypeProviderEvent $event): Option
     {
         $source = $event->getSource();
