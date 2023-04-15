@@ -31,13 +31,23 @@ function fromIterable(iterable $iterable): array
 }
 
 /**
- * @template A
+ * @template A of list<mixed>
  *
- * @param list<A> $list
- * @return list<A>
- * @psalm-return ($list is non-empty-array<A> ? non-empty-list<A> : list<A>)
+ * @param A $list
+ * @return A
  */
 function from(array $list): array
+{
+    return $list;
+}
+
+/**
+ * @template A of list<mixed>
+ *
+ * @param A $list
+ * @return A
+ */
+function fromLiteral(array $list): array
 {
     return $list;
 }
