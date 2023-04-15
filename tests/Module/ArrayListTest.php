@@ -187,29 +187,6 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
-    public static function sequenceOption(): void
-    {
-        assertEquals(O\none, pipe(
-            L\from([O\some(1), O\some(2), O\none]),
-            L\sequenceOption(...),
-        ));
-
-        assertEquals(O\some([1, 2, 3]), pipe(
-            L\from([O\some(1), O\some(2), O\some(3)]),
-            L\sequenceOption(...),
-        ));
-
-        assertEquals(O\some([1, 2, 3]), pipe(
-            L\from([
-                fn () => O\some(1),
-                fn () => O\some(2),
-                fn () => O\some(3),
-            ]),
-            L\sequenceOption(...),
-        ));
-    }
-
-    #[Test]
     public static function contains(): void
     {
         assertEquals(false, pipe(

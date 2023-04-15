@@ -262,32 +262,4 @@ function traverseOption(callable $callback): Closure
     };
 }
 
-/**
- * @template A
- *
- * @param list<(Closure(): Option<A>) | Option<A>> $list
- * @return Option<list<A>>
- * @psalm-return ($list is non-empty-list<(Closure(): Option<A>) | Option<A>>
- *     ? Option<non-empty-list<A>>
- *     : Option<list<A>>)
- */
-function sequenceOption(array $list): Option
-{
-    $out = [];
-
-    foreach ($list as $option) {
-        if (!$option instanceof Option) {
-            $option = $option();
-        }
-
-        if (O\isSome($option)) {
-            $out[] = $option->value;
-        } else {
-            return O\none;
-        }
-    }
-
-    return O\some($out);
-}
-
 // endregion: terminal ops
