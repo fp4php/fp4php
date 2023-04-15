@@ -18,6 +18,16 @@ function pipe(mixed $a, callable $head, callable ...$tail): mixed
 }
 
 /**
+ * @template A
+ * @param A $value
+ * @return A
+ */
+function id(mixed $value): mixed
+{
+    return $value;
+}
+
+/**
  * @psalm-return null
  */
 function constNull(): mixed
