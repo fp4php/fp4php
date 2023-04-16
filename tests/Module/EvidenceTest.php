@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Fp4\PHP\Test\Module;
 
 use ArrayObject;
-use Fp4\PHP\Module\Evidence;
+use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use SplFixedArray;
 use stdClass;
 
 use function Fp4\PHP\Module\Functions\pipe;
@@ -41,7 +42,7 @@ final class EvidenceTest extends TestCase
     {
         assertEquals(
             $expected,
-            pipe($value, Evidence\proveInt(...)),
+            pipe($value, Ev\proveInt(...)),
         );
     }
 
@@ -68,7 +69,7 @@ final class EvidenceTest extends TestCase
     {
         assertEquals(
             $expected,
-            pipe($value, Evidence\proveFloat(...)),
+            pipe($value, Ev\proveFloat(...)),
         );
     }
 
@@ -95,7 +96,7 @@ final class EvidenceTest extends TestCase
     {
         assertEquals(
             $expected,
-            pipe($value, Evidence\proveString(...)),
+            pipe($value, Ev\proveString(...)),
         );
     }
 
@@ -119,7 +120,7 @@ final class EvidenceTest extends TestCase
     {
         assertEquals(
             $expected,
-            pipe($value, Evidence\proveNonEmptyString(...)),
+            pipe($value, Ev\proveNonEmptyString(...)),
         );
     }
 
@@ -143,7 +144,7 @@ final class EvidenceTest extends TestCase
     {
         assertEquals(
             $expected,
-            pipe($value, Evidence\proveBool(...)),
+            pipe($value, Ev\proveBool(...)),
         );
     }
 
@@ -167,7 +168,7 @@ final class EvidenceTest extends TestCase
     {
         assertEquals(
             $expected,
-            pipe($value, Evidence\proveNull(...)),
+            pipe($value, Ev\proveNull(...)),
         );
     }
 
@@ -189,7 +190,7 @@ final class EvidenceTest extends TestCase
     {
         assertEquals(
             $expected,
-            pipe($value, Evidence\proveObject(...)),
+            pipe($value, Ev\proveObject(...)),
         );
     }
 
@@ -210,31 +211,31 @@ final class EvidenceTest extends TestCase
     {
         assertEquals(
             O\some(new stdClass()),
-            pipe(new stdClass(), Evidence\proveOf(stdClass::class)),
+            pipe(new stdClass(), Ev\proveOf(stdClass::class)),
         );
 
         assertEquals(
             O\some(new ArrayObject()),
-            pipe(new ArrayObject(), Evidence\proveOf(ArrayObject::class)),
+            pipe(new ArrayObject(), Ev\proveOf(ArrayObject::class)),
         );
 
         assertEquals(
             O\none,
-            pipe(1, Evidence\proveOf(ArrayObject::class)),
+            pipe(1, Ev\proveOf(ArrayObject::class)),
         );
 
         assertEquals(
             O\none,
-            pipe(new stdClass(), Evidence\proveOf(ArrayObject::class)),
+            pipe(new stdClass(), Ev\proveOf(ArrayObject::class)),
         );
     }
 
     #[Test]
     public static function proveUnion(): void
     {
-        $number = Evidence\proveUnion([
-            Evidence\proveInt(...),
-            Evidence\proveFloat(...),
+        $number = Ev\proveUnion([
+            Ev\proveInt(...),
+            Ev\proveFloat(...),
         ]);
 
         assertEquals(O\some(42), pipe(42, $number));
@@ -245,8 +246,25 @@ final class EvidenceTest extends TestCase
     #[Test]
     public static function proveList(): void
     {
-        $integers = Evidence\proveList(
-            Evidence\proveInt(...),
+        assertEquals(O\none, pipe(
+            ['fst' => 1, 'snd' => 2, 'thr' => 3],
+            Ev\proveList(...),
+        ));
+        assertEquals(O\some([]), pipe(
+            [],
+            Ev\proveList(...),
+        ));
+        assertEquals(O\some([1, 2, 3]), pipe(
+            [1, 2, 3],
+            Ev\proveList(...),
+        ));
+    }
+
+    #[Test]
+    public static function proveListOf(): void
+    {
+        $integers = Ev\proveListOf(
+            Ev\proveInt(...),
         );
 
         assertEquals(O\some([]), pipe([], $integers));
@@ -259,8 +277,25 @@ final class EvidenceTest extends TestCase
     #[Test]
     public static function proveNonEmptyList(): void
     {
-        $integers = Evidence\proveNonEmptyList(
-            Evidence\proveInt(...),
+        assertEquals(O\none, pipe(
+            ['fst' => 1, 'snd' => 2, 'thr' => 3],
+            Ev\proveNonEmptyList(...),
+        ));
+        assertEquals(O\none, pipe(
+            [],
+            Ev\proveNonEmptyList(...),
+        ));
+        assertEquals(O\some([1, 2, 3]), pipe(
+            [1, 2, 3],
+            Ev\proveNonEmptyList(...),
+        ));
+    }
+
+    #[Test]
+    public static function proveNonEmptyListOf(): void
+    {
+        $integers = Ev\proveNonEmptyListOf(
+            Ev\proveInt(...),
         );
 
         assertEquals(O\some([1, 2, 3]), pipe([1, 2, 3], $integers));
@@ -272,9 +307,30 @@ final class EvidenceTest extends TestCase
     #[Test]
     public static function proveArray(): void
     {
-        $numMap = Evidence\proveArray(
-            Evidence\proveString(...),
-            Evidence\proveInt(...),
+        assertEquals(O\none, pipe(
+            SplFixedArray::fromArray([1, 2, 3]),
+            Ev\proveArray(...),
+        ));
+        assertEquals(O\some(['fst' => 1, 'snd' => 2, 'thr' => 3]), pipe(
+            ['fst' => 1, 'snd' => 2, 'thr' => 3],
+            Ev\proveArray(...),
+        ));
+        assertEquals(O\some([]), pipe(
+            [],
+            Ev\proveArray(...),
+        ));
+        assertEquals(O\some([1, 2, 3]), pipe(
+            [1, 2, 3],
+            Ev\proveArray(...),
+        ));
+    }
+
+    #[Test]
+    public static function proveArrayOf(): void
+    {
+        $numMap = Ev\proveArrayOf(
+            Ev\proveString(...),
+            Ev\proveInt(...),
         );
 
         assertEquals(
@@ -289,9 +345,30 @@ final class EvidenceTest extends TestCase
     #[Test]
     public static function proveNonEmptyArray(): void
     {
-        $numMap = Evidence\proveNonEmptyArray(
-            Evidence\proveString(...),
-            Evidence\proveInt(...),
+        assertEquals(O\none, pipe(
+            SplFixedArray::fromArray([1, 2, 3]),
+            Ev\proveNonEmptyArray(...),
+        ));
+        assertEquals(O\none, pipe(
+            [],
+            Ev\proveNonEmptyArray(...),
+        ));
+        assertEquals(O\some(['fst' => 1, 'snd' => 2, 'thr' => 3]), pipe(
+            ['fst' => 1, 'snd' => 2, 'thr' => 3],
+            Ev\proveNonEmptyArray(...),
+        ));
+        assertEquals(O\some([1, 2, 3]), pipe(
+            [1, 2, 3],
+            Ev\proveNonEmptyArray(...),
+        ));
+    }
+
+    #[Test]
+    public static function proveNonEmptyArrayOf(): void
+    {
+        $numMap = Ev\proveNonEmptyArrayOf(
+            Ev\proveString(...),
+            Ev\proveInt(...),
         );
 
         assertEquals(

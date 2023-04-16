@@ -122,12 +122,24 @@ function proveUnion(array $evidences): Closure
 }
 
 /**
+ * @template V
+ * @param iterable<V> $iterable
+ * @return Option<list<V>>
+ */
+function proveList(iterable $iterable): Option
+{
+    return is_array($iterable) && array_is_list($iterable)
+        ? O\some($iterable)
+        : O\none;
+}
+
+/**
  * @template A
  *
  * @param callable(mixed): Option<A> $valueEvidence
  * @return Closure(mixed): Option<list<A>>
  */
-function proveList(callable $valueEvidence): Closure
+function proveListOf(callable $valueEvidence): Closure
 {
     return function (mixed $value) use ($valueEvidence) {
         if (!is_array($value) || !array_is_list($value)) {
@@ -152,31 +164,57 @@ function proveList(callable $valueEvidence): Closure
 }
 
 /**
+ * @template V
+ * @param iterable<V> $iterable
+ * @return Option<non-empty-list<V>>
+ */
+function proveNonEmptyList(iterable $iterable): Option
+{
+    return pipe(
+        proveList($iterable),
+        O\flatMap(fn (array $list) => $list !== [] ? O\some($list) : O\none),
+    );
+}
+
+/**
  * @template A
  *
  * @param callable(mixed): Option<A> $valueEvidence
  * @return Closure(mixed): Option<non-empty-list<A>>
  */
-function proveNonEmptyList(callable $valueEvidence): Closure
+function proveNonEmptyListOf(callable $valueEvidence): Closure
 {
     return fn (mixed $value) => pipe(
         $value,
-        proveList($valueEvidence),
-        O\flatMap(fn (array $list) => [] !== $list ? O\some($list) : O\none),
+        proveListOf($valueEvidence),
+        O\flatMap(fn ($list) => [] !== $list ? O\some($list) : O\none),
     );
+}
+
+/**
+ * @template K
+ * @template V
+ * @param iterable<K, V> $iterable
+ * @return Option<array<K, V>>
+ */
+function proveArray(iterable $iterable): Option
+{
+    return is_array($iterable)
+        ? O\some($iterable)
+        : O\none;
 }
 
 /**
  * @template K of array-key
  * @template A
  *
- * @param callable(mixed): Option<K> $keyEvidence
- * @param callable(mixed): Option<A> $valueEvidence
+ * @param callable(mixed): Option<K> $proveKey
+ * @param callable(mixed): Option<A> $proveValue
  * @return Closure(mixed): Option<array<K, A>>
  */
-function proveArray(callable $keyEvidence, callable $valueEvidence): Closure
+function proveArrayOf(callable $proveKey, callable $proveValue): Closure
 {
-    return function (mixed $value) use ($keyEvidence, $valueEvidence) {
+    return function (mixed $value) use ($proveKey, $proveValue) {
         if (!is_array($value)) {
             return O\none;
         }
@@ -185,8 +223,8 @@ function proveArray(callable $keyEvidence, callable $valueEvidence): Closure
 
         /** @var mixed $i */
         foreach ($value as $k => $i) {
-            $key = $keyEvidence($k);
-            $item = $valueEvidence($i);
+            $key = $proveKey($k);
+            $item = $proveValue($i);
 
             if (O\isSome($key) && O\isSome($item)) {
                 $array[$key->value] = $item->value;
@@ -200,18 +238,32 @@ function proveArray(callable $keyEvidence, callable $valueEvidence): Closure
 }
 
 /**
+ * @template K
+ * @template V
+ * @param iterable<K, V> $iterable
+ * @return Option<non-empty-array<K, V>>
+ */
+function proveNonEmptyArray(iterable $iterable): Option
+{
+    return pipe(
+        proveArray($iterable),
+        O\flatMap(fn ($array) => $array !== [] ? O\some($array) : O\none),
+    );
+}
+
+/**
  * @template K of array-key
  * @template A
  *
- * @param callable(mixed): Option<K> $keyEvidence
- * @param callable(mixed): Option<A> $valueEvidence
+ * @param callable(mixed): Option<K> $proveKey
+ * @param callable(mixed): Option<A> $proveValue
  * @return Closure(mixed): Option<non-empty-array<K, A>>
  */
-function proveNonEmptyArray(callable $keyEvidence, callable $valueEvidence): Closure
+function proveNonEmptyArrayOf(callable $proveKey, callable $proveValue): Closure
 {
     return fn (mixed $value) => pipe(
         $value,
-        proveArray($keyEvidence, $valueEvidence),
-        O\flatMap(fn (array $list) => [] !== $list ? O\some($list) : O\none),
+        proveArrayOf($proveKey, $proveValue),
+        O\flatMap(fn ($list) => [] !== $list ? O\some($list) : O\none),
     );
 }
