@@ -32,7 +32,7 @@ final class FromIterableCallWidening implements AfterExpressionAnalysisInterface
             O\filter(fn (FuncCall $c) => !$c->isFirstClassCallable()),
             O\flatMap(PsalmApi::$types->getExprType($event)),
             O\map(PsalmApi::$types->asNonLiteralType(...)),
-            O\tap(PsalmApi::$types->setType($event->getExpr(), $event)),
+            O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
             constNull(...),
         );
     }

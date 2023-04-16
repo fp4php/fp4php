@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\Option;
 
-use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\ArrayList as L;
+use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Expr\FuncCall;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
@@ -32,7 +32,7 @@ final class SomeCallWidening implements AfterExpressionAnalysisInterface
             O\filter(fn (FuncCall $c) => !$c->isFirstClassCallable()),
             O\flatMap(PsalmApi::$types->getExprType($event)),
             O\map(PsalmApi::$types->asNonLiteralType(...)),
-            O\tap(PsalmApi::$types->setType($event->getExpr(), $event)),
+            O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
             constNull(...),
         );
     }

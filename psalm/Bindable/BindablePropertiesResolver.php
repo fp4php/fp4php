@@ -42,7 +42,7 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
             O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
             O\flatMap(Ev\proveOf(TClosure::class)),
             O\flatMap(self::inferClosure(...)),
-            O\tap(PsalmApi::$types->setType($event->getExpr(), $event)),
+            O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
             O\map(constVoid(...)),
         );
     }

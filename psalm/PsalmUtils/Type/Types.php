@@ -20,22 +20,9 @@ use function Fp4\PHP\Module\Functions\pipe;
 final class Types
 {
     /**
-     * @return Closure(Expr): void
-     */
-    public function setExprType(Union|Atomic $type, MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
-    {
-        return function (Expr $expr) use ($type, $scope): void {
-            self::getNodeTypeProvider($scope)->setType(
-                node: $expr,
-                type: $type instanceof Atomic ? new Union([$type]) : $type,
-            );
-        };
-    }
-
-    /**
      * @return Closure(Union|Atomic): void
      */
-    public function setType(Expr $expr, MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
+    public function setExprType(Expr $expr, MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
         return function (Union|Atomic $type) use ($expr, $scope): void {
             self::getNodeTypeProvider($scope)->setType(
@@ -51,7 +38,8 @@ final class Types
     public function getExprType(MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
         return fn (Expr $expr) => pipe(
-            self::getNodeTypeProvider($scope)->getType($expr),
+            $expr,
+            self::getNodeTypeProvider($scope)->getType(...),
             O\fromNullable(...),
         );
     }
