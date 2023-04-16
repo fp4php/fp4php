@@ -8,6 +8,7 @@ use Closure;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Option;
 
+use function array_key_exists;
 use function in_array;
 
 // region: constructor
@@ -59,7 +60,7 @@ function fromLiteral(array $list): array
 /**
  * @template A
  * @template B
- * @template TIn of list<A>
+ * @template TIn of array<A>
  *
  * @param callable(A): B $callback
  * @return Closure(list<A>): list<B>
@@ -208,10 +209,21 @@ function contains(mixed $item): Closure
  */
 function first(array $list): Option
 {
-    $firstKey = array_key_first($list) ?? null;
+    return array_key_exists(0, $list)
+        ? O\some($list[0])
+        : O\none;
+}
 
-    return null !== $firstKey
-        ? O\some($list[$firstKey])
+/**
+ * @template A
+ *
+ * @param list<A> $list
+ * @return Option<A>
+ */
+function second(array $list): Option
+{
+    return array_key_exists(1, $list)
+        ? O\some($list[1])
         : O\none;
 }
 
