@@ -22,6 +22,23 @@
         <class name="PHPUnit\Framework\Exception"/>
         <class name="PHPUnit\Framework\ExpectationFailedException"/>
     </ignoreExceptions>
+    <issueHandlers>
+        <InternalClass>
+            <errorLevel type="suppress">
+                <directory name="psalm/PsalmUtils"/>
+            </errorLevel>
+        </InternalClass>
+        <InternalMethod>
+            <errorLevel type="suppress">
+                <directory name="psalm/PsalmUtils"/>
+            </errorLevel>
+        </InternalMethod>
+        <InternalProperty>
+            <errorLevel type="suppress">
+                <directory name="psalm/PsalmUtils"/>
+            </errorLevel>
+        </InternalProperty>
+    </issueHandlers>
     <plugins>
         <pluginClass class="Fp4\PHP\PsalmIntegration\Plugin"/>
     </plugins>

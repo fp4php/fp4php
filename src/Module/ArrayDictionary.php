@@ -64,7 +64,7 @@ function from(array $dictionary): array
  */
 function map(callable $callback): Closure
 {
-    return function (array $dictionary) use ($callback) {
+    return function(array $dictionary) use ($callback) {
         $out = [];
 
         foreach ($dictionary as $k => $v) {
@@ -91,7 +91,7 @@ function map(callable $callback): Closure
  */
 function mapKV(callable $callback): Closure
 {
-    return function (array $dictionary) use ($callback) {
+    return function(array $dictionary) use ($callback) {
         $out = [];
 
         foreach ($dictionary as $k => $v) {
@@ -118,7 +118,7 @@ function mapKV(callable $callback): Closure
  */
 function flatMap(callable $callback): Closure
 {
-    return function (array $dictionary) use ($callback) {
+    return function(array $dictionary) use ($callback) {
         $out = [];
 
         foreach ($dictionary as $nested) {
@@ -147,7 +147,7 @@ function flatMap(callable $callback): Closure
  */
 function flatMapKV(callable $callback): Closure
 {
-    return function (array $dictionary) use ($callback) {
+    return function(array $dictionary) use ($callback) {
         $out = [];
 
         foreach ($dictionary as $nestedK => $nestedV) {
@@ -168,7 +168,7 @@ function flatMapKV(callable $callback): Closure
  */
 function get(int|string $key): Closure
 {
-    return fn (array $dictionary) => O\fromNullable($dictionary[$key] ?? null);
+    return fn(array $dictionary) => O\fromNullable($dictionary[$key] ?? null);
 }
 
 /**
@@ -183,7 +183,7 @@ function get(int|string $key): Closure
  */
 function prepend(mixed $key, mixed $value): Closure
 {
-    return fn (array $dictionary) => [$key => $value, ...$dictionary];
+    return fn(array $dictionary) => [$key => $value, ...$dictionary];
 }
 
 /**
@@ -198,7 +198,7 @@ function prepend(mixed $key, mixed $value): Closure
  */
 function append(mixed $key, mixed $value): Closure
 {
-    return fn (array $dictionary) => [...$dictionary, $key => $value];
+    return fn(array $dictionary) => [...$dictionary, $key => $value];
 }
 
 // endregion: ops
@@ -236,7 +236,7 @@ function values(array $dictionary): array
  */
 function keyExists(string|int $key): Closure
 {
-    return fn (array $dictionary) => array_key_exists($key, $dictionary);
+    return fn(array $dictionary) => array_key_exists($key, $dictionary);
 }
 
 /**
@@ -255,7 +255,7 @@ function keyExists(string|int $key): Closure
  */
 function traverseOption(callable $callback): Closure
 {
-    return function (array $dictionary) use ($callback) {
+    return function(array $dictionary) use ($callback) {
         $out = [];
 
         foreach ($dictionary as $k => $v) {

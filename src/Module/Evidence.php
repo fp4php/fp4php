@@ -48,7 +48,7 @@ function proveNonEmptyString(mixed $value): Option
     return pipe(
         $value,
         proveString(...),
-        O\flatMap(fn (string $v) => '' !== $v ? O\some($v) : O\none),
+        O\flatMap(fn(string $v) => '' !== $v ? O\some($v) : O\none),
     );
 }
 
@@ -84,7 +84,7 @@ function proveObject(mixed $value): Option
  */
 function proveOf(string|array $fqcn, bool $invariant = false): Closure
 {
-    return function (mixed $value) use ($fqcn, $invariant) {
+    return function(mixed $value) use ($fqcn, $invariant) {
         if (!is_object($value)) {
             return O\none;
         }
@@ -108,7 +108,7 @@ function proveOf(string|array $fqcn, bool $invariant = false): Closure
  */
 function proveUnion(array $evidences): Closure
 {
-    return function (mixed $value) use ($evidences) {
+    return function(mixed $value) use ($evidences) {
         foreach ($evidences as $evidence) {
             $option = $evidence($value);
 
@@ -141,7 +141,7 @@ function proveList(iterable $iterable): Option
  */
 function proveListOf(callable $valueEvidence): Closure
 {
-    return function (mixed $value) use ($valueEvidence) {
+    return function(mixed $value) use ($valueEvidence) {
         if (!is_array($value) || !array_is_list($value)) {
             return O\none;
         }
@@ -172,7 +172,7 @@ function proveNonEmptyList(iterable $iterable): Option
 {
     return pipe(
         proveList($iterable),
-        O\flatMap(fn (array $list) => $list !== [] ? O\some($list) : O\none),
+        O\flatMap(fn(array $list) => [] !== $list ? O\some($list) : O\none),
     );
 }
 
@@ -184,10 +184,10 @@ function proveNonEmptyList(iterable $iterable): Option
  */
 function proveNonEmptyListOf(callable $valueEvidence): Closure
 {
-    return fn (mixed $value) => pipe(
+    return fn(mixed $value) => pipe(
         $value,
         proveListOf($valueEvidence),
-        O\flatMap(fn ($list) => [] !== $list ? O\some($list) : O\none),
+        O\flatMap(fn($list) => [] !== $list ? O\some($list) : O\none),
     );
 }
 
@@ -214,7 +214,7 @@ function proveArray(iterable $iterable): Option
  */
 function proveArrayOf(callable $proveKey, callable $proveValue): Closure
 {
-    return function (mixed $value) use ($proveKey, $proveValue) {
+    return function(mixed $value) use ($proveKey, $proveValue) {
         if (!is_array($value)) {
             return O\none;
         }
@@ -247,7 +247,7 @@ function proveNonEmptyArray(iterable $iterable): Option
 {
     return pipe(
         proveArray($iterable),
-        O\flatMap(fn ($array) => $array !== [] ? O\some($array) : O\none),
+        O\flatMap(fn($array) => [] !== $array ? O\some($array) : O\none),
     );
 }
 
@@ -261,9 +261,9 @@ function proveNonEmptyArray(iterable $iterable): Option
  */
 function proveNonEmptyArrayOf(callable $proveKey, callable $proveValue): Closure
 {
-    return fn (mixed $value) => pipe(
+    return fn(mixed $value) => pipe(
         $value,
         proveArrayOf($proveKey, $proveValue),
-        O\flatMap(fn ($list) => [] !== $list ? O\some($list) : O\none),
+        O\flatMap(fn($list) => [] !== $list ? O\some($list) : O\none),
     );
 }

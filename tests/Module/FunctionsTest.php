@@ -19,8 +19,8 @@ final class FunctionsTest extends TestCase
     {
         assertEquals(42, pipe(
             40,
-            fn (int $i) => $i - 1,
-            fn (int $i) => $i + 3,
+            fn(int $i) => $i - 1,
+            fn(int $i) => $i + 3,
         ));
     }
 

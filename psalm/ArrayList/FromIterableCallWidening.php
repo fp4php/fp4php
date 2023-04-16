@@ -25,11 +25,11 @@ final class FromIterableCallWidening implements AfterExpressionAnalysisInterface
         return pipe(
             $event->getExpr(),
             proveOf(FuncCall::class),
-            O\filter(fn (FuncCall $c) => pipe(
+            O\filter(fn(FuncCall $c) => pipe(
                 L\fromIterable([self::FROM, self::FROM_ITERABLE]),
                 L\contains($c->name->getAttribute('resolvedName')),
             )),
-            O\filter(fn (FuncCall $c) => !$c->isFirstClassCallable()),
+            O\filter(fn(FuncCall $c) => !$c->isFirstClassCallable()),
             O\flatMap(PsalmApi::$types->getExprType($event)),
             O\map(PsalmApi::$types->asNonLiteralType(...)),
             O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),

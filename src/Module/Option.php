@@ -74,6 +74,39 @@ function tryCatch(callable $callback): Option
     }
 }
 
+/**
+ * @template A
+ *
+ * @param Closure(): Option<A> $head
+ * @param Closure(): Option<A> ...$tail
+ * @return Option<A>
+ */
+function first(Closure $head, Closure ...$tail): Option
+{
+    foreach ([$head, ...$tail] as $option) {
+        $o = $option();
+
+        if (isSome($o)) {
+            return $o;
+        }
+    }
+
+    return none;
+}
+
+/**
+ * @template A
+ *
+ * @param callable(): A $some
+ * @return Option<A>
+ */
+function when(bool $cond, callable $some): Option
+{
+    return $cond
+        ? some($some())
+        : none;
+}
+
 // endregion: constructor
 
 // region: destructors
@@ -100,7 +133,7 @@ function getOrNull(Option $option): mixed
  */
 function getOrCall(callable $call): Closure
 {
-    return fn (Option $option) => isSome($option)
+    return fn(Option $option) => isSome($option)
         ? $option->value
         : $call();
 }
@@ -116,7 +149,7 @@ function getOrCall(callable $call): Closure
  */
 function fold(callable $ifNone, callable $ifSome): Closure
 {
-    return fn (Option $option) => isSome($option)
+    return fn(Option $option) => isSome($option)
         ? $ifSome($option->value)
         : $ifNone();
 }
@@ -162,7 +195,7 @@ function isNone(Option $option): bool
  */
 function map(callable $callback): Closure
 {
-    return fn (Option $option) => isSome($option)
+    return fn(Option $option) => isSome($option)
         ? some($callback($option->value))
         : none;
 }
@@ -175,7 +208,7 @@ function map(callable $callback): Closure
  */
 function tap(callable $callback): Closure
 {
-    return function (Option $option) use ($callback) {
+    return function(Option $option) use ($callback) {
         if (isSome($option)) {
             $callback($option->value);
 
@@ -195,7 +228,7 @@ function tap(callable $callback): Closure
  */
 function flatMap(callable $callback): Closure
 {
-    return fn (Option $option) => isSome($option)
+    return fn(Option $option) => isSome($option)
         ? $callback($option->value)
         : none;
 }
@@ -209,7 +242,7 @@ function flatMap(callable $callback): Closure
  */
 function orElse(callable $callback): Closure
 {
-    return fn (Option $option) => isSome($option)
+    return fn(Option $option) => isSome($option)
         ? some($option->value)
         : $callback();
 }
@@ -222,7 +255,7 @@ function orElse(callable $callback): Closure
  */
 function filter(callable $callback): Closure
 {
-    return fn (Option $a) => isSome($a) && $callback($a->value)
+    return fn(Option $a) => isSome($a) && $callback($a->value)
         ? some($a->value)
         : none;
 }
@@ -245,7 +278,7 @@ function bindable(): Option
  */
 function bind(Closure ...$params): Closure
 {
-    return function (Option $optionBindable) use ($params) {
+    return function(Option $optionBindable) use ($params) {
         if (isSome($optionBindable)) {
             $bindable = $optionBindable->value;
         } else {

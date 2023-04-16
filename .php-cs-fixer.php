@@ -51,6 +51,10 @@ return (new PhpCsFixer\Config())
             'import_functions' => true,
             'import_classes' => true,
         ],
+        'function_declaration' => [
+            'closure_fn_spacing' => 'none',
+            'closure_function_spacing' => 'none',
+        ],
         'ordered_imports' => ['imports_order' => ['class', 'function', 'const']],
         'phpdoc_add_missing_param_annotation' => ['only_untyped' => true],
         'phpdoc_align' => false,

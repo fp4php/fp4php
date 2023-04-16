@@ -46,7 +46,7 @@ final class PipeFunctionStorageProvider implements DynamicFunctionStorageProvide
 
         $storage->params = pipe(
             $pipeCallables,
-            L\mapKV(fn (int $offset, TCallable $callable) => self::createParam(
+            L\mapKV(fn(int $offset, TCallable $callable) => self::createParam(
                 name: "fn_{$offset}",
                 type: $callable,
             )),
@@ -59,13 +59,13 @@ final class PipeFunctionStorageProvider implements DynamicFunctionStorageProvide
         $storage->return_type = pipe(
             $pipeCallables,
             L\last(...),
-            O\map(fn (TCallable $fn) => $fn->return_type),
+            O\map(fn(TCallable $fn) => $fn->return_type),
             O\getOrNull(...),
         );
 
         $storage->templates = pipe(
             range(start: 1, end: $argsCount),
-            L\map(fn ($offset) => "T{$offset}"),
+            L\map(fn($offset) => "T{$offset}"),
             L\map($templates->createTemplate(...)),
         );
 
@@ -77,7 +77,7 @@ final class PipeFunctionStorageProvider implements DynamicFunctionStorageProvide
      */
     private static function createABCallable(DynamicTemplateProvider $templates): Closure
     {
-        return fn (int $offset) => new TCallable(
+        return fn(int $offset) => new TCallable(
             value: 'callable',
             params: [
                 self::createParam(

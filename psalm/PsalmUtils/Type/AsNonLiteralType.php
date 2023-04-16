@@ -33,7 +33,7 @@ final class AsNonLiteralType
     {
         return new Union(pipe(
             L\fromIterable($type->getAtomicTypes()),
-            L\map(fn (Type\Atomic $a) => match (true) {
+            L\map(fn(Type\Atomic $a) => match (true) {
                 $a instanceof TTrue, $a instanceof TFalse => new TBool(),
                 $a instanceof TLiteralClassString => new TClassString(),
                 $a instanceof TLiteralString => empty($a->value)

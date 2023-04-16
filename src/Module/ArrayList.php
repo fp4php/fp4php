@@ -71,7 +71,7 @@ function fromLiteral(array $list): array
  */
 function map(callable $callback): Closure
 {
-    return function (array $a) use ($callback) {
+    return function(array $a) use ($callback) {
         $b = [];
 
         foreach ($a as $v) {
@@ -97,7 +97,7 @@ function map(callable $callback): Closure
  */
 function mapKV(callable $callback): Closure
 {
-    return function (array $a) use ($callback) {
+    return function(array $a) use ($callback) {
         $b = [];
 
         foreach ($a as $k => $v) {
@@ -123,7 +123,7 @@ function mapKV(callable $callback): Closure
  */
 function flatMap(callable $callback): Closure
 {
-    return function (array $a) use ($callback) {
+    return function(array $a) use ($callback) {
         $b = [];
 
         foreach ($a as $v) {
@@ -151,7 +151,7 @@ function flatMap(callable $callback): Closure
  */
 function flatMapKV(callable $callback): Closure
 {
-    return function (array $a) use ($callback) {
+    return function(array $a) use ($callback) {
         $b = [];
 
         foreach ($a as $k => $v) {
@@ -173,7 +173,7 @@ function flatMapKV(callable $callback): Closure
  */
 function prepend(mixed $item): Closure
 {
-    return fn (array $list) => [$item, ...$list];
+    return fn(array $list) => [$item, ...$list];
 }
 
 /**
@@ -185,7 +185,7 @@ function prepend(mixed $item): Closure
  */
 function append(mixed $item): Closure
 {
-    return fn (array $list) => [...$list, $item];
+    return fn(array $list) => [...$list, $item];
 }
 
 // endregion: ops
@@ -197,7 +197,7 @@ function append(mixed $item): Closure
  */
 function contains(mixed $item): Closure
 {
-    return fn (array $list) => in_array($item, $list, strict: true);
+    return fn(array $list) => in_array($item, $list, strict: true);
 }
 
 /**
@@ -245,7 +245,7 @@ function last(array $list): Option
  */
 function traverseOption(callable $callback): Closure
 {
-    return function (array $list) use ($callback) {
+    return function(array $list) use ($callback) {
         $out = [];
 
         foreach ($list as $item) {

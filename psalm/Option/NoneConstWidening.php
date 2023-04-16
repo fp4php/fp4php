@@ -25,7 +25,7 @@ final class NoneConstWidening implements AfterExpressionAnalysisInterface
         return pipe(
             O\some($event->getExpr()),
             O\filter(self::isNoneFetch(...)),
-            O\map(fn () => self::optionNever()),
+            O\map(fn() => self::optionNever()),
             O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
             constNull(...),
         );

@@ -29,8 +29,8 @@ final class PropertyIsNotDefinedInScope extends CodeIssue
                 message: pipe(
                     D\keys($context),
                     self::findSimilarKeys($property),
-                    O\map(fn (string $similar) => "{$error} Did you mean {$similar}?"),
-                    O\getOrCall(fn () => $error),
+                    O\map(fn(string $similar) => "{$error} Did you mean {$similar}?"),
+                    O\getOrCall(fn() => $error),
                 ),
                 code_location: $event->getCodeLocation(),
             ),
@@ -45,7 +45,7 @@ final class PropertyIsNotDefinedInScope extends CodeIssue
      */
     private static function findSimilarKeys(string $actual): Closure
     {
-        return function (array $keys) use ($actual) {
+        return function(array $keys) use ($actual) {
             $similar = [];
 
             foreach ($keys as $key) {

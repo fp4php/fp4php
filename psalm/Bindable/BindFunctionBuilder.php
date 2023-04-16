@@ -56,12 +56,12 @@ final class BindFunctionBuilder
 
         return pipe(
             $args,
-            L\traverseOption(fn (Arg $arg) => pipe(
+            L\traverseOption(fn(Arg $arg) => pipe(
                 $arg->name,
                 Ev\proveOf(Identifier::class),
                 O\map($self->nextFunction(...)),
             )),
-            O\map(function (array $params) use ($self) {
+            O\map(function(array $params) use ($self) {
                 $storage = new DynamicFunctionStorage();
                 $storage->params = $params;
                 $storage->templates = pipe(

@@ -37,7 +37,7 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
         return pipe(
             O\some($event->getExpr()),
             O\flatMap(Ev\proveOf(FuncCall::class)),
-            O\filter(fn (FuncCall $call) => 'Fp4\PHP\Module\Option\bind' === $call->name->getAttribute('resolvedName')),
+            O\filter(fn(FuncCall $call) => 'Fp4\PHP\Module\Option\bind' === $call->name->getAttribute('resolvedName')),
             O\flatMap(PsalmApi::$types->getExprType($event)),
             O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
             O\flatMap(Ev\proveOf(TClosure::class)),
@@ -56,14 +56,14 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
             O\fromNullable($returnType->return_type),
             O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
             O\flatMap(Ev\proveOf(TGenericObject::class)),
-            O\filter(fn (TGenericObject $option) => Option::class === $option->value),
-            O\flatMap(fn (TGenericObject $option) => pipe(
+            O\filter(fn(TGenericObject $option) => Option::class === $option->value),
+            O\flatMap(fn(TGenericObject $option) => pipe(
                 $option->type_params,
                 L\first(...),
             )),
             O\flatMap(BindableFoldType::for(...)),
             O\flatMap(Ev\proveNonEmptyArray(...)),
-            O\map(fn (array $properties) => $returnType->replace(
+            O\map(fn(array $properties) => $returnType->replace(
                 params: $returnType->params,
                 return_type: self::returnType($properties),
             )),

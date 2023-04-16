@@ -36,8 +36,8 @@ final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInt
 
         return pipe(
             O\some($event->getStmt()),
-            O\filter(fn () => Bindable::class !== $context->self),
-            O\filter(fn () => '__get' === $event->getMethodNameLowercase()),
+            O\filter(fn() => Bindable::class !== $context->self),
+            O\filter(fn() => '__get' === $event->getMethodNameLowercase()),
             O\flatMap(Ev\proveOf(MethodCall::class)),
             O\flatMap(self::getReturnType($event)),
             O\getOrNull(...),
@@ -49,12 +49,12 @@ final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInt
      */
     private static function getReturnType(MethodReturnTypeProviderEvent $event): Closure
     {
-        return fn (MethodCall $call) => pipe(
+        return fn(MethodCall $call) => pipe(
             L\fromIterable($call->getArgs()),
             L\first(...),
-            O\map(fn (Arg $arg) => $arg->value),
+            O\map(fn(Arg $arg) => $arg->value),
             O\flatMap(Ev\proveOf(VirtualString::class)),
-            O\flatMap(fn (VirtualString $string) => pipe(
+            O\flatMap(fn(VirtualString $string) => pipe(
                 $call->var,
                 PsalmApi::$types->getExprType($event),
                 O\flatMap(BindableFoldType::for(...)),
@@ -68,10 +68,10 @@ final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInt
      */
     private static function getPropertyFromBindableScope(string $property, MethodReturnTypeProviderEvent $event): Closure
     {
-        return fn (array $context) => pipe(
+        return fn(array $context) => pipe(
             $context,
             D\get($property),
-            O\orElse(fn () => PropertyIsNotDefinedInScope::raise($context, $property, $event)),
+            O\orElse(fn() => PropertyIsNotDefinedInScope::raise($context, $property, $event)),
         );
     }
 }

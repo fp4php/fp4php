@@ -13,6 +13,7 @@ use Fp4\PHP\PsalmIntegration\Option\SomeCallWidening;
 use Fp4\PHP\PsalmIntegration\Pipe\PipeFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Types;
+use Psalm\Internal\Analyzer\ProjectAnalyzer;
 use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;
 use SimpleXMLElement;
@@ -22,6 +23,7 @@ final class Plugin implements PluginEntryPointInterface
     public function __invoke(RegistrationInterface $registration, ?SimpleXMLElement $config = null): void
     {
         PsalmApi::$types = new Types();
+        PsalmApi::$codebase = ProjectAnalyzer::$instance->getCodebase();
 
         if (class_exists(PipeFunctionStorageProvider::class)) {
             $registration->registerHooksFromClass(PipeFunctionStorageProvider::class);

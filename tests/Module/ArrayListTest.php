@@ -22,7 +22,7 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function fromIterable(): void
     {
-        $generator = function (): Generator {
+        $generator = function(): Generator {
             yield 1;
             yield 2;
             yield 3;
@@ -37,7 +37,7 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function map(): void
     {
-        $addOne = fn (int $i): int => $i + 1;
+        $addOne = fn(int $i): int => $i + 1;
 
         assertEquals([], pipe(
             L\from([]),
@@ -53,7 +53,7 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function mapKV(): void
     {
-        $joinWithIndex = fn (int $index, string $offset): string => "{$index}-{$offset}";
+        $joinWithIndex = fn(int $index, string $offset): string => "{$index}-{$offset}";
 
         assertEquals([], pipe(
             L\from([]),
@@ -69,7 +69,7 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function flatMap(): void
     {
-        $getSiblings = fn (int $i): array => [$i - 1, $i, $i + 1];
+        $getSiblings = fn(int $i): array => [$i - 1, $i, $i + 1];
 
         assertEquals([], pipe(
             L\from([]),
@@ -85,7 +85,7 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function flatMapKV(): void
     {
-        $getSiblingsAtPosition = fn (int $position, int $i): array => [
+        $getSiblingsAtPosition = fn(int $position, int $i): array => [
             sprintf('%s:[%s]', $position, $i - 1),
             sprintf('%s:[%s]', $position, $i),
             sprintf('%s:[%s]', $position, $i + 1),
@@ -171,7 +171,7 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function traverseOption(): void
     {
-        $proveEven = fn (int $i): Option => 0 === $i % 2
+        $proveEven = fn(int $i): Option => 0 === $i % 2
             ? O\some($i)
             : O\none;
 

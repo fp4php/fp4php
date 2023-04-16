@@ -24,7 +24,7 @@ final class Types
      */
     public function setExprType(Expr $expr, MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
-        return function (Union|Atomic $type) use ($expr, $scope): void {
+        return function(Union|Atomic $type) use ($expr, $scope): void {
             self::getNodeTypeProvider($scope)->setType(
                 node: $expr,
                 type: $type instanceof Atomic ? new Union([$type]) : $type,
@@ -37,7 +37,7 @@ final class Types
      */
     public function getExprType(MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
     {
-        return fn (Expr $expr) => pipe(
+        return fn(Expr $expr) => pipe(
             $expr,
             self::getNodeTypeProvider($scope)->getType(...),
             O\fromNullable(...),
@@ -56,8 +56,8 @@ final class Types
     {
         return pipe(
             O\some($type),
-            O\filter(fn (Union $t) => $t->isSingle()),
-            O\map(fn (Union $t) => $t->getSingleAtomic()),
+            O\filter(fn(Union $t) => $t->isSingle()),
+            O\map(fn(Union $t) => $t->getSingleAtomic()),
         );
     }
 
