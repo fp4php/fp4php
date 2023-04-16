@@ -62,26 +62,29 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
                 L\first(...),
             )),
             O\flatMap(BindableFoldType::for(...)),
-            O\flatMap(function (array $properties) use ($returnType) {
-                if ([] === $properties) {
-                    return O\none;
-                }
-
-                $bindable = new Union([
-                    new TGenericObject(Bindable::class, [
-                        new Union([
-                            new TObjectWithProperties($properties),
-                        ]),
-                    ]),
-                ]);
-
-                return O\some($returnType->replace(
-                    params: $returnType->params,
-                    return_type: new Union([
-                        new TGenericObject(Option::class, [$bindable]),
-                    ]),
-                ));
-            }),
+            O\flatMap(Ev\proveNonEmptyArray(...)),
+            O\map(fn (array $properties) => $returnType->replace(
+                params: $returnType->params,
+                return_type: self::returnType($properties),
+            )),
         );
+    }
+
+    /**
+     * @param non-empty-array<Union> $properties
+     */
+    private static function returnType(array $properties): Union
+    {
+        $bindable = new Union([
+            new TGenericObject(Bindable::class, [
+                new Union([
+                    new TObjectWithProperties($properties),
+                ]),
+            ]),
+        ]);
+
+        return new Union([
+            new TGenericObject(Option::class, [$bindable]),
+        ]);
     }
 }
