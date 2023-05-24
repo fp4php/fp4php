@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\Module\String;
+namespace Fp4\PHP\Module\Str;
 
 use Closure;
 

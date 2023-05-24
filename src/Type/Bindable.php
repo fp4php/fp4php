@@ -15,6 +15,9 @@ final class Bindable
     ) {
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function __get(string $name): mixed
     {
         return $this->context[$name];

@@ -12,6 +12,9 @@ use function Fp4\PHP\Module\Functions\pipe;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNull;
 
+/**
+ * @api
+ */
 final class FunctionsTest extends TestCase
 {
     #[Test]

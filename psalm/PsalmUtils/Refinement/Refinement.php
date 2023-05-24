@@ -8,7 +8,7 @@ use Fp4\PHP\Module\ArrayDictionary as D;
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
-use Fp4\PHP\Module\String as S;
+use Fp4\PHP\Module\Str as S;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;

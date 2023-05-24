@@ -26,7 +26,7 @@ use Psalm\Node\Expr\VirtualMethodCall;
 use Psalm\Node\Expr\VirtualStaticCall;
 use Psalm\Node\Expr\VirtualVariable;
 use Psalm\Node\VirtualArg;
-use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
+use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\StatementsSource;
 use Psalm\Type\Atomic\TNamedObject;
 
@@ -37,37 +37,53 @@ final class FirstClassCallablePredicate
     /**
      * @return Option<VirtualArrowFunction>
      */
-    public static function mock(FunctionReturnTypeProviderEvent $e): Option
+    public static function mock(AfterExpressionAnalysisEvent $e): Option
     {
-        $variables = preg_match('/^.+kv$/mi', $e->getFunctionId())
-            ? [new VirtualVariable('key'), new VirtualVariable('val')]
-            : [new VirtualVariable('val')];
-
         return pipe(
-            L\fromIterable($e->getCallArgs()),
-            L\first(...),
-            O\map(fn(Arg $arg) => $arg->value),
-            O\flatMap(Ev\proveOf([FuncCall::class, MethodCall::class, StaticCall::class])),
-            O\filter(fn(CallLike $call) => $call->isFirstClassCallable()),
-            O\flatMap(fn(CallLike $call) => self::createVirtualCall(
-                source: $e->getStatementsSource(),
-                context: $e->getContext(),
-                originalCall: $call,
-                fakeVariables: $variables,
-            )),
-            O\map(fn(CallLike $call) => new VirtualArrowFunction([
-                'expr' => $call,
-                'params' => pipe(
-                    $variables,
-                    L\map(fn(VirtualVariable $var) => new Param($var)),
+            O\bindable(),
+            O\bind(
+                variables: fn() => pipe(
+                    $e->getExpr(),
+                    Ev\proveOf(FuncCall::class),
+                    O\map(fn(FuncCall $call): mixed => $call->name->getAttribute('resolvedName')),
+                    O\flatMap(Ev\proveString(...)),
+                    O\map(fn($functionId) => preg_match('/^.+kv$/mi', $functionId)
+                        ? [new VirtualVariable('key'), new VirtualVariable('val')]
+                        : [new VirtualVariable('val')]),
                 ),
-            ])),
+                callArgs: fn() => pipe(
+                    $e->getExpr(),
+                    Ev\proveOf(FuncCall::class),
+                    O\filter(fn(FuncCall $call) => !$call->isFirstClassCallable()),
+                    O\map(fn(FuncCall $call) => $call->getArgs()),
+                ),
+            ),
+            O\flatMap(fn($i) => pipe(
+                L\fromIterable($i->callArgs),
+                L\first(...),
+                O\map(fn(Arg $arg) => $arg->value),
+                O\flatMap(Ev\proveOf([FuncCall::class, MethodCall::class, StaticCall::class])),
+                O\filter(fn(CallLike $call) => $call->isFirstClassCallable()),
+                O\flatMap(fn(CallLike $call) => self::createVirtualCall(
+                    source: $e->getStatementsSource(),
+                    context: $e->getContext(),
+                    originalCall: $call,
+                    fakeVariables: $i->variables,
+                )),
+                O\map(fn(CallLike $call) => new VirtualArrowFunction([
+                    'expr' => $call,
+                    'params' => pipe(
+                        $i->variables,
+                        L\map(fn(VirtualVariable $var) => new Param($var)),
+                    ),
+                ])),
+            )),
         );
     }
 
     /**
      * @param FuncCall|MethodCall|StaticCall $originalCall
-     * @param VirtualVariable $fakeVariables
+     * @param list<VirtualVariable> $fakeVariables
      * @return Option<CallLike>
      */
     private static function createVirtualCall(
@@ -89,7 +105,7 @@ final class FirstClassCallablePredicate
                         Ev\proveOf(Name::class),
                         O\map(fn(Name $name) => $name->toString()),
                     )),
-                    Ev\proveNonEmptyString(...),
+                    O\flatMap(Ev\proveNonEmptyString(...)),
                 )),
             ),
             // or from MethodCall

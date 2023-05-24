@@ -17,7 +17,6 @@ use Fp4\PHP\Type\Option;
 use Psalm\Internal\Analyzer\StatementsAnalyzer;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
-use Psalm\Storage\FunctionLikeParameter;
 use Psalm\Type;
 use Psalm\Type\Atomic\TClosure;
 use Psalm\Type\Atomic\TGenericObject;
@@ -33,9 +32,16 @@ final class FilterRefinement implements AfterExpressionAnalysisInterface
         return pipe(
             O\bindable(),
             O\bind(
-                predicate: fn() => PredicateExtractor::extract($event, 'Fp4\PHP\Module\Option\filter'),
-                typeParams: fn() => self::getOptionTypeParam($event),
                 source: fn() => pipe($event->getStatementsSource(), Ev\proveOf(StatementsAnalyzer::class)),
+                predicate: fn() => pipe($event, PredicateExtractor::extract('Fp4\PHP\Module\Option\filter')),
+                typeParams: fn() => pipe($event, RefineTypeParams::from(
+                    extractKey: fn() => O\some(Type::getNever()),
+                    extractValue: fn(Union $closureReturnType) => pipe(
+                        $closureReturnType,
+                        PsalmApi::$types->asSingleGenericObjectOf(Option::class),
+                        O\flatMap(fn(TGenericObject $option) => L\first($option->type_params)),
+                    ),
+                )),
             ),
             O\map(fn($i) => new Refinement(
                 type: RefinementType::Value,
@@ -59,8 +65,7 @@ final class FilterRefinement implements AfterExpressionAnalysisInterface
         return fn(RefineTypeParams $typeParams) => pipe(
             $event->getExpr(),
             PsalmApi::$types->getExprType($event),
-            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
-            O\flatMap(Ev\proveOf(TClosure::class)),
+            O\flatMap(PsalmApi::$types->asSingleAtomicOf(TClosure::class)),
             O\map(fn(TClosure $closure) => $closure->replace(
                 params: $closure->params,
                 return_type: new Union([
@@ -68,30 +73,6 @@ final class FilterRefinement implements AfterExpressionAnalysisInterface
                 ]),
             )),
             O\map(PsalmApi::$types->asUnion(...)),
-        );
-    }
-
-    /**
-     * @return Option<RefineTypeParams>
-     */
-    private static function getOptionTypeParam(AfterExpressionAnalysisEvent $event): Option
-    {
-        return pipe(
-            $event->getExpr(),
-            PsalmApi::$types->getExprType($event),
-            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
-            O\flatMap(Ev\proveOf(TClosure::class)),
-            O\flatMap(fn(TClosure $closure) => O\fromNullable($closure->params)),
-            O\flatMap(fn(array $params) => L\first($params)),
-            O\flatMap(fn(FunctionLikeParameter $param) => O\fromNullable($param->type)),
-            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
-            O\flatMap(Ev\proveOf(TGenericObject::class)),
-            O\filter(fn(TGenericObject $option) => Option::class === $option->value),
-            O\flatMap(fn(TGenericObject $option) => L\first($option->type_params)),
-            O\map(fn(Union $type) => new RefineTypeParams(
-                key: Type::getNever(),
-                value: $type,
-            )),
         );
     }
 }

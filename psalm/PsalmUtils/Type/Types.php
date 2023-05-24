@@ -6,6 +6,8 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\Evidence as Ev;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
 use Psalm\NodeTypeProvider;
@@ -58,6 +60,35 @@ final class Types
             O\some($type),
             O\filter(fn(Union $t) => $t->isSingle()),
             O\map(fn(Union $t) => $t->getSingleAtomic()),
+        );
+    }
+
+    /**
+     * @template TAtomic of Atomic
+     *
+     * @param class-string<TAtomic>|non-empty-list<class-string<TAtomic>> $class
+     * @return Closure(Union): Option<TAtomic>
+     */
+    public function asSingleAtomicOf(string|array $class): Closure
+    {
+        return fn(Union $type) => pipe(
+            $type,
+            PsalmApi::$types->asSingleAtomic(...),
+            O\flatMap(Ev\proveOf($class)),
+        );
+    }
+
+    /**
+     * @param class-string|non-empty-list<class-string> $class
+     * @return Closure(Union): Option<Atomic\TGenericObject>
+     */
+    public function asSingleGenericObjectOf(string|array $class): Closure
+    {
+        return fn(Union $type) => pipe(
+            $type,
+            PsalmApi::$types->asSingleAtomic(...),
+            O\flatMap(Ev\proveOf(Atomic\TGenericObject::class)),
+            O\filter(fn(Atomic\TGenericObject $object) => in_array($object->value, is_array($class) ? $class : [$class], true)),
         );
     }
 
