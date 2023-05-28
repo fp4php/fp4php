@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration;
 
-use Fp4\PHP\PsalmIntegration\ArrayList\FromIterableCallWidening;
+use Fp4\PHP\PsalmIntegration\ArrayList\FromCallWidening;
+use Fp4\PHP\PsalmIntegration\ArrayList\FromLiteralCallValidator;
 use Fp4\PHP\PsalmIntegration\Bindable\BindableGetReturnTypeProvider;
 use Fp4\PHP\PsalmIntegration\Bindable\BindablePropertiesResolver;
 use Fp4\PHP\PsalmIntegration\Bindable\BindFunctionStorageProvider;
@@ -32,8 +33,8 @@ final class Plugin implements PluginEntryPointInterface
         if (class_exists(NoneConstWidening::class)) {
             $registration->registerHooksFromClass(NoneConstWidening::class);
         }
-        if (class_exists(FromIterableCallWidening::class)) {
-            $registration->registerHooksFromClass(FromIterableCallWidening::class);
+        if (class_exists(FromCallWidening::class)) {
+            $registration->registerHooksFromClass(FromCallWidening::class);
         }
         if (class_exists(SomeCallWidening::class)) {
             $registration->registerHooksFromClass(SomeCallWidening::class);

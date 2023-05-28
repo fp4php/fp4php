@@ -15,7 +15,7 @@ use function Fp4\PHP\Module\Evidence\proveOf;
 use function Fp4\PHP\Module\Functions\constNull;
 use function Fp4\PHP\Module\Functions\pipe;
 
-final class FromIterableCallWidening implements AfterExpressionAnalysisInterface
+final class FromCallWidening implements AfterExpressionAnalysisInterface
 {
     private const FROM = 'Fp4\PHP\Module\ArrayList\from';
     private const FROM_ITERABLE = 'Fp4\PHP\Module\ArrayList\fromIterable';
