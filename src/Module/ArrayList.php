@@ -14,6 +14,29 @@ use function in_array;
 // region: constructor
 
 /**
+ * Iterates over `iterable<A>` to create `list<A>`.
+ *
+ * ```php
+ * use Fp4\PHP\Module\ArrayList as L;
+ *
+ * use function Fp4\PHP\Module\Functions\pipe;
+ * use function PHPUnit\Framework\assertSame;
+ *
+ * $gen = function(): iterable {
+ *     yield 1;
+ *     yield 2;
+ *     yield 3;
+ * };
+ *
+ * assertSame([1, 2, 3], pipe(
+ *     $gen(),
+ *     L\fromIterable(...),
+ * ));
+ * ```
+ *
+ * The inferred type will be widened, just like for {@see \Fp4\PHP\Module\ArrayList\from}
+ * This behavior is possible due to the next plugin hook: {@see \Fp4\PHP\PsalmIntegration\ArrayList\FromCallWidening}.
+ *
  * @template A
  *
  * @param iterable<A> $iter
@@ -24,14 +47,18 @@ function fromIterable(iterable $iter): array
 {
     $list = [];
 
-    foreach ($iter as $item) {
-        $list[] = $item;
+    foreach ($iter as $a) {
+        $list[] = $a;
     }
 
     return $list;
 }
 
 /**
+ * Helps to infer a widen type from the type A.
+ * i.e. for expression `from([1, 2, 3])` Psalm will infer `list<int>`, not list<1|2|3> or list{1, 2, 3}.
+ * This behavior is possible due to the next plugin hook: {@see \Fp4\PHP\PsalmIntegration\ArrayList\FromCallWidening}.
+ *
  * @template A of list<mixed>
  *
  * @param A $list
@@ -43,6 +70,11 @@ function from(array $list): array
 }
 
 /**
+ * Helps to infer a literal type from the type A.
+ * i.e. for expression `fromLiteral([1, 2, 3])` Psalm will infer `list{1, 2, 3}`, not `list<1|2|3>` or `list<int>`.
+ * If `$list` has non-literal type Psalm triggers `InvalidArgument` issue.
+ * This behavior is possible due to the next plugin hook: {@see \Fp4\PHP\PsalmIntegration\ArrayList\FromLiteralCallValidator}.
+ *
  * @template A of list<mixed>
  *
  * @param A $list
@@ -58,6 +90,20 @@ function fromLiteral(array $list): array
 // region: ops
 
 /**
+ * Applies the $callback to each element of the iterable<A> and collects the results in a new list<B>.
+ *
+ * ```php
+ * use Fp4\PHP\Module\ArrayList as L;
+ *
+ * use function Fp4\PHP\Module\Functions\pipe;
+ * use function PHPUnit\Framework\assertSame;
+ *
+ * assertSame(['1', '2', '3'], pipe(
+ *     L\from([1, 2, 3]),
+ *     L\map(fn(int $num) => (string) $num),
+ * ));
+ * ```
+ *
  * @template A
  * @template B
  * @template TIn of iterable<A>
@@ -73,13 +119,13 @@ function fromLiteral(array $list): array
 function map(callable $callback): Closure
 {
     return function(iterable $iter) use ($callback) {
-        $b = [];
+        $list = [];
 
-        foreach ($iter as $v) {
-            $b[] = $callback($v);
+        foreach ($iter as $a) {
+            $list[] = $callback($a);
         }
 
-        return $b;
+        return $list;
     };
 }
 
@@ -99,13 +145,13 @@ function map(callable $callback): Closure
 function mapKV(callable $callback): Closure
 {
     return function(iterable $iter) use ($callback) {
-        $b = [];
+        $list = [];
 
-        foreach ($iter as $k => $v) {
-            $b[] = $callback($k, $v);
+        foreach ($iter as $key => $a) {
+            $list[] = $callback($key, $a);
         }
 
-        return $b;
+        return $list;
     };
 }
 
@@ -125,15 +171,15 @@ function mapKV(callable $callback): Closure
 function flatMap(callable $callback): Closure
 {
     return function(iterable $iter) use ($callback) {
-        $b = [];
+        $list = [];
 
-        foreach ($iter as $v) {
-            foreach ($callback($v) as $nested) {
-                $b[] = $nested;
+        foreach ($iter as $a) {
+            foreach ($callback($a) as $b) {
+                $list[] = $b;
             }
         }
 
-        return $b;
+        return $list;
     };
 }
 
@@ -153,15 +199,15 @@ function flatMap(callable $callback): Closure
 function flatMapKV(callable $callback): Closure
 {
     return function(iterable $iter) use ($callback) {
-        $b = [];
+        $list = [];
 
-        foreach ($iter as $k => $v) {
-            foreach ($callback($k, $v) as $nested) {
-                $b[] = $nested;
+        foreach ($iter as $key => $a) {
+            foreach ($callback($key, $a) as $b) {
+                $list[] = $b;
             }
         }
 
-        return $b;
+        return $list;
     };
 }
 
@@ -169,19 +215,19 @@ function flatMapKV(callable $callback): Closure
  * @template A
  * @template B
  *
- * @param B $item
+ * @param B $value
  * @return Closure(iterable<A>): non-empty-list<A|B>
  */
-function prepend(mixed $item): Closure
+function prepend(mixed $value): Closure
 {
-    return function (iterable $iter) use ($item) {
-        $out = [$item];
+    return function (iterable $iter) use ($value) {
+        $list = [$value];
 
-        foreach ($iter as $item) {
-            $out[] = $item;
+        foreach ($iter as $a) {
+            $list[] = $a;
         }
 
-        return $out;
+        return $list;
     };
 }
 
@@ -189,21 +235,21 @@ function prepend(mixed $item): Closure
  * @template A
  * @template B
  *
- * @param B $item
+ * @param B $value
  * @return Closure(iterable<A>): non-empty-list<A|B>
  */
-function append(mixed $item): Closure
+function append(mixed $value): Closure
 {
-    return function (iterable $iter) use ($item) {
-        $out = [];
+    return function (iterable $iter) use ($value) {
+        $list = [];
 
-        foreach ($iter as $item) {
-            $out[] = $item;
+        foreach ($iter as $a) {
+            $list[] = $a;
         }
 
-        $out[] = $item;
+        $list[] = $value;
 
-        return $out;
+        return $list;
     };
 }
 
@@ -214,9 +260,9 @@ function append(mixed $item): Closure
 /**
  * @return Closure(list<mixed>): bool
  */
-function contains(mixed $item): Closure
+function contains(mixed $value): Closure
 {
-    return fn(array $list) => in_array($item, $list, strict: true);
+    return fn(array $list) => in_array($value, $list, strict: true);
 }
 
 /**
@@ -276,19 +322,19 @@ function last(array $list): Option
 function traverseOption(callable $callback): Closure
 {
     return function(iterable $iter) use ($callback) {
-        $out = [];
+        $list = [];
 
-        foreach ($iter as $item) {
-            $option = $callback($item);
+        foreach ($iter as $a) {
+            $b = $callback($a);
 
-            if (O\isSome($option)) {
-                $out[] = $option->value;
+            if (O\isSome($b)) {
+                $list[] = $b->value;
             } else {
                 return O\none;
             }
         }
 
-        return O\some($out);
+        return O\some($list);
     };
 }
 
