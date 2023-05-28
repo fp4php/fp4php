@@ -36,6 +36,9 @@ final class Plugin implements PluginEntryPointInterface
         if (class_exists(FromCallWidening::class)) {
             $registration->registerHooksFromClass(FromCallWidening::class);
         }
+        if (class_exists(FromLiteralCallValidator::class)) {
+            $registration->registerHooksFromClass(FromLiteralCallValidator::class);
+        }
         if (class_exists(SomeCallWidening::class)) {
             $registration->registerHooksFromClass(SomeCallWidening::class);
         }
