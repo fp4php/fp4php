@@ -220,7 +220,7 @@ function flatMapKV(callable $callback): Closure
  */
 function prepend(mixed $value): Closure
 {
-    return function (iterable $iter) use ($value) {
+    return function(iterable $iter) use ($value) {
         $list = [$value];
 
         foreach ($iter as $a) {
@@ -240,7 +240,7 @@ function prepend(mixed $value): Closure
  */
 function append(mixed $value): Closure
 {
-    return function (iterable $iter) use ($value) {
+    return function(iterable $iter) use ($value) {
         $list = [];
 
         foreach ($iter as $a) {
