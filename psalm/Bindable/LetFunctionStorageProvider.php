@@ -11,19 +11,19 @@ use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
 
 use function Fp4\PHP\Module\Functions\pipe;
 
-final class BindFunctionStorageProvider implements DynamicFunctionStorageProviderInterface
+final class LetFunctionStorageProvider implements DynamicFunctionStorageProviderInterface
 {
     public static function getFunctionIds(): array
     {
         return [
-            strtolower('Fp4\PHP\Module\Option\bind'),
+            strtolower('Fp4\PHP\Module\Option\let'),
         ];
     }
 
     public static function getFunctionStorage(DynamicFunctionStorageProviderEvent $event): ?DynamicFunctionStorage
     {
         return pipe(
-            BindableFunctionBuilder::buildStorage($event, BindLetType::BIND),
+            BindableFunctionBuilder::buildStorage($event, BindLetType::LET),
             O\getOrNull(...),
         );
     }

@@ -292,9 +292,9 @@ function bindable(): Option
  */
 function bind(Closure ...$params): Closure
 {
-    return function(Option $optionBindable) use ($params) {
-        if (isSome($optionBindable)) {
-            $bindable = $optionBindable->value;
+    return function(Option $context) use ($params) {
+        if (isSome($context)) {
+            $bindable = $context->value;
         } else {
             return none;
         }
@@ -307,6 +307,27 @@ function bind(Closure ...$params): Closure
             } else {
                 return none;
             }
+        }
+
+        return some($bindable);
+    };
+}
+
+/**
+ * @param Closure(Bindable): mixed ...$params
+ * @return Closure(Option<Bindable>): Option<Bindable>
+ */
+function let(Closure ...$params): Closure
+{
+    return function(Option $context) use ($params) {
+        if (isSome($context)) {
+            $bindable = $context->value;
+        } else {
+            return none;
+        }
+
+        foreach ($params as $key => $param) {
+            $bindable = $bindable->with((string) $key, $param($bindable));
         }
 
         return some($bindable);

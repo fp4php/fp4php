@@ -205,9 +205,9 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
-    public function bindable(): void
+    public function bind(): void
     {
-        assertEquals(O\some(42), pipe(
+        assertEquals(O\none, pipe(
             O\bindable(),
             O\bind(a: fn() => O\some(31)),
             O\bind(b: fn() => O\none),
@@ -228,7 +228,30 @@ final class OptionTest extends TestCase
                 a: fn() => O\some(30),
                 b: fn() => O\some(10),
             ),
-            O\bind(c: fn($i) => O\some($i->a + $i->b)),
+            O\bind(c: fn($i) => O\some($i->a + $i->b + 2)),
+            O\map(fn($i) => $i->c),
+        ));
+    }
+
+    #[Test]
+    public function let(): void
+    {
+        assertEquals(O\some(42), pipe(
+            O\bindable(),
+            O\let(
+                a: fn() => 31,
+                b: fn() => 11,
+            ),
+            O\map(fn($i) => $i->a + $i->b),
+        ));
+
+        assertEquals(O\some(42), pipe(
+            O\bindable(),
+            O\let(
+                a: fn() => 30,
+                b: fn() => 10,
+            ),
+            O\let(c: fn($i) => $i->a + $i->b + 2),
             O\map(fn($i) => $i->c),
         ));
     }

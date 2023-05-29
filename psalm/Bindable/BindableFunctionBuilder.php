@@ -27,7 +27,7 @@ use Psalm\Type\Union;
 
 use function Fp4\PHP\Module\Functions\pipe;
 
-final class BindFunctionBuilder
+final class BindableFunctionBuilder
 {
     private readonly TTemplateParam $boundTemplate;
 
@@ -36,15 +36,17 @@ final class BindFunctionBuilder
 
     private int $functionOffset = 0;
 
-    public function __construct(private readonly DynamicTemplateProvider $templates)
-    {
+    private function __construct(
+        private readonly BindLetType $type,
+        private readonly DynamicTemplateProvider $templates,
+    ) {
         $this->boundTemplate = $templates->createTemplate('TBound', Type::getObject());
     }
 
     /**
      * @return Option<DynamicFunctionStorage>
      */
-    public static function buildStorage(DynamicFunctionStorageProviderEvent $event): Option
+    public static function buildStorage(DynamicFunctionStorageProviderEvent $event, BindLetType $type): Option
     {
         $args = $event->getArgs();
 
@@ -52,7 +54,7 @@ final class BindFunctionBuilder
             return O\none;
         }
 
-        $self = new self($event->getTemplateProvider());
+        $self = new self($type, $event->getTemplateProvider());
 
         return pipe(
             $args,
@@ -91,11 +93,14 @@ final class BindFunctionBuilder
                             is_optional: false,
                         ),
                     ],
-                    return_type: new Union([
-                        new TGenericObject(Option::class, [
-                            $this->nextReturnTypeFor($property->toString()),
+                    return_type: match ($this->type) {
+                        BindLetType::BIND => new Union([
+                            new TGenericObject(Option::class, [
+                                $this->nextReturnTypeFor($property->toString()),
+                            ]),
                         ]),
-                    ]),
+                        BindLetType::LET => $this->nextReturnTypeFor($property->toString()),
+                    },
                 ),
             ]),
             is_optional: false,

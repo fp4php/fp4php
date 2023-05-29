@@ -37,7 +37,10 @@ final class BindablePropertiesResolver implements AfterExpressionAnalysisInterfa
         return pipe(
             O\some($event->getExpr()),
             O\flatMap(Ev\proveOf(FuncCall::class)),
-            O\filter(fn(FuncCall $call) => 'Fp4\PHP\Module\Option\bind' === $call->name->getAttribute('resolvedName')),
+            O\filter(fn(FuncCall $call) => pipe(
+                L\from(['Fp4\PHP\Module\Option\bind', 'Fp4\PHP\Module\Option\let']),
+                L\contains($call->name->getAttribute('resolvedName')),
+            )),
             O\flatMap(PsalmApi::$types->getExprType($event)),
             O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
             O\flatMap(Ev\proveOf(TClosure::class)),

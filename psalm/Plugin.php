@@ -9,6 +9,7 @@ use Fp4\PHP\PsalmIntegration\ArrayList\FromLiteralCallValidator;
 use Fp4\PHP\PsalmIntegration\Bindable\BindableGetReturnTypeProvider;
 use Fp4\PHP\PsalmIntegration\Bindable\BindablePropertiesResolver;
 use Fp4\PHP\PsalmIntegration\Bindable\BindFunctionStorageProvider;
+use Fp4\PHP\PsalmIntegration\Bindable\LetFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\Option\FilterRefinement;
 use Fp4\PHP\PsalmIntegration\Option\NoneConstWidening;
 use Fp4\PHP\PsalmIntegration\Option\SomeCallWidening;
@@ -44,6 +45,9 @@ final class Plugin implements PluginEntryPointInterface
         }
         if (class_exists(BindFunctionStorageProvider::class)) {
             $registration->registerHooksFromClass(BindFunctionStorageProvider::class);
+        }
+        if (class_exists(LetFunctionStorageProvider::class)) {
+            $registration->registerHooksFromClass(LetFunctionStorageProvider::class);
         }
         if (class_exists(BindablePropertiesResolver::class)) {
             $registration->registerHooksFromClass(BindablePropertiesResolver::class);
