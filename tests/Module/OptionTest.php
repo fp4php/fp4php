@@ -203,4 +203,33 @@ final class OptionTest extends TestCase
             O\getOrNull(...),
         ));
     }
+
+    #[Test]
+    public function bindable(): void
+    {
+        assertEquals(O\some(42), pipe(
+            O\bindable(),
+            O\bind(a: fn() => O\some(31)),
+            O\bind(b: fn() => O\none),
+        ));
+
+        assertEquals(O\some(42), pipe(
+            O\bindable(),
+            O\bind(
+                a: fn() => O\some(31),
+                b: fn() => O\some(11),
+            ),
+            O\map(fn($i) => $i->a + $i->b),
+        ));
+
+        assertEquals(O\some(42), pipe(
+            O\bindable(),
+            O\bind(
+                a: fn() => O\some(30),
+                b: fn() => O\some(10),
+            ),
+            O\bind(c: fn($i) => O\some($i->a + $i->b)),
+            O\map(fn($i) => $i->c),
+        ));
+    }
 }
