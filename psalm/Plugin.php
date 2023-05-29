@@ -14,6 +14,9 @@ use Fp4\PHP\PsalmIntegration\Option\FilterRefinement;
 use Fp4\PHP\PsalmIntegration\Option\NoneConstWidening;
 use Fp4\PHP\PsalmIntegration\Option\SomeCallWidening;
 use Fp4\PHP\PsalmIntegration\Pipe\PipeFunctionStorageProvider;
+use Fp4\PHP\PsalmIntegration\Psalm\DumpTypeHandler;
+use Fp4\PHP\PsalmIntegration\Psalm\ExpectTypeHandler;
+use Fp4\PHP\PsalmIntegration\Psalm\SuppressIssueHandler;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Types;
 use Psalm\Internal\Analyzer\ProjectAnalyzer;
@@ -57,6 +60,15 @@ final class Plugin implements PluginEntryPointInterface
         }
         if (class_exists(FilterRefinement::class)) {
             $registration->registerHooksFromClass(FilterRefinement::class);
+        }
+        if (class_exists(DumpTypeHandler::class)) {
+            $registration->registerHooksFromClass(DumpTypeHandler::class);
+        }
+        if (class_exists(ExpectTypeHandler::class)) {
+            $registration->registerHooksFromClass(ExpectTypeHandler::class);
+        }
+        if (class_exists(SuppressIssueHandler::class)) {
+            $registration->registerHooksFromClass(SuppressIssueHandler::class);
         }
     }
 }

@@ -132,6 +132,33 @@ function map(callable $callback): Closure
 /**
  * @template A
  * @template B
+ * @template TIn of iterable<A>
+ *
+ * @param callable(A): void $callback
+ * @return Closure(iterable<A>): list<A>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? non-empty-list<A>
+ *         : list<A>
+ * ))
+ */
+function tap(callable $callback): Closure
+{
+    return function(iterable $iter) use ($callback) {
+        $list = [];
+
+        foreach ($iter as $a) {
+            $callback($a);
+            $list[] = $a;
+        }
+
+        return $list;
+    };
+}
+
+/**
+ * @template A
+ * @template B
  * @template TIn of iterable<int, A>
  *
  * @param callable(int, A): B $callback
@@ -204,6 +231,27 @@ function flatMapKV(callable $callback): Closure
         foreach ($iter as $key => $a) {
             foreach ($callback($key, $a) as $b) {
                 $list[] = $b;
+            }
+        }
+
+        return $list;
+    };
+}
+
+/**
+ * @template A
+ *
+ * @param callable(A): bool $callback
+ * @return Closure(list<A>): list<A>
+ */
+function filter(callable $callback): Closure
+{
+    return function(iterable $iter) use ($callback) {
+        $list = [];
+
+        foreach ($iter as $item) {
+            if ($callback($item)) {
+                $list[] = $item;
             }
         }
 
@@ -288,6 +336,19 @@ function second(array $list): Option
 {
     return array_key_exists(1, $list)
         ? O\some($list[1])
+        : O\none;
+}
+
+/**
+ * @template A
+ *
+ * @param list<A> $list
+ * @return Option<A>
+ */
+function third(array $list): Option
+{
+    return array_key_exists(2, $list)
+        ? O\some($list[2])
         : O\none;
 }
 

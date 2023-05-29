@@ -28,7 +28,8 @@
       "src/Module/Functions.php",
       "src/Module/Option.php",
       "src/Module/ArrayList.php",
-      "src/Module/ArrayDictionary.php"
+      "src/Module/ArrayDictionary.php",
+      "src/Module/Psalm.php"
     ]
   },
   "autoload-dev": {

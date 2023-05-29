@@ -51,6 +51,11 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function filter(): void
+    {
+    }
+
+    #[Test]
     public static function mapKV(): void
     {
         $joinWithIndex = fn(int $index, string $offset): string => "{$index}-{$offset}";
