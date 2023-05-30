@@ -8,10 +8,13 @@ use Closure;
 
 /**
  * @template TIn of string
+ * @template TPrefix of string
+ *
+ * @param TPrefix $prefix
  * @psalm-return (Closure(TIn): (
- *     TIn is non-empty-string
- *         ? non-empty-string
- *         : string
+ *     TIn is non-empty-string ? non-empty-string :
+ *     TPrefix is non-empty-string ? non-empty-string :
+ *     string
  * ))
  */
 function prepend(string $prefix): Closure
