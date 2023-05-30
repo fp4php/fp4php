@@ -73,7 +73,7 @@ final class FirstClassCallablePredicate
                 O\map(fn(CallLike $call) => new VirtualArrowFunction([
                     'expr' => $call,
                     'params' => pipe(
-                        $i->variables,
+                        L\from($i->variables),
                         L\map(fn(VirtualVariable $var) => new Param($var)),
                     ),
                 ])),

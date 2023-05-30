@@ -90,7 +90,7 @@ function fromLiteral(array $list): array
 // region: ops
 
 /**
- * Applies the $callback to each element of the iterable<A> and collects the results in a new list<B>.
+ * Applies the $callback to each element of the list<A> and collects the results in a new list<B>.
  *
  * ```php
  * use Fp4\PHP\Module\ArrayList as L;
@@ -106,10 +106,10 @@ function fromLiteral(array $list): array
  *
  * @template A
  * @template B
- * @template TIn of iterable<A>
+ * @template TIn of list<A>
  *
  * @param callable(A): B $callback
- * @return Closure(iterable<A>): list<B>
+ * @return Closure(list<A>): list<B>
  * @psalm-return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<B>
@@ -118,24 +118,24 @@ function fromLiteral(array $list): array
  */
 function map(callable $callback): Closure
 {
-    return function(iterable $iter) use ($callback) {
-        $list = [];
+    return function(array $list) use ($callback) {
+        $out = [];
 
-        foreach ($iter as $a) {
-            $list[] = $callback($a);
+        foreach ($list as $a) {
+            $out[] = $callback($a);
         }
 
-        return $list;
+        return $out;
     };
 }
 
 /**
  * @template A
  * @template B
- * @template TIn of iterable<A>
+ * @template TIn of list<A>
  *
  * @param callable(A): void $callback
- * @return Closure(iterable<A>): list<A>
+ * @return Closure(list<A>): list<A>
  * @psalm-return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<A>
@@ -144,12 +144,9 @@ function map(callable $callback): Closure
  */
 function tap(callable $callback): Closure
 {
-    return function(iterable $iter) use ($callback) {
-        $list = [];
-
-        foreach ($iter as $a) {
+    return function(array $list) use ($callback) {
+        foreach ($list as $a) {
             $callback($a);
-            $list[] = $a;
         }
 
         return $list;
@@ -159,10 +156,10 @@ function tap(callable $callback): Closure
 /**
  * @template A
  * @template B
- * @template TIn of iterable<int, A>
+ * @template TIn of list<A>
  *
  * @param callable(int, A): B $callback
- * @return Closure(iterable<int, A>): list<B>
+ * @return Closure(list<A>): list<B>
  * @psalm-return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<B>
@@ -171,24 +168,24 @@ function tap(callable $callback): Closure
  */
 function mapKV(callable $callback): Closure
 {
-    return function(iterable $iter) use ($callback) {
-        $list = [];
+    return function(array $list) use ($callback) {
+        $out = [];
 
-        foreach ($iter as $key => $a) {
-            $list[] = $callback($key, $a);
+        foreach ($list as $key => $a) {
+            $out[] = $callback($key, $a);
         }
 
-        return $list;
+        return $out;
     };
 }
 
 /**
  * @template A
  * @template B
- * @template TIn of iterable<A>
+ * @template TIn of list<A>
  *
  * @param callable(A): list<B> $callback
- * @return Closure(iterable<A>): list<B>
+ * @return Closure(list<A>): list<B>
  * @psalm-return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<B>
@@ -197,26 +194,26 @@ function mapKV(callable $callback): Closure
  */
 function flatMap(callable $callback): Closure
 {
-    return function(iterable $iter) use ($callback) {
-        $list = [];
+    return function(array $list) use ($callback) {
+        $out = [];
 
-        foreach ($iter as $a) {
+        foreach ($list as $a) {
             foreach ($callback($a) as $b) {
-                $list[] = $b;
+                $out[] = $b;
             }
         }
 
-        return $list;
+        return $out;
     };
 }
 
 /**
  * @template A
  * @template B
- * @template TIn of iterable<int, A>
+ * @template TIn of list<A>
  *
  * @param callable(int, A): list<B> $callback
- * @return Closure(iterable<int, A>): list<B>
+ * @return Closure(list<A>): list<B>
  * @psalm-return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<B>
@@ -225,16 +222,16 @@ function flatMap(callable $callback): Closure
  */
 function flatMapKV(callable $callback): Closure
 {
-    return function(iterable $iter) use ($callback) {
-        $list = [];
+    return function(array $list) use ($callback) {
+        $out = [];
 
-        foreach ($iter as $key => $a) {
+        foreach ($list as $key => $a) {
             foreach ($callback($key, $a) as $b) {
-                $list[] = $b;
+                $out[] = $b;
             }
         }
 
-        return $list;
+        return $out;
     };
 }
 
@@ -246,16 +243,16 @@ function flatMapKV(callable $callback): Closure
  */
 function filter(callable $callback): Closure
 {
-    return function(iterable $iter) use ($callback) {
-        $list = [];
+    return function(array $list) use ($callback) {
+        $out = [];
 
-        foreach ($iter as $item) {
+        foreach ($list as $item) {
             if ($callback($item)) {
-                $list[] = $item;
+                $out[] = $item;
             }
         }
 
-        return $list;
+        return $out;
     };
 }
 
@@ -264,18 +261,18 @@ function filter(callable $callback): Closure
  * @template B
  *
  * @param B $value
- * @return Closure(iterable<A>): non-empty-list<A|B>
+ * @return Closure(list<A>): non-empty-list<A|B>
  */
 function prepend(mixed $value): Closure
 {
-    return function(iterable $iter) use ($value) {
-        $list = [$value];
+    return function(array $list) use ($value) {
+        $out = [$value];
 
-        foreach ($iter as $a) {
-            $list[] = $a;
+        foreach ($list as $a) {
+            $out[] = $a;
         }
 
-        return $list;
+        return $out;
     };
 }
 
@@ -284,20 +281,20 @@ function prepend(mixed $value): Closure
  * @template B
  *
  * @param B $value
- * @return Closure(iterable<A>): non-empty-list<A|B>
+ * @return Closure(list<A>): non-empty-list<A|B>
  */
 function append(mixed $value): Closure
 {
-    return function(iterable $iter) use ($value) {
-        $list = [];
+    return function(array $list) use ($value) {
+        $out = [];
 
-        foreach ($iter as $a) {
-            $list[] = $a;
+        foreach ($list as $a) {
+            $out[] = $a;
         }
 
-        $list[] = $value;
+        $out[] = $value;
 
-        return $list;
+        return $out;
     };
 }
 
@@ -370,10 +367,10 @@ function last(array $list): Option
 /**
  * @template A
  * @template B
- * @template TIn of iterable<A>
+ * @template TIn of list<A>
  *
  * @param callable(A): Option<B> $callback
- * @return Closure(iterable<A>): Option<list<B>>
+ * @return Closure(list<A>): Option<list<B>>
  * @psalm-return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? Option<non-empty-list<B>>
@@ -382,20 +379,20 @@ function last(array $list): Option
  */
 function traverseOption(callable $callback): Closure
 {
-    return function(iterable $iter) use ($callback) {
-        $list = [];
+    return function(array $list) use ($callback) {
+        $out = [];
 
-        foreach ($iter as $a) {
+        foreach ($list as $a) {
             $b = $callback($a);
 
             if (O\isSome($b)) {
-                $list[] = $b->value;
+                $out[] = $b->value;
             } else {
                 return O\none;
             }
         }
 
-        return O\some($list);
+        return O\some($out);
     };
 }
 
