@@ -99,16 +99,16 @@ final class Refinement
     private static function getKeyArgumentFromPredicate(self $refinement): Option
     {
         return pipe(
-            O\when(
-                RefinementType::KeyValue === $refinement->type,
-                fn() => pipe($refinement->predicate->getParams(), L\fromIterable(...)),
-            ),
+            O\when(RefinementType::KeyValue === $refinement->type, fn() => pipe(
+                $refinement->predicate->getParams(),
+                L\fromIterable(...),
+            )),
             O\flatMap(L\first(...)),
             O\map(fn(Param $param) => $param->var),
-            pipe(Ev\proveOf(Variable::class), O\flatMap(...)),
+            O\flatMap(Ev\proveOf(Variable::class)),
             O\map(fn(Variable $v) => $v->name),
-            pipe(Ev\proveString(...), O\flatMap(...)),
-            pipe(S\prepend('$'), O\map(...)),
+            O\flatMap(Ev\proveString(...)),
+            O\map(S\prepend('$')),
         );
     }
 
@@ -123,9 +123,9 @@ final class Refinement
             O\some(...),
             O\flatMap(L\last(...)),
             O\map(fn(Param $param) => $param->var),
-            pipe(Ev\proveOf(Variable::class), O\flatMap(...)),
+            O\flatMap(Ev\proveOf(Variable::class)),
             O\flatMap(fn(Variable $variable) => Ev\proveString($variable->name)),
-            pipe(S\prepend('$'), O\map(...)),
+            O\map(S\prepend('$')),
         );
     }
 
@@ -140,7 +140,7 @@ final class Refinement
             O\flatMap(fn($stmts) => pipe(
                 L\fromIterable($stmts),
                 L\first(...),
-                pipe(Ev\proveOf(Return_::class), O\flatMap(...)),
+                O\flatMap(Ev\proveOf(Return_::class)),
                 O\flatMap(fn(Return_ $return) => O\fromNullable($return->expr)),
             )),
         );
