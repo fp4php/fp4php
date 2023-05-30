@@ -261,11 +261,11 @@ function traverseOption(callable $callback): Closure
         foreach ($dictionary as $k => $v) {
             $option = $callback($v);
 
-            if (O\isSome($option)) {
-                $out[$k] = $option->value;
-            } else {
+            if (O\isNone($option)) {
                 return O\none;
             }
+
+            $out[$k] = $option->value;
         }
 
         return O\some($out);
@@ -276,9 +276,9 @@ function traverseOption(callable $callback): Closure
  * @template K of array-key
  * @template A
  *
- * @param array<K, (Closure(): Option<A>) | Option<A>> $dictionary
+ * @param array<K, Option<A>> $dictionary
  * @return Option<array<K, A>>
- * @psalm-return ($dictionary is non-empty-array<K, (Closure(): Option<A>) | Option<A>>
+ * @psalm-return ($dictionary is non-empty-array<K, Option<A>>
  *     ? Option<non-empty-array<K, A>>
  *     : Option<array<K, A>>)
  */
@@ -287,15 +287,11 @@ function sequenceOption(array $dictionary): Option
     $out = [];
 
     foreach ($dictionary as $k => $v) {
-        if (!$v instanceof Option) {
-            $v = $v();
-        }
-
-        if (O\isSome($v)) {
-            $out[$k] = $v->value;
-        } else {
+        if (O\isNone($v)) {
             return O\none;
         }
+
+        $out[$k] = $v->value;
     }
 
     return O\some($out);

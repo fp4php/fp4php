@@ -177,7 +177,6 @@ function fold(callable $ifNone, callable $ifSome): Closure
  *
  * @param Option<A> $option
  * @psalm-assert-if-true Some<A> $option
- * @psalm-assert-if-false None $option
  */
 function isSome(Option $option): bool
 {
@@ -189,7 +188,6 @@ function isSome(Option $option): bool
  *
  * @param Option<A> $option
  * @psalm-assert-if-true None $option
- * @psalm-assert-if-false Some<A> $option
  */
 function isNone(Option $option): bool
 {
@@ -293,20 +291,20 @@ function bindable(): Option
 function bind(Closure ...$params): Closure
 {
     return function(Option $context) use ($params) {
-        if (isSome($context)) {
-            $bindable = $context->value;
-        } else {
+        if (isNone($context)) {
             return none;
         }
+
+        $bindable = $context->value;
 
         foreach ($params as $key => $param) {
             $result = $param($bindable);
 
-            if (isSome($result)) {
-                $bindable = $bindable->with((string) $key, $result->value);
-            } else {
+            if (isNone($result)) {
                 return none;
             }
+
+            $bindable = $bindable->with((string) $key, $result->value);
         }
 
         return some($bindable);
@@ -320,11 +318,11 @@ function bind(Closure ...$params): Closure
 function let(Closure ...$params): Closure
 {
     return function(Option $context) use ($params) {
-        if (isSome($context)) {
-            $bindable = $context->value;
-        } else {
+        if (isNone($context)) {
             return none;
         }
+
+        $bindable = $context->value;
 
         foreach ($params as $key => $param) {
             $bindable = $bindable->with((string) $key, $param($bindable));

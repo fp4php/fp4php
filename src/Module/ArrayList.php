@@ -385,11 +385,11 @@ function traverseOption(callable $callback): Closure
         foreach ($list as $a) {
             $b = $callback($a);
 
-            if (O\isSome($b)) {
-                $out[] = $b->value;
-            } else {
+            if (O\isNone($b)) {
                 return O\none;
             }
+
+            $out[] = $b->value;
         }
 
         return O\some($out);
