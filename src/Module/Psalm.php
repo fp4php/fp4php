@@ -21,7 +21,7 @@ function dumpType(mixed $expr): mixed
  *
  * @psalm-suppress UnusedParam
  */
-function assertType(mixed $expr, string $type): mixed
+function assertType(string $type, mixed $expr): mixed
 {
     return $expr;
 }
