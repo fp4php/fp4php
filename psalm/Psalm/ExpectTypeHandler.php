@@ -37,15 +37,9 @@ final class ExpectTypeHandler implements FunctionReturnTypeProviderInterface
         return pipe(
             O\bindable(),
             O\bind(
-                exprType: fn() => pipe(
-                    $event->getCallArgs(),
-                    L\first(...),
-                    O\map(fn(Arg $arg) => $arg->value),
-                    O\flatMap(PsalmApi::$types->getExprType($source)),
-                ),
                 expectedType: fn() => pipe(
                     $event->getCallArgs(),
-                    L\second(...),
+                    L\first(...),
                     O\map(fn(Arg $arg) => $arg->value),
                     O\flatMap(PsalmApi::$types->getExprType($source)),
                     O\flatMap(PsalmApi::$types->asSingleAtomicOf(TLiteralString::class)),
@@ -57,6 +51,12 @@ final class ExpectTypeHandler implements FunctionReturnTypeProviderInterface
                             ),
                         ),
                     )),
+                ),
+                exprType: fn() => pipe(
+                    $event->getCallArgs(),
+                    L\second(...),
+                    O\map(fn(Arg $arg) => $arg->value),
+                    O\flatMap(PsalmApi::$types->getExprType($source)),
                 ),
             ),
             O\filter(fn($i) => $i->exprType->getId() !== $i->expectedType->getId()),
