@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\Test\Module;
 
+use ArrayObject;
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Option;
-use Generator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 use function Fp4\PHP\Module\Functions\pipe;
 use function PHPUnit\Framework\assertEquals;
@@ -20,18 +21,33 @@ use function PHPUnit\Framework\assertEquals;
 final class ArrayListTest extends TestCase
 {
     #[Test]
+    public static function from(): void
+    {
+        $actual = L\from([1, 2, 3]);
+        /** @psalm-check-type-exact $actual = non-empty-list<int> */;
+
+        assertEquals([1, 2, 3], $actual);
+    }
+
+    #[Test]
+    public static function fromLiteral(): void
+    {
+        $actual = L\fromLiteral([1, 2, 3]);
+        /** @psalm-check-type-exact $actual = list{1, 2, 3} */;
+
+        assertEquals([1, 2, 3], $actual);
+    }
+
+    #[Test]
     public static function fromIterable(): void
     {
-        $generator = function(): Generator {
-            yield 1;
-            yield 2;
-            yield 3;
-        };
+        $iterable = new ArrayObject([1, 2, 3]);
+        /** @psalm-check-type-exact $iterable = ArrayObject<int<0, 2>, 1|2|3> */;
 
-        assertEquals(
-            [1, 2, 3],
-            L\fromIterable($generator()),
-        );
+        $actual = L\fromIterable($iterable);
+        /** @psalm-check-type-exact $actual = list<int> */;
+
+        assertEquals([1, 2, 3], $actual);
     }
 
     #[Test]
@@ -53,6 +69,34 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function filter(): void
     {
+        assertEquals([], pipe(
+            L\from([]),
+            L\filter(fn(int $num) => 0 !== $num % 2),
+        ));
+
+        assertEquals([2, 4, 6, 8], pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filter(fn($num) => 0 === $num % 2),
+        ));
+
+        assertEquals([1, 3, 5, 7], pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filter(fn($num) => 0 !== $num % 2),
+        ));
+    }
+
+    #[Test]
+    public function tap(): void
+    {
+        $expected = (object) ['key-1' => 1, 'key-2' => 2, 'key-3' => 3];
+        $toMutate = new stdClass();
+
+        assertEquals([1, 2, 3], pipe(
+            L\from([1, 2, 3]),
+            L\tap(fn($num) => $toMutate->{"key-{$num}"} = $num),
+        ));
+
+        assertEquals($expected, $toMutate);
     }
 
     #[Test]
@@ -170,6 +214,59 @@ final class ArrayListTest extends TestCase
         assertEquals(O\some(1), pipe(
             L\from([1, 2, 3]),
             L\first(...),
+        ));
+    }
+
+    #[Test]
+    public static function second(): void
+    {
+        assertEquals(O\none, pipe(
+            L\from([]),
+            L\second(...),
+        ));
+
+        assertEquals(O\none, pipe(
+            L\from([1]),
+            L\second(...),
+        ));
+
+        assertEquals(O\some(2), pipe(
+            L\from([1, 2]),
+            L\second(...),
+        ));
+
+        assertEquals(O\some(2), pipe(
+            L\from([1, 2, 3]),
+            L\second(...),
+        ));
+    }
+
+    #[Test]
+    public static function third(): void
+    {
+        assertEquals(O\none, pipe(
+            L\from([]),
+            L\third(...),
+        ));
+
+        assertEquals(O\none, pipe(
+            L\from([1]),
+            L\third(...),
+        ));
+
+        assertEquals(O\none, pipe(
+            L\from([1, 2]),
+            L\third(...),
+        ));
+
+        assertEquals(O\some(3), pipe(
+            L\from([1, 2, 3]),
+            L\third(...),
+        ));
+
+        assertEquals(O\some(3), pipe(
+            L\from([1, 2, 3, 4]),
+            L\third(...),
         ));
     }
 
