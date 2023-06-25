@@ -24,8 +24,7 @@ final class ArrayListTest extends TestCase
     public static function from(): void
     {
         $actual = L\from([1, 2, 3]);
-        /** @psalm-check-type-exact $actual = non-empty-list<int> */;
-
+        /** @psalm-check-type-exact $actual = non-empty-list<int> */
         assertEquals([1, 2, 3], $actual);
     }
 
@@ -33,8 +32,7 @@ final class ArrayListTest extends TestCase
     public static function fromLiteral(): void
     {
         $actual = L\fromLiteral([1, 2, 3]);
-        /** @psalm-check-type-exact $actual = list{1, 2, 3} */;
-
+        /** @psalm-check-type-exact $actual = list{1, 2, 3} */
         assertEquals([1, 2, 3], $actual);
     }
 
@@ -42,11 +40,9 @@ final class ArrayListTest extends TestCase
     public static function fromIterable(): void
     {
         $iterable = new ArrayObject([1, 2, 3]);
-        /** @psalm-check-type-exact $iterable = ArrayObject<int<0, 2>, 1|2|3> */;
-
+        /** @psalm-check-type-exact $iterable = ArrayObject<int<0, 2>, 1|2|3> */
         $actual = L\fromIterable($iterable);
-        /** @psalm-check-type-exact $actual = list<int> */;
-
+        /** @psalm-check-type-exact $actual = list<int> */
         assertEquals([1, 2, 3], $actual);
     }
 

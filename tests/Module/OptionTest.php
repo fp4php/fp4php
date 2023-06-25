@@ -27,8 +27,7 @@ final class OptionTest extends TestCase
     public static function some(): void
     {
         $option = O\some(42);
-        /** @psalm-check-type-exact $option = \Fp4\PHP\Type\Option<int> */;
-
+        /** @psalm-check-type-exact $option = \Fp4\PHP\Type\Option<int> */
         assertInstanceOf(Some::class, $option);
         assertEquals(42, pipe(
             $option,
@@ -51,11 +50,9 @@ final class OptionTest extends TestCase
     public static function fromLiteral(): void
     {
         $fortyTwo = O\fromLiteral(42);
-        /** @psalm-check-type-exact $fortyTwo = \Fp4\PHP\Type\Option<42> */;
-
+        /** @psalm-check-type-exact $fortyTwo = \Fp4\PHP\Type\Option<42> */
         $null = O\fromLiteral(null);
-        /** @psalm-check-type-exact $null = \Fp4\PHP\Type\Option<null> */;
-
+        /** @psalm-check-type-exact $null = \Fp4\PHP\Type\Option<null> */
         assertEquals(O\some(42), $fortyTwo);
         assertEquals(O\some(null), $null);
     }
@@ -64,11 +61,9 @@ final class OptionTest extends TestCase
     public static function fromNullableLiteral(): void
     {
         $fortyTwo = O\fromNullableLiteral(42);
-        /** @psalm-check-type-exact $fortyTwo = \Fp4\PHP\Type\Option<42> */;
-
+        /** @psalm-check-type-exact $fortyTwo = \Fp4\PHP\Type\Option<42> */
         $none = O\fromNullableLiteral(null);
-        /** @psalm-check-type-exact $none = \Fp4\PHP\Type\None */;
-
+        /** @psalm-check-type-exact $none = \Fp4\PHP\Type\None */
         assertEquals(O\some(42), $fortyTwo);
         assertEquals(O\none, $none);
     }
@@ -77,11 +72,9 @@ final class OptionTest extends TestCase
     public static function fromNullable(): void
     {
         $num = O\fromNullable(42);
-        /** @psalm-check-type-exact $num = \Fp4\PHP\Type\Option<int> */;
-
+        /** @psalm-check-type-exact $num = \Fp4\PHP\Type\Option<int> */
         $none = O\fromNullable(null);
-        /** @psalm-check-type-exact $none = \Fp4\PHP\Type\None */;
-
+        /** @psalm-check-type-exact $none = \Fp4\PHP\Type\None */
         assertEquals(O\some(42), $num);
         assertEquals(O\none, $none);
     }
@@ -270,24 +263,24 @@ final class OptionTest extends TestCase
     public static function first(): void
     {
         assertEquals(O\none, O\first(
-            fn () => O\none,
+            fn() => O\none,
         ));
 
         assertEquals(O\none, O\first(
-            fn () => O\none,
-            fn () => O\none,
+            fn() => O\none,
+            fn() => O\none,
         ));
 
         assertEquals(O\some(42), O\first(
-            fn () => O\none,
-            fn () => O\some(42),
-            fn () => O\some(42),
+            fn() => O\none,
+            fn() => O\some(42),
+            fn() => O\some(42),
         ));
 
         assertEquals(O\some(42), O\first(
-            fn () => O\none,
-            fn () => O\none,
-            fn () => O\some(42),
+            fn() => O\none,
+            fn() => O\none,
+            fn() => O\some(42),
         ));
     }
 
