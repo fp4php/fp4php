@@ -8,6 +8,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function Fp4\PHP\Module\Functions\constNull;
+use function Fp4\PHP\Module\Functions\constVoid;
+use function Fp4\PHP\Module\Functions\id;
 use function Fp4\PHP\Module\Functions\pipe;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNull;
@@ -31,5 +33,17 @@ final class FunctionsTest extends TestCase
     public static function constNull(): void
     {
         assertNull(constNull());
+    }
+
+    #[Test]
+    public static function constVoid(): void
+    {
+        assertNull(constVoid());
+    }
+
+    #[Test]
+    public static function id(): void
+    {
+        assertEquals(42, id(42));
     }
 }
