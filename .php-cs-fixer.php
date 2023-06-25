@@ -61,6 +61,7 @@ return (new PhpCsFixer\Config())
         'phpdoc_separation' => false,
         'phpdoc_to_comment' => false,
         'phpdoc_types_order' => false,
+        'no_empty_statement' => false,
         'trailing_comma_in_multiline' => ['after_heredoc' => true, 'elements' => ['arrays', 'arguments', 'parameters']],
         'yoda_style' => ['equal' => true, 'identical' => true, 'less_and_greater' => false],
     ])
