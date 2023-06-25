@@ -41,7 +41,7 @@ const none = new None();
  * @template A
  *
  * @param A|null $value
- * @return Option<A>
+ * @return ($value is null ? None : Option<A>)
  */
 function fromNullable(mixed $value): Option
 {
@@ -52,7 +52,7 @@ function fromNullable(mixed $value): Option
  * @template A
  *
  * @param A|null $value
- * @return Option<A>
+ * @return ($value is null ? None : Option<A>)
  */
 function fromNullableLiteral(mixed $value): Option
 {

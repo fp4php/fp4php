@@ -26,10 +26,12 @@ final class OptionTest extends TestCase
     #[Test]
     public static function some(): void
     {
-        assertInstanceOf(Some::class, O\some(42));
+        $option = O\some(42);
+        /** @psalm-check-type-exact $option = \Fp4\PHP\Type\Option<int> */;
 
+        assertInstanceOf(Some::class, $option);
         assertEquals(42, pipe(
-            O\some(42),
+            $option,
             O\getOrNull(...),
         ));
     }
@@ -46,17 +48,42 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
+    public static function fromLiteral(): void
+    {
+        $fortyTwo = O\fromLiteral(42);
+        /** @psalm-check-type-exact $fortyTwo = \Fp4\PHP\Type\Option<42> */;
+
+        $null = O\fromLiteral(null);
+        /** @psalm-check-type-exact $null = \Fp4\PHP\Type\Option<null> */;
+
+        assertEquals(O\some(42), $fortyTwo);
+        assertEquals(O\some(null), $null);
+    }
+
+    #[Test]
+    public static function fromNullableLiteral(): void
+    {
+        $fortyTwo = O\fromNullableLiteral(42);
+        /** @psalm-check-type-exact $fortyTwo = \Fp4\PHP\Type\Option<42> */;
+
+        $none = O\fromNullableLiteral(null);
+        /** @psalm-check-type-exact $none = \Fp4\PHP\Type\None */;
+
+        assertEquals(O\some(42), $fortyTwo);
+        assertEquals(O\none, $none);
+    }
+
+    #[Test]
     public static function fromNullable(): void
     {
-        assertEquals(null, pipe(
-            O\fromNullable(null),
-            O\getOrNull(...),
-        ));
+        $num = O\fromNullable(42);
+        /** @psalm-check-type-exact $num = \Fp4\PHP\Type\Option<int> */;
 
-        assertEquals(42, pipe(
-            O\fromNullable(42),
-            O\getOrNull(...),
-        ));
+        $none = O\fromNullable(null);
+        /** @psalm-check-type-exact $none = \Fp4\PHP\Type\None */;
+
+        assertEquals(O\some(42), $num);
+        assertEquals(O\none, $none);
     }
 
     #[Test]
@@ -205,12 +232,83 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
+    public static function getOrElse(): void
+    {
+        assertEquals(42, pipe(
+            O\some(42),
+            O\getOrElse(0),
+        ));
+
+        assertEquals(42, pipe(
+            O\none,
+            O\getOrElse(42),
+        ));
+    }
+
+    #[Test]
+    public static function getOrCall(): void
+    {
+        assertEquals(42, pipe(
+            O\some(42),
+            O\getOrCall(fn() => 0),
+        ));
+
+        assertEquals(42, pipe(
+            O\none,
+            O\getOrCall(fn() => 42),
+        ));
+    }
+
+    #[Test]
+    public static function when(): void
+    {
+        assertEquals(O\none, O\when(false, fn() => 42));
+        assertEquals(O\some(42), O\when(true, fn() => 42));
+    }
+
+    #[Test]
+    public static function first(): void
+    {
+        assertEquals(O\none, O\first(
+            fn () => O\none,
+        ));
+
+        assertEquals(O\none, O\first(
+            fn () => O\none,
+            fn () => O\none,
+        ));
+
+        assertEquals(O\some(42), O\first(
+            fn () => O\none,
+            fn () => O\some(42),
+            fn () => O\some(42),
+        ));
+
+        assertEquals(O\some(42), O\first(
+            fn () => O\none,
+            fn () => O\none,
+            fn () => O\some(42),
+        ));
+    }
+
+    #[Test]
     public function bind(): void
     {
         assertEquals(O\none, pipe(
             O\bindable(),
-            O\bind(a: fn() => O\some(31)),
-            O\bind(b: fn() => O\none),
+            O\bind(
+                a: fn() => O\some(31),
+                b: fn() => O\none,
+            ),
+        ));
+
+        assertEquals(O\none, pipe(
+            O\bindable(),
+            O\bind(
+                a: fn() => O\some(31),
+                b: fn() => O\none,
+            ),
+            O\bind(c: fn() => O\some(32)),
         ));
 
         assertEquals(O\some(42), pipe(
@@ -227,8 +325,8 @@ final class OptionTest extends TestCase
             O\bind(
                 a: fn() => O\some(30),
                 b: fn() => O\some(10),
+                c: fn($i) => O\some($i->a + $i->b + 2),
             ),
-            O\bind(c: fn($i) => O\some($i->a + $i->b + 2)),
             O\map(fn($i) => $i->c),
         ));
     }
@@ -236,6 +334,15 @@ final class OptionTest extends TestCase
     #[Test]
     public function let(): void
     {
+        assertEquals(O\none, pipe(
+            O\bindable(),
+            O\bind(
+                a: fn() => O\some(31),
+                b: fn() => O\none,
+            ),
+            O\let(c: fn() => 32),
+        ));
+
         assertEquals(O\some(42), pipe(
             O\bindable(),
             O\let(
@@ -250,8 +357,8 @@ final class OptionTest extends TestCase
             O\let(
                 a: fn() => 30,
                 b: fn() => 10,
+                c: fn($i) => $i->a + $i->b + 2,
             ),
-            O\let(c: fn($i) => $i->a + $i->b + 2),
             O\map(fn($i) => $i->c),
         ));
     }
