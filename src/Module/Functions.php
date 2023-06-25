@@ -10,7 +10,6 @@ namespace Fp4\PHP\Module\Functions;
 function pipe(mixed $a, callable $head, callable ...$tail): mixed
 {
     foreach ([$head, ...$tail] as $function) {
-        /** @psalm-suppress MixedAssignment */
         $a = $function($a);
     }
 

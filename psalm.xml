@@ -41,6 +41,7 @@
                 <directory name="psalm/PsalmUtils"/>
             </errorLevel>
         </InternalProperty>
+        <MixedAssignment errorLevel="suppress"/>
     </issueHandlers>
     <plugins>
         <pluginClass class="Fp4\PHP\PsalmIntegration\Plugin"/>

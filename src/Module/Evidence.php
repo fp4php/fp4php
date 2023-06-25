@@ -148,7 +148,6 @@ function proveListOf(callable $valueEvidence): Closure
 
         $list = [];
 
-        /** @var mixed $i */
         foreach ($value as $i) {
             $item = $valueEvidence($i);
 
@@ -221,7 +220,6 @@ function proveArrayOf(callable $proveKey, callable $proveValue): Closure
 
         $array = [];
 
-        /** @var mixed $i */
         foreach ($value as $k => $i) {
             $key = $proveKey($k);
             $item = $proveValue($i);

@@ -18,8 +18,6 @@ function dumpType(mixed $expr): mixed
  * @template T
  * @param T $expr
  * @return T
- *
- * @psalm-suppress UnusedParam
  */
 function assertType(string $type, mixed $expr): mixed
 {
