@@ -350,4 +350,42 @@ function traverseOption(callable $callback): Closure
     };
 }
 
+/**
+ * @template A
+ *
+ * @param callable(A): bool $callback
+ * @return Closure(list<A>): bool
+ */
+function any(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        foreach ($list as $a) {
+            if ($callback($a)) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+}
+
+/**
+ * @template A
+ *
+ * @param callable(A): bool $callback
+ * @return Closure(list<A>): bool
+ */
+function all(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        foreach ($list as $a) {
+            if (!$callback($a)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+}
+
 // endregion: terminal ops

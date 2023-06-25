@@ -307,4 +307,42 @@ final class ArrayListTest extends TestCase
             L\contains(42),
         ));
     }
+
+    #[Test]
+    public static function any_(): void
+    {
+        assertEquals(false, pipe(
+            L\from([]),
+            L\any(constTrue(...)),
+        ));
+
+        assertEquals(true, pipe(
+            L\from([1, 2, 3, 4]),
+            L\any(fn($num) => 0 === $num % 2),
+        ));
+
+        assertEquals(false, pipe(
+            L\from([1, 3, 5, 7]),
+            L\any(fn($num) => 0 === $num % 2),
+        ));
+    }
+
+    #[Test]
+    public static function all(): void
+    {
+        assertEquals(true, pipe(
+            L\from([]),
+            L\all(constTrue(...)),
+        ));
+
+        assertEquals(true, pipe(
+            L\from([2, 4, 6, 8]),
+            L\all(fn($num) => 0 === $num % 2),
+        ));
+
+        assertEquals(false, pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\all(fn($num) => 0 === $num % 2),
+        ));
+    }
 }
