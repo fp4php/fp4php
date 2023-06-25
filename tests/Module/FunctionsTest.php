@@ -7,12 +7,16 @@ namespace Fp4\PHP\Test\Module;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+use function Fp4\PHP\Module\Functions\constFalse;
 use function Fp4\PHP\Module\Functions\constNull;
+use function Fp4\PHP\Module\Functions\constTrue;
 use function Fp4\PHP\Module\Functions\constVoid;
 use function Fp4\PHP\Module\Functions\id;
 use function Fp4\PHP\Module\Functions\pipe;
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertNull;
+use function PHPUnit\Framework\assertTrue;
 
 /**
  * @api
@@ -45,5 +49,17 @@ final class FunctionsTest extends TestCase
     public static function id(): void
     {
         assertEquals(42, id(42));
+    }
+
+    #[Test]
+    public static function constTrue(): void
+    {
+        assertTrue(constTrue());
+    }
+
+    #[Test]
+    public static function constFalse(): void
+    {
+        assertFalse(constFalse());
     }
 }

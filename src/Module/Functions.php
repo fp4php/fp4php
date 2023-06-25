@@ -38,3 +38,13 @@ function constNull(): mixed
 function constVoid(): void
 {
 }
+
+function constTrue(): bool
+{
+    return true;
+}
+
+function constFalse(): bool
+{
+    return false;
+}
