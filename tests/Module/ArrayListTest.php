@@ -87,7 +87,7 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
-    public function tap(): void
+    public static function tap(): void
     {
         $expected = (object) ['key-1' => 1, 'key-2' => 2, 'key-3' => 3];
         $toMutate = new stdClass();

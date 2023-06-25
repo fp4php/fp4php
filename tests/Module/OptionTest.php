@@ -292,7 +292,7 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
-    public function bind(): void
+    public static function bind(): void
     {
         assertEquals(O\none, pipe(
             O\bindable(),
@@ -332,7 +332,7 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
-    public function let(): void
+    public static function let(): void
     {
         assertEquals(O\none, pipe(
             O\bindable(),
