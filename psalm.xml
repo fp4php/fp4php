@@ -25,20 +25,17 @@
     <issueHandlers>
         <InternalClass>
             <errorLevel type="suppress">
-                <directory name="psalm/Psalm"/>
-                <directory name="psalm/PsalmUtils"/>
+                <directory name="psalm"/>
             </errorLevel>
         </InternalClass>
         <InternalMethod>
             <errorLevel type="suppress">
-                <directory name="psalm/Psalm"/>
-                <directory name="psalm/PsalmUtils"/>
+                <directory name="psalm"/>
             </errorLevel>
         </InternalMethod>
         <InternalProperty>
             <errorLevel type="suppress">
-                <directory name="psalm/Psalm"/>
-                <directory name="psalm/PsalmUtils"/>
+                <directory name="psalm"/>
             </errorLevel>
         </InternalProperty>
         <MixedAssignment errorLevel="suppress"/>
