@@ -14,30 +14,6 @@ use function in_array;
 // region: constructor
 
 /**
- * Iterates over `iterable<A>` to create `list<A>`.
- *
- * ```php
- * use Fp4\PHP\Module\ArrayList as L;
- *
- * use function Fp4\PHP\Module\Functions\pipe;
- * use function Fp4\PHP\Module\Psalm\assertType;
- * use function PHPUnit\Framework\assertSame;
- *
- * $gen = function(): iterable {
- *     yield 1;
- *     yield 2;
- *     yield 3;
- * };
- *
- * $list = L\fromIterable($gen());
- *
- * assertSame([1, 2, 3], $list);
- * assertType('list<int>', $list);
- * ```
- *
- * The inferred type will be widened, just like for {@see \Fp4\PHP\Module\ArrayList\from}
- * This behavior is possible due to the next plugin hook: {@see \Fp4\PHP\PsalmIntegration\ArrayList\FromCallWidening}.
- *
  * @template A
  *
  * @param iterable<A> $iter
@@ -56,22 +32,6 @@ function fromIterable(iterable $iter): array
 }
 
 /**
- * Helps to infer a widen type from the type A.
- *
- * ```php
- * use Fp4\PHP\Module\ArrayList as L;
- *
- * use function Fp4\PHP\Module\Functions\pipe;
- * use function Fp4\PHP\Module\Psalm\assertType;
- * use function PHPUnit\Framework\assertSame;
- *
- * assertSame([1, 2, 3], L\from([1, 2, 3]));
- * assertType('list<int>', L\from([1, 2, 3]))
- * ```
- *
- * i.e. for expression `L\from([1, 2, 3])` Psalm will infer `list<int>`, not list<1|2|3> or list{1, 2, 3}.
- * This behavior is possible due to the next plugin hook: {@see \Fp4\PHP\PsalmIntegration\ArrayList\FromCallWidening}.
- *
  * @template A of list<mixed>
  *
  * @param A $list
@@ -83,23 +43,6 @@ function from(array $list): array
 }
 
 /**
- * Helps to infer a literal type from the type A.
- *
- * ```php
- * use Fp4\PHP\Module\ArrayList as L;
- *
- * use function Fp4\PHP\Module\Functions\pipe;
- * use function Fp4\PHP\Module\Psalm\assertType;
- * use function PHPUnit\Framework\assertSame;
- *
- * assertSame([1, 2, 3], L\fromLiteral([1, 2, 3]));
- * assertType('list{1, 2, 3}', L\fromLiteral([1, 2, 3]))
- * ```
- *
- * i.e. for expression `L\fromLiteral([1, 2, 3])` Psalm will infer `list{1, 2, 3}`, not `list<1|2|3>` or `list<int>`.
- * If `$list` has non-literal type Psalm triggers `InvalidArgument` issue.
- * This behavior is possible due to the next plugin hook: {@see \Fp4\PHP\PsalmIntegration\ArrayList\FromLiteralCallValidator}.
- *
  * @template A of list<mixed>
  *
  * @param A $list
@@ -115,24 +58,6 @@ function fromLiteral(array $list): array
 // region: ops
 
 /**
- * Applies the $callback to each element of the list<A> and collects the results in a new list<B>.
- *
- * ```php
- * use Fp4\PHP\Module\ArrayList as L;
- *
- * use function Fp4\PHP\Module\Functions\pipe;
- * use function Fp4\PHP\Module\Psalm\assertType;
- * use function PHPUnit\Framework\assertSame;
- *
- * $list = pipe(
- *     L\from([1, 2, 3]),
- *     L\map(fn(int $num) => (string) $num),
- * );
- *
- * assertSame(['1', '2', '3'], $list);
- * assertType('list<int>', $list)
- * ```
- *
  * @template A
  * @template B
  * @template TIn of list<A>
