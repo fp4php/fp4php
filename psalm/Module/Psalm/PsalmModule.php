@@ -11,9 +11,7 @@ final class PsalmModule implements RegisterPsalmHooks
     public function __invoke(callable $register): void
     {
         $register([
-            DumpTypeHandler::class,
-            ExpectTypeHandler::class,
-            SuppressIssueHandler::class,
+            TypeCheckerHandler::class,
         ]);
     }
 }

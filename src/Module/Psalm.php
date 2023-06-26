@@ -4,34 +4,26 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\Module\Psalm;
 
-/**
- * @template T
- * @param T $expr
- * @return T
- */
-function dumpType(mixed $expr): mixed
-{
-    return $expr;
-}
+use Closure;
 
 /**
  * @template T
- * @param T $expr
- * @return T
- */
-function assertType(string $type, mixed $expr): mixed
-{
-    return $expr;
-}
-
-/**
- * @template T
- * @param T $expr
- * @return T
- *
+ * @param non-empty-string $type
+ * @return Closure(T): T
  * @psalm-suppress UnusedParam
  */
-function suppressIssue(mixed $expr, string $issue, string $message): mixed
+function isAssignableTo(string $type): Closure
 {
-    return $expr;
+    return fn(mixed $expr): mixed => $expr;
+}
+
+/**
+ * @template T
+ * @param non-empty-string $type
+ * @return Closure(T): T
+ * @psalm-suppress UnusedParam
+ */
+function isSameAs(string $type): Closure
+{
+    return fn(mixed $expr): mixed => $expr;
 }
