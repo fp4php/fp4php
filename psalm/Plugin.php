@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration;
 
-use Fp4\PHP\PsalmIntegration\ArrayList\FromCallWidening;
-use Fp4\PHP\PsalmIntegration\ArrayList\FromLiteralCallValidator;
+use Fp4\PHP\PsalmIntegration\ArrayList\FromCallInference;
 use Fp4\PHP\PsalmIntegration\Bindable\BindableGetReturnTypeProvider;
 use Fp4\PHP\PsalmIntegration\Bindable\BindablePropertiesResolver;
 use Fp4\PHP\PsalmIntegration\Bindable\BindFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\Bindable\LetFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\Option\FilterRefinement;
-use Fp4\PHP\PsalmIntegration\Option\NoneConstWidening;
-use Fp4\PHP\PsalmIntegration\Option\SomeCallWidening;
+use Fp4\PHP\PsalmIntegration\Option\NoneConstInference;
+use Fp4\PHP\PsalmIntegration\Option\SomeCallInference;
 use Fp4\PHP\PsalmIntegration\Pipe\PipeFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\Psalm\DumpTypeHandler;
 use Fp4\PHP\PsalmIntegration\Psalm\ExpectTypeHandler;
@@ -34,17 +33,14 @@ final class Plugin implements PluginEntryPointInterface
         if (class_exists(PipeFunctionStorageProvider::class)) {
             $registration->registerHooksFromClass(PipeFunctionStorageProvider::class);
         }
-        if (class_exists(NoneConstWidening::class)) {
-            $registration->registerHooksFromClass(NoneConstWidening::class);
+        if (class_exists(NoneConstInference::class)) {
+            $registration->registerHooksFromClass(NoneConstInference::class);
         }
-        if (class_exists(FromCallWidening::class)) {
-            $registration->registerHooksFromClass(FromCallWidening::class);
+        if (class_exists(FromCallInference::class)) {
+            $registration->registerHooksFromClass(FromCallInference::class);
         }
-        if (class_exists(FromLiteralCallValidator::class)) {
-            $registration->registerHooksFromClass(FromLiteralCallValidator::class);
-        }
-        if (class_exists(SomeCallWidening::class)) {
-            $registration->registerHooksFromClass(SomeCallWidening::class);
+        if (class_exists(SomeCallInference::class)) {
+            $registration->registerHooksFromClass(SomeCallInference::class);
         }
         if (class_exists(BindFunctionStorageProvider::class)) {
             $registration->registerHooksFromClass(BindFunctionStorageProvider::class);

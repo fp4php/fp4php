@@ -28,11 +28,10 @@ final class PredicateExtractor
             Ev\proveOf(Expr\FuncCall::class),
             O\filter(fn(Expr\FuncCall $call) => $call->name->getAttribute('resolvedName') === $function),
             O\filter(fn(Expr\FuncCall $call) => !$call->isFirstClassCallable()),
-            O\map(fn(Expr\FuncCall $call) => pipe(
-                $call->getArgs(),
-                L\fromIterable(...),
+            O\flatMap(fn(Expr\FuncCall $call) => pipe(
+                L\fromIterable($call->getArgs()),
+                L\first(...),
             )),
-            O\flatMap(L\first(...)),
             O\map(fn(Arg $arg) => $arg->value),
             O\flatMap(Ev\proveOf([Expr\Closure::class, Expr\ArrowFunction::class])),
             O\orElse(fn() => FirstClassCallablePredicate::mock($event)),

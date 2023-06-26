@@ -39,10 +39,13 @@ final class OptionTest extends TestCase
     #[Test]
     public static function none(): void
     {
-        assertInstanceOf(None::class, O\none);
+        $option = O\none;
+        /** @psalm-check-type-exact $option = \Fp4\PHP\Type\Option<never> */;
+
+        assertInstanceOf(None::class, $option);
 
         assertEquals(null, pipe(
-            O\none,
+            $option,
             O\getOrNull(...),
         ));
     }
