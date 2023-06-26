@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\ArrayList;
+namespace Fp4\PHP\PsalmIntegration\Module\Option;
 
+use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefineTypeParams;
+use Fp4\PHP\Type\Option;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
-use Psalm\Type;
-use Psalm\Type\Atomic\TKeyedArray;
+use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Union;
 
 use function Fp4\PHP\Module\Functions\constNull;
@@ -24,16 +25,15 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
         return pipe(
             $event,
             FilterRefinement::refine(
-                function: 'Fp4\PHP\Module\ArrayList\filter',
+                function: 'Fp4\PHP\Module\Option\filter',
                 getKeyType: O\none,
                 getValType: fn(Union $inferred) => pipe(
                     O\some($inferred),
-                    O\flatMap(PsalmApi::$types->asSingleAtomicOf(TKeyedArray::class)),
-                    O\filter(fn(TKeyedArray $keyed) => $keyed->isGenericList()),
-                    O\map(fn(TKeyedArray $keyed) => $keyed->getGenericValueType()),
+                    O\flatMap(PsalmApi::$types->asSingleGenericObjectOf(Option::class)),
+                    O\flatMap(fn(TGenericObject $option) => L\first($option->type_params)),
                 ),
                 toReturnType: fn(RefineTypeParams $refined) => new Union([
-                    Type::getListAtomic($refined->value),
+                    new TGenericObject(Option::class, [$refined->value]),
                 ]),
             ),
             constNull(...),

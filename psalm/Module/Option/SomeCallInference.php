@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\Option;
+namespace Fp4\PHP\PsalmIntegration\Module\Option;
 
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Narrowing;

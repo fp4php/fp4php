@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\Psalm;
+namespace Fp4\PHP\PsalmIntegration\Module\Psalm;
 
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;

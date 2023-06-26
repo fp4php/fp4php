@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\Bindable;
+namespace Fp4\PHP\PsalmIntegration\Module\Bindable;
 
 use Fp4\PHP\Module\ArrayDictionary as D;
 use Fp4\PHP\Module\ArrayList as L;

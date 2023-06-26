@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\Pipe;
+namespace Fp4\PHP\PsalmIntegration\Module\Functions;
 
 use Closure;
 use Fp4\PHP\Module\ArrayList as L;

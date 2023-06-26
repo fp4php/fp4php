@@ -65,7 +65,7 @@ final class AsNonLiteralType
                     $a->value,
                     pipe(
                         L\fromIterable($a->type_params),
-                        L\map(self::transform(...)),
+                        L\map(fn($i) => self::transform($i)),
                     ),
                 ),
                 default => $a,

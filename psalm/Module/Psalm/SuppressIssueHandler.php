@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\Psalm;
+namespace Fp4\PHP\PsalmIntegration\Module\Psalm;
 
 use Closure;
 use Fp4\PHP\Module\ArrayList as L;
@@ -35,7 +35,7 @@ final class SuppressIssueHandler implements FunctionReturnTypeProviderInterface
         $source = $event->getStatementsSource();
         $location = new CodeLocation($source, $event->getStmt());
 
-        $removedIssues = pipe(
+        $removedIssuesCount = pipe(
             O\bindable(),
             O\bind(
                 issue: fn() => pipe(
@@ -63,9 +63,10 @@ final class SuppressIssueHandler implements FunctionReturnTypeProviderInterface
             )),
             O\getOrElse([]),
             L\tap(self::removeIssue(...)),
+            count(...),
         );
 
-        if (0 === count($removedIssues)) {
+        if (0 === $removedIssuesCount) {
             $e = new InvalidArgument(
                 message: 'Unused psalm suppress',
                 code_location: $location,
