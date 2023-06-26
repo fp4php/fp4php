@@ -72,7 +72,7 @@ final class TypeCheckerHandler implements AfterExpressionAnalysisInterface
             }),
             O\map(fn($i) => new CheckType(
                 message: match ($i->function) {
-                    self::IS_SAME_AS => "The type {$i->inferredType} is not exactly the same as the type {$i->expectedType}",
+                    self::IS_SAME_AS => "The type {$i->inferredType->getId()} is not exactly the same as the type {$i->expectedType->getId()}",
                     default => "The type {$i->inferredType} is not assignable to the type {$i->expectedType}",
                 },
                 code_location: new CodeLocation($source, $event->getExpr()),

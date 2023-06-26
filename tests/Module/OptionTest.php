@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Fp4\PHP\Test\Module;
 
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\Psalm as PsalmType;
 use Fp4\PHP\Type\None;
+use Fp4\PHP\Type\Option;
 use Fp4\PHP\Type\Some;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -26,12 +28,12 @@ final class OptionTest extends TestCase
     #[Test]
     public static function some(): void
     {
-        $option = O\some(42);
-        /** @psalm-check-type-exact $option = \Fp4\PHP\Type\Option<int> */;
+        assertInstanceOf(Option::class, O\some(42));
+        assertInstanceOf(Some::class, O\some(42));
 
-        assertInstanceOf(Some::class, $option);
         assertEquals(42, pipe(
-            $option,
+            O\some(42),
+            PsalmType\isSameAs('Option<int>'),
             O\getOrNull(...),
         ));
     }
@@ -39,13 +41,12 @@ final class OptionTest extends TestCase
     #[Test]
     public static function none(): void
     {
-        $option = O\none;
-        /** @psalm-check-type-exact $option = \Fp4\PHP\Type\Option<never> */;
-
-        assertInstanceOf(None::class, $option);
+        assertInstanceOf(Option::class, O\none);
+        assertInstanceOf(None::class, O\none);
 
         assertEquals(null, pipe(
-            $option,
+            O\none,
+            PsalmType\isSameAs('Option<never>'),
             O\getOrNull(...),
         ));
     }
@@ -53,40 +54,42 @@ final class OptionTest extends TestCase
     #[Test]
     public static function fromLiteral(): void
     {
-        $fortyTwo = O\fromLiteral(42);
-        /** @psalm-check-type-exact $fortyTwo = \Fp4\PHP\Type\Option<42> */;
+        assertEquals(O\some(42), pipe(
+            O\fromLiteral(42),
+            PsalmType\isSameAs('Option<42>'),
+        ));
 
-        $null = O\fromLiteral(null);
-        /** @psalm-check-type-exact $null = \Fp4\PHP\Type\Option<null> */;
-
-        assertEquals(O\some(42), $fortyTwo);
-        assertEquals(O\some(null), $null);
+        assertEquals(O\some(null), pipe(
+            O\fromLiteral(null),
+            PsalmType\isSameAs('Option<null>'),
+        ));
     }
 
     #[Test]
     public static function fromNullableLiteral(): void
     {
-        $fortyTwo = O\fromNullableLiteral(42);
-        /** @psalm-check-type-exact $fortyTwo = \Fp4\PHP\Type\Option<42> */;
+        assertEquals(O\some(42), pipe(
+            O\fromNullableLiteral(42),
+            PsalmType\isSameAs('Option<42>'),
+        ));
 
-        $none = O\fromNullableLiteral(null);
-        /** @psalm-check-type-exact $none = \Fp4\PHP\Type\None */;
-
-        assertEquals(O\some(42), $fortyTwo);
-        assertEquals(O\none, $none);
+        assertEquals(O\none, pipe(
+            O\fromNullableLiteral(null),
+            PsalmType\isSameAs('None'),
+        ));
     }
 
     #[Test]
     public static function fromNullable(): void
     {
-        $num = O\fromNullable(42);
-        /** @psalm-check-type-exact $num = \Fp4\PHP\Type\Option<int> */;
-
-        $none = O\fromNullable(null);
-        /** @psalm-check-type-exact $none = \Fp4\PHP\Type\None */;
-
-        assertEquals(O\some(42), $num);
-        assertEquals(O\none, $none);
+        assertEquals(O\some(42), pipe(
+            O\fromNullable(42),
+            PsalmType\isSameAs('Option<int>'),
+        ));
+        assertEquals(O\none, pipe(
+            O\fromNullable(null),
+            PsalmType\isSameAs('None'),
+        ));
     }
 
     #[Test]
@@ -235,13 +238,12 @@ final class OptionTest extends TestCase
 
         /** @var string|int */
         $stringOrInt = 42;
-        $narrowedToInt = pipe(
+
+        assertEquals(O\some(42), pipe(
             O\some($stringOrInt),
             O\filter(is_int(...)),
-        );
-        /** @psalm-check-type-exact $narrowedToInt = \Fp4\PHP\Type\Option<int> */;
-
-        assertEquals(O\some(42), $narrowedToInt);
+            PsalmType\isSameAs('Option<int>'),
+        ));
     }
 
     #[Test]

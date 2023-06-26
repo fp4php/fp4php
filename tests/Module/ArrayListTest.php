@@ -7,6 +7,7 @@ namespace Fp4\PHP\Test\Module;
 use ArrayObject;
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\Psalm as PsalmType;
 use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -24,31 +25,28 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function from(): void
     {
-        $actual = L\from([1, 2, 3]);
-        /** @psalm-check-type-exact $actual = non-empty-list<int> */;
-
-        assertEquals([1, 2, 3], $actual);
+        assertEquals([1, 2, 3], pipe(
+            L\from([1, 2, 3]),
+            PsalmType\isSameAs('non-empty-list<int>'),
+        ));
     }
 
     #[Test]
     public static function fromLiteral(): void
     {
-        $actual = L\fromLiteral([1, 2, 3]);
-        /** @psalm-check-type-exact $actual = list{1, 2, 3} */;
-
-        assertEquals([1, 2, 3], $actual);
+        assertEquals([1, 2, 3], pipe(
+            L\fromLiteral([1, 2, 3]),
+            PsalmType\isSameAs('list{1, 2, 3}'),
+        ));
     }
 
     #[Test]
     public static function fromIterable(): void
     {
-        $iterable = new ArrayObject([1, 2, 3]);
-        /** @psalm-check-type-exact $iterable = ArrayObject<int<0, 2>, 1|2|3> */;
-
-        $actual = L\fromIterable($iterable);
-        /** @psalm-check-type-exact $actual = list<int> */;
-
-        assertEquals([1, 2, 3], $actual);
+        assertEquals([1, 2, 3], pipe(
+            L\fromIterable(new ArrayObject([1, 2, 3])),
+            PsalmType\isSameAs('list<int>'),
+        ));
     }
 
     #[Test]
@@ -85,16 +83,12 @@ final class ArrayListTest extends TestCase
             L\filter(fn($num) => 0 !== $num % 2),
         ));
 
-        $numsOrStrings = L\from([1, 'fst', 2, 'snd', 3, 'thr']);
-        /** @psalm-check-type-exact $numsOrStrings = non-empty-list<int|non-empty-string> */;
-
-        $onlyNums = pipe(
-            $numsOrStrings,
+        assertEquals([1, 2, 3], pipe(
+            L\from([1, 'fst', 2, 'snd', 3, 'thr']),
+            PsalmType\isSameAs('non-empty-list<int|non-empty-string>'),
             L\filter(is_int(...)),
-        );
-        /** @psalm-check-type-exact $onlyNums = list<int> */;
-
-        assertEquals([1, 2, 3], $onlyNums);
+            PsalmType\isSameAs('list<int>'),
+        ));
     }
 
     #[Test]
