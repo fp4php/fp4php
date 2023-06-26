@@ -30,6 +30,9 @@ final class Plugin implements PluginEntryPointInterface
         PsalmApi::$types = new Types();
         PsalmApi::$codebase = ProjectAnalyzer::$instance->getCodebase();
 
+        if (class_exists(ArrayList\FilterCallRefinement::class)) {
+            $registration->registerHooksFromClass(ArrayList\FilterCallRefinement::class);
+        }
         if (class_exists(PipeFunctionStorageProvider::class)) {
             $registration->registerHooksFromClass(PipeFunctionStorageProvider::class);
         }

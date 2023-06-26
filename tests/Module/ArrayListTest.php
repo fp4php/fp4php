@@ -84,6 +84,17 @@ final class ArrayListTest extends TestCase
             L\from([1, 2, 3, 4, 5, 6, 7, 8]),
             L\filter(fn($num) => 0 !== $num % 2),
         ));
+
+        $numsOrStrings = L\from([1, 'fst', 2, 'snd', 3, 'thr']);
+        /** @psalm-check-type-exact $numsOrStrings = non-empty-list<int|non-empty-string> */;
+
+        $onlyNums = pipe(
+            $numsOrStrings,
+            L\filter(is_int(...)),
+        );
+        /** @psalm-check-type-exact $onlyNums = list<int> */;
+
+        assertEquals([1, 2, 3], $onlyNums);
     }
 
     #[Test]
