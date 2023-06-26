@@ -232,6 +232,16 @@ final class OptionTest extends TestCase
             O\filter(fn($i) => $i >= 42),
             O\getOrNull(...),
         ));
+
+        /** @var string|int */
+        $stringOrInt = 42;
+        $narrowedToInt = pipe(
+            O\some($stringOrInt),
+            O\filter(is_int(...)),
+        );
+        /** @psalm-check-type-exact $narrowedToInt = \Fp4\PHP\Type\Option<int> */;
+
+        assertEquals(O\some(42), $narrowedToInt);
     }
 
     #[Test]

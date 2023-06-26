@@ -9,7 +9,7 @@ use Fp4\PHP\PsalmIntegration\Bindable\BindableGetReturnTypeProvider;
 use Fp4\PHP\PsalmIntegration\Bindable\BindablePropertiesResolver;
 use Fp4\PHP\PsalmIntegration\Bindable\BindFunctionStorageProvider;
 use Fp4\PHP\PsalmIntegration\Bindable\LetFunctionStorageProvider;
-use Fp4\PHP\PsalmIntegration\Option\FilterRefinement;
+use Fp4\PHP\PsalmIntegration\Option\FilterCallRefinement;
 use Fp4\PHP\PsalmIntegration\Option\NoneConstInference;
 use Fp4\PHP\PsalmIntegration\Option\SomeCallInference;
 use Fp4\PHP\PsalmIntegration\Pipe\PipeFunctionStorageProvider;
@@ -54,8 +54,8 @@ final class Plugin implements PluginEntryPointInterface
         if (class_exists(BindableGetReturnTypeProvider::class)) {
             $registration->registerHooksFromClass(BindableGetReturnTypeProvider::class);
         }
-        if (class_exists(FilterRefinement::class)) {
-            $registration->registerHooksFromClass(FilterRefinement::class);
+        if (class_exists(FilterCallRefinement::class)) {
+            $registration->registerHooksFromClass(FilterCallRefinement::class);
         }
         if (class_exists(DumpTypeHandler::class)) {
             $registration->registerHooksFromClass(DumpTypeHandler::class);
