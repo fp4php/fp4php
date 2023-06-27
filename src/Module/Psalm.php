@@ -11,6 +11,7 @@ use Closure;
  * @param non-empty-string $type
  * @return Closure(T): T
  * @psalm-suppress UnusedParam
+ * @codeCoverageIgnore
  */
 function isAssignableTo(string $type): Closure
 {
@@ -22,6 +23,7 @@ function isAssignableTo(string $type): Closure
  * @param non-empty-string $type
  * @return Closure(T): T
  * @psalm-suppress UnusedParam
+ * @codeCoverageIgnore
  */
 function isSameAs(string $type): Closure
 {

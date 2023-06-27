@@ -115,18 +115,20 @@ function mapKV(callable $callback): Closure
     };
 }
 
+
 /**
- * @template K of array-key
+ * @template KA of array-key
  * @template A
+ * @template KB of array-key
  * @template B
- * @template TIn of array<K, A>
+ * @template TFlatten of array<KB, B>
  *
- * @param callable(A): array<K, B> $callback
- * @return Closure(array<K, A>): array<K, B>
- * @psalm-return (Closure(TIn): (
- *     TIn is non-empty-array<K, A>
- *         ? non-empty-array<K, B>
- *         : array<K, B>
+ * @param callable(A): TFlatten $callback
+ * @return Closure(array<KA, A>): array<KB, B>
+ * @psalm-return (Closure(array<KA, A>): (
+ *     TFlatten is non-empty-array<KB, B>
+ *         ? non-empty-array<KB, B>
+ *         : array<KB, B>
  * ))
  */
 function flatMap(callable $callback): Closure
@@ -145,17 +147,18 @@ function flatMap(callable $callback): Closure
 }
 
 /**
- * @template K of array-key
+ * @template KA of array-key
  * @template A
+ * @template KB of array-key
  * @template B
- * @template TIn of array<K, A>
+ * @template TFlatten of array<KB, B>
  *
- * @param callable(K, A): array<K, B> $callback
- * @return Closure(array<K, A>): array<K, B>
- * @psalm-return (Closure(TIn): (
- *     TIn is non-empty-array<K, A>
- *         ? non-empty-array<K, B>
- *         : array<K, B>
+ * @param callable(KA, A): TFlatten $callback
+ * @return Closure(array<KA, A>): array<KB, B>
+ * @psalm-return (Closure(array<KA, A>): (
+ *     TFlatten is non-empty-array<KB, B>
+ *         ? non-empty-array<KB, B>
+ *         : array<KB, B>
  * ))
  */
 function flatMapKV(callable $callback): Closure
@@ -327,31 +330,6 @@ function traverseOption(callable $callback): Closure
 
         return O\some($out);
     };
-}
-
-/**
- * @template K of array-key
- * @template A
- *
- * @param array<K, Option<A>> $dictionary
- * @return Option<array<K, A>>
- * @psalm-return ($dictionary is non-empty-array<K, Option<A>>
- *     ? Option<non-empty-array<K, A>>
- *     : Option<array<K, A>>)
- */
-function sequenceOption(array $dictionary): Option
-{
-    $out = [];
-
-    foreach ($dictionary as $k => $v) {
-        if (O\isNone($v)) {
-            return O\none;
-        }
-
-        $out[$k] = $v->value;
-    }
-
-    return O\some($out);
 }
 
 // endregion: terminal ops
