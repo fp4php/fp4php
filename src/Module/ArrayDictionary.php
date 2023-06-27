@@ -44,6 +44,19 @@ function from(array $dictionary): array
     return $dictionary;
 }
 
+/**
+ * @template K of array-key
+ * @template A
+ *
+ * @param array<K, A> $dictionary
+ * @return array<K, A>
+ * @psalm-return ($dictionary is non-empty-array<K, A> ? non-empty-array<K, A> : array<K, A>)
+ */
+function fromLiteral(array $dictionary): array
+{
+    return $dictionary;
+}
+
 // endregion: constructor
 
 // region: ops
@@ -152,6 +165,50 @@ function flatMapKV(callable $callback): Closure
 
         foreach ($dictionary as $nestedK => $nestedV) {
             foreach ($callback($nestedK, $nestedV) as $k => $v) {
+                $out[$k] = $v;
+            }
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template A
+ *
+ * @param callable(A): bool $callback
+ * @return Closure(array<K, A>): array<K, A>
+ */
+function filter(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $k => $v) {
+            if ($callback($v)) {
+                $out[$k] = $v;
+            }
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template A
+ *
+ * @param callable(K, A): bool $callback
+ * @return Closure(array<K, A>): array<K, A>
+ */
+function filterKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $k => $v) {
+            if ($callback($k, $v)) {
                 $out[$k] = $v;
             }
         }
