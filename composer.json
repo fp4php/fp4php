@@ -36,7 +36,10 @@
     "psr-4": {
       "Fp4\\PHP\\PsalmIntegration\\": "psalm/",
       "Fp4\\PHP\\Test\\": "tests/"
-    }
+    },
+    "files": [
+      "phpunit/assertions.php"
+    ]
   },
   "require-dev": {
     "vimeo/psalm": "dev-master",
