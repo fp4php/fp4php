@@ -6,6 +6,7 @@ namespace Fp4\PHP\PsalmIntegration;
 
 use Closure;
 use Fp4\PHP\Module\ArrayList as L;
+use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\ArrayDictionaryModule;
 use Fp4\PHP\PsalmIntegration\Module\ArrayList\ArrayListModule;
 use Fp4\PHP\PsalmIntegration\Module\Bindable\BindableModule;
 use Fp4\PHP\PsalmIntegration\Module\Functions\FunctionsModule;
@@ -37,6 +38,7 @@ final class Plugin implements PluginEntryPointInterface
                 new PsalmModule(),
                 new OptionModule(),
                 new ArrayListModule(),
+                new ArrayDictionaryModule(),
                 new FunctionsModule(),
                 new BindableModule(),
             ]),

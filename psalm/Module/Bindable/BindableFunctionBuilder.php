@@ -125,15 +125,13 @@ final class BindableFunctionBuilder
      */
     private static function toObjectWithProperties(array $properties): TGenericObject
     {
+        $props = new TObjectWithProperties(pipe(
+            D\from($properties),
+            D\map(fn(TTemplateParam $type) => PsalmApi::$types->asUnion($type)),
+        ));
+
         return new TGenericObject(Bindable::class, [
-            new Union([
-                new TObjectWithProperties(
-                    pipe(
-                        $properties,
-                        D\map(PsalmApi::$types->asUnion(...)),
-                    ),
-                ),
-            ]),
+            new Union([$props]),
         ]);
     }
 
