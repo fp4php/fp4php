@@ -13,8 +13,8 @@ use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr\FuncCall;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\Type\Atomic\TClosure;
-use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Union;
+
 use function Fp4\PHP\Module\Functions\constVoid;
 use function Fp4\PHP\Module\Functions\pipe;
 
@@ -22,15 +22,12 @@ final class BindablePropertiesCompressor
 {
     /**
      * @param non-empty-list<string> $functions
-     * @param callable(TGenericObject): Option<Union> $extractBindable
-     * @param callable(non-empty-array<Union>, TGenericObject): Union $packBindable
+     * @param callable(Union): Option<Union> $unpack
+     * @param callable(non-empty-array<Union>, Union): Option<Union> $pack
      * @return Closure(AfterExpressionAnalysisEvent): Option<void>
      */
-    public static function compress(
-        array $functions,
-        callable $extractBindable,
-        callable $packBindable,
-    ): Closure {
+    public static function compress(array $functions, callable $unpack, callable $pack): Closure
+    {
         return fn(AfterExpressionAnalysisEvent $event) => pipe(
             O\some($event->getExpr()),
             O\filterOf(FuncCall::class),
@@ -41,37 +38,34 @@ final class BindablePropertiesCompressor
             O\flatMap(PsalmApi::$types->getExprType($event)),
             O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
             O\filterOf(TClosure::class),
-            O\flatMap(self::inferClosure($extractBindable, $packBindable)),
+            O\flatMap(self::inferClosure($unpack, $pack)),
             O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
             O\map(constVoid(...)),
         );
     }
 
     /**
-     * @param callable(TGenericObject): Option<Union> $extractBindable
-     * @param callable(non-empty-array<Union>, TGenericObject): Union $packBindable
+     * @param callable(Union): Option<Union> $unpack
+     * @param callable(non-empty-array<Union>, Union): Option<Union> $pack
      * @return Closure(TClosure): Option<TClosure>
      */
-    private static function inferClosure(callable $extractBindable, callable $packBindable): Closure
+    private static function inferClosure(callable $unpack, callable $pack): Closure
     {
         return fn(TClosure $returnType): Option => pipe(
             O\bindable(),
             O\bind(
-                original: fn() => pipe(
-                    O\fromNullable($returnType->return_type),
-                    O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
-                    O\filterOf(TGenericObject::class),
-                ),
-                bindable: fn($i) => $extractBindable($i->original),
+                original: fn() => O\fromNullable($returnType->return_type),
+                bindable: fn($i) => $unpack($i->original),
                 properties: fn($i) => pipe(
                     O\some($i->bindable),
                     O\flatMap(BindableFoldType::for(...)),
                     O\flatMap(Ev\proveNonEmptyArray(...)),
                 ),
             ),
-            O\map(fn($i) => $returnType->replace(
+            O\flatMap(fn($i) => $pack($i->properties, $i->original)),
+            O\map(fn($packed) => $returnType->replace(
                 params: $returnType->params,
-                return_type: $packBindable($i->properties, $i->original),
+                return_type: $packed,
             )),
         );
     }

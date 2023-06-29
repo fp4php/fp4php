@@ -328,14 +328,14 @@ final class ArrayDictionaryTest extends TestCase
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
             D\traverseOption($proveEven),
             Type\isSameAs('Option<non-empty-array<non-empty-string, int>>'),
-            Assert\equals(O\none)
+            Assert\equals(O\none),
         );
 
         pipe(
             D\from(['fst' => 2, 'snd' => 4, 'thr' => 6]),
             D\traverseOption($proveEven),
             Type\isSameAs('Option<non-empty-array<non-empty-string, int>>'),
-            Assert\equals(O\some(['fst' => 2, 'snd' => 4, 'thr' => 6]))
+            Assert\equals(O\some(['fst' => 2, 'snd' => 4, 'thr' => 6])),
         );
     }
 

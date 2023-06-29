@@ -18,6 +18,7 @@ use Psalm\Node\Scalar\VirtualString;
 use Psalm\Plugin\EventHandler\Event\MethodReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\MethodReturnTypeProviderInterface;
 use Psalm\Type\Union;
+
 use function Fp4\PHP\Module\Functions\pipe;
 
 final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInterface

@@ -6,7 +6,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 
 use Closure;
 use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Arg;

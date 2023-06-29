@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Fp4\PHP\Test\Module;
 
 use Fp4\PHP\Module\PHPUnit as Assert;
-use Fp4\PHP\Module\Str;
 use Fp4\PHP\Module\Psalm as Type;
+use Fp4\PHP\Module\Str;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

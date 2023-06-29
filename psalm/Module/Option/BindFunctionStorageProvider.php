@@ -10,6 +10,7 @@ use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindLetType;
 use Psalm\Plugin\DynamicFunctionStorage;
 use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
 use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
+
 use function Fp4\PHP\Module\Functions\pipe;
 
 final class BindFunctionStorageProvider implements DynamicFunctionStorageProviderInterface

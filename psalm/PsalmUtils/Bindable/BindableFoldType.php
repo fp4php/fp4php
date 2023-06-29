@@ -12,6 +12,7 @@ use Fp4\PHP\Type\Option;
 use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Atomic\TObjectWithProperties;
 use Psalm\Type\Union;
+
 use function Fp4\PHP\Module\Functions\pipe;
 
 final class BindableFoldType

@@ -12,6 +12,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
 use Psalm\Plugin\DynamicFunctionStorage;
 use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
+
 use function Fp4\PHP\Module\Functions\pipe;
 
 final class BindableFunctionBuilder
@@ -21,7 +22,7 @@ final class BindableFunctionBuilder
      */
     public static function buildStorage(BindableBuilder $with): Closure
     {
-        return function (DynamicFunctionStorageProviderEvent $event) use ($with) {
+        return function(DynamicFunctionStorageProviderEvent $event) use ($with) {
             $args = $event->getArgs();
 
             if (empty($args)) {
