@@ -334,6 +334,20 @@ final class OptionTest extends TestCase
         ));
     }
 
+    #[Test]
+    public static function filterOf(): void
+    {
+        assertEquals(O\none, pipe(
+            O\some(42),
+            O\filterOf(stdClass::class),
+        ));
+
+        assertEquals(O\some(new stdClass()), pipe(
+            O\some(new stdClass()),
+            O\filterOf(stdClass::class),
+        ));
+    }
+
     // endregion: ops
 
     // region: bindable

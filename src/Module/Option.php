@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Fp4\PHP\Module\Option;
 
 use Closure;
+use Fp4\PHP\Module\Evidence as E;
 use Fp4\PHP\Type\Bindable;
 use Fp4\PHP\Type\None;
 use Fp4\PHP\Type\Option;
 use Fp4\PHP\Type\Some;
 use Throwable;
+
+use function Fp4\PHP\Module\Functions\pipe;
 
 // region: constructor
 
@@ -270,6 +273,21 @@ function filter(callable $callback): Closure
     return fn(Option $a) => isSome($a) && $callback($a->value)
         ? some($a->value)
         : none;
+}
+
+/**
+ * @template A
+ * @template B
+ *
+ * @param class-string<B>|non-empty-list<class-string<B>> $fqcn
+ * @return Closure(Option<A>): Option<B>
+ */
+function filterOf(string|array $fqcn, bool $invariant = false): Closure
+{
+    return fn(Option $a) => pipe(
+        $a,
+        flatMap(E\proveOf($fqcn, $invariant)),
+    );
 }
 
 // endregion: ops
