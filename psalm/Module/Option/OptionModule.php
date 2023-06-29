@@ -11,9 +11,12 @@ final class OptionModule implements RegisterPsalmHooks
     public function __invoke(callable $register): void
     {
         $register([
-            FilterCallRefinement::class,
-            NoneConstInference::class,
             SomeCallInference::class,
+            NoneConstInference::class,
+            FilterCallRefinement::class,
+            LetFunctionStorageProvider::class,
+            BindFunctionStorageProvider::class,
+            BindableCompressor::class,
         ]);
     }
 }

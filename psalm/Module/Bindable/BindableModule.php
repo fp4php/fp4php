@@ -11,9 +11,6 @@ final class BindableModule implements RegisterPsalmHooks
     public function __invoke(callable $register): void
     {
         $register([
-            LetFunctionStorageProvider::class,
-            BindFunctionStorageProvider::class,
-            BindablePropertiesResolver::class,
             BindableGetReturnTypeProvider::class,
         ]);
     }

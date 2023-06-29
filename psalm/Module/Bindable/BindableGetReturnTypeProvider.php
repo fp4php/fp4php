@@ -8,6 +8,7 @@ use Closure;
 use Fp4\PHP\Module\ArrayDictionary as D;
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindableFoldType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Bindable;
 use Fp4\PHP\Type\Option;
@@ -17,7 +18,6 @@ use Psalm\Node\Scalar\VirtualString;
 use Psalm\Plugin\EventHandler\Event\MethodReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\MethodReturnTypeProviderInterface;
 use Psalm\Type\Union;
-
 use function Fp4\PHP\Module\Functions\pipe;
 
 final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInterface

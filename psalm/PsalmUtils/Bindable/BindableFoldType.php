@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\Module\Bindable;
+namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable;
 
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
@@ -12,7 +12,6 @@ use Fp4\PHP\Type\Option;
 use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Atomic\TObjectWithProperties;
 use Psalm\Type\Union;
-
 use function Fp4\PHP\Module\Functions\pipe;
 
 final class BindableFoldType
