@@ -25,6 +25,8 @@ use function PHPUnit\Framework\assertTrue;
  */
 final class OptionTest extends TestCase
 {
+    // region: constructor
+
     #[Test]
     public static function some(): void
     {
@@ -66,6 +68,19 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
+    public static function fromNullable(): void
+    {
+        assertEquals(O\some(42), pipe(
+            O\fromNullable(42),
+            PsalmType\isSameAs('Option<int>'),
+        ));
+        assertEquals(O\none, pipe(
+            O\fromNullable(null),
+            PsalmType\isSameAs('None'),
+        ));
+    }
+
+    #[Test]
     public static function fromNullableLiteral(): void
     {
         assertEquals(O\some(42), pipe(
@@ -75,19 +90,6 @@ final class OptionTest extends TestCase
 
         assertEquals(O\none, pipe(
             O\fromNullableLiteral(null),
-            PsalmType\isSameAs('None'),
-        ));
-    }
-
-    #[Test]
-    public static function fromNullable(): void
-    {
-        assertEquals(O\some(42), pipe(
-            O\fromNullable(42),
-            PsalmType\isSameAs('Option<int>'),
-        ));
-        assertEquals(O\none, pipe(
-            O\fromNullable(null),
             PsalmType\isSameAs('None'),
         ));
     }
@@ -107,6 +109,84 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
+    public static function first(): void
+    {
+        assertEquals(O\none, O\first(
+            fn() => O\none,
+        ));
+
+        assertEquals(O\none, O\first(
+            fn() => O\none,
+            fn() => O\none,
+        ));
+
+        assertEquals(O\some(42), O\first(
+            fn() => O\none,
+            fn() => O\some(42),
+            fn() => O\some(42),
+        ));
+
+        assertEquals(O\some(42), O\first(
+            fn() => O\none,
+            fn() => O\none,
+            fn() => O\some(42),
+        ));
+    }
+
+    #[Test]
+    public static function when(): void
+    {
+        assertEquals(O\none, O\when(false, fn() => 42));
+        assertEquals(O\some(42), O\when(true, fn() => 42));
+    }
+
+    // endregion: constructor
+
+    // region: destructors
+
+    #[Test]
+    public static function getOrNull(): void
+    {
+        assertEquals(42, pipe(
+            O\some(42),
+            O\getOrNull(...),
+        ));
+
+        assertEquals(null, pipe(
+            O\none,
+            O\getOrNull(...),
+        ));
+    }
+
+    #[Test]
+    public static function getOrElse(): void
+    {
+        assertEquals(42, pipe(
+            O\some(42),
+            O\getOrElse(0),
+        ));
+
+        assertEquals(42, pipe(
+            O\none,
+            O\getOrElse(42),
+        ));
+    }
+
+    #[Test]
+    public static function getOrCall(): void
+    {
+        assertEquals(42, pipe(
+            O\some(42),
+            O\getOrCall(fn() => 0),
+        ));
+
+        assertEquals(42, pipe(
+            O\none,
+            O\getOrCall(fn() => 42),
+        ));
+    }
+
+    #[Test]
     public static function fold(): void
     {
         assertEquals('none', pipe(
@@ -119,6 +199,10 @@ final class OptionTest extends TestCase
             O\fold(fn() => 'none', fn($value) => "some: {$value}"),
         ));
     }
+
+    // endregion: destructors
+
+    // region: refinements
 
     #[Test]
     public static function isSome(): void
@@ -147,6 +231,10 @@ final class OptionTest extends TestCase
             O\isNone(...),
         ));
     }
+
+    // endregion: refinements
+
+    // region: ops
 
     #[Test]
     public static function map(): void
@@ -246,65 +334,9 @@ final class OptionTest extends TestCase
         ));
     }
 
-    #[Test]
-    public static function getOrElse(): void
-    {
-        assertEquals(42, pipe(
-            O\some(42),
-            O\getOrElse(0),
-        ));
+    // endregion: ops
 
-        assertEquals(42, pipe(
-            O\none,
-            O\getOrElse(42),
-        ));
-    }
-
-    #[Test]
-    public static function getOrCall(): void
-    {
-        assertEquals(42, pipe(
-            O\some(42),
-            O\getOrCall(fn() => 0),
-        ));
-
-        assertEquals(42, pipe(
-            O\none,
-            O\getOrCall(fn() => 42),
-        ));
-    }
-
-    #[Test]
-    public static function when(): void
-    {
-        assertEquals(O\none, O\when(false, fn() => 42));
-        assertEquals(O\some(42), O\when(true, fn() => 42));
-    }
-
-    #[Test]
-    public static function first(): void
-    {
-        assertEquals(O\none, O\first(
-            fn() => O\none,
-        ));
-
-        assertEquals(O\none, O\first(
-            fn() => O\none,
-            fn() => O\none,
-        ));
-
-        assertEquals(O\some(42), O\first(
-            fn() => O\none,
-            fn() => O\some(42),
-            fn() => O\some(42),
-        ));
-
-        assertEquals(O\some(42), O\first(
-            fn() => O\none,
-            fn() => O\none,
-            fn() => O\some(42),
-        ));
-    }
+    // region: bindable
 
     #[Test]
     public static function bind(): void
@@ -377,4 +409,6 @@ final class OptionTest extends TestCase
             O\map(fn($i) => $i->c),
         ));
     }
+
+    // endregion: bindable
 }

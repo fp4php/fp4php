@@ -22,6 +22,17 @@ use function PHPUnit\Framework\assertEquals;
  */
 final class ArrayListTest extends TestCase
 {
+    // region: constructor
+
+    #[Test]
+    public static function fromIterable(): void
+    {
+        assertEquals([1, 2, 3], pipe(
+            L\fromIterable(new ArrayObject([1, 2, 3])),
+            PsalmType\isSameAs('list<int>'),
+        ));
+    }
+
     #[Test]
     public static function from(): void
     {
@@ -40,14 +51,9 @@ final class ArrayListTest extends TestCase
         ));
     }
 
-    #[Test]
-    public static function fromIterable(): void
-    {
-        assertEquals([1, 2, 3], pipe(
-            L\fromIterable(new ArrayObject([1, 2, 3])),
-            PsalmType\isSameAs('list<int>'),
-        ));
-    }
+    // endregion: constructor
+
+    // region: ops
 
     #[Test]
     public static function map(): void
@@ -62,32 +68,6 @@ final class ArrayListTest extends TestCase
         assertEquals([2, 3, 4], pipe(
             L\from([1, 2, 3]),
             L\map($addOne),
-        ));
-    }
-
-    #[Test]
-    public static function filter(): void
-    {
-        assertEquals([], pipe(
-            L\from([]),
-            L\filter(fn(int $num) => 0 !== $num % 2),
-        ));
-
-        assertEquals([2, 4, 6, 8], pipe(
-            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
-            L\filter(fn($num) => 0 === $num % 2),
-        ));
-
-        assertEquals([1, 3, 5, 7], pipe(
-            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
-            L\filter(fn($num) => 0 !== $num % 2),
-        ));
-
-        assertEquals([1, 2, 3], pipe(
-            L\from([1, 'fst', 2, 'snd', 3, 'thr']),
-            PsalmType\isSameAs('non-empty-list<int|non-empty-string>'),
-            L\filter(is_int(...)),
-            PsalmType\isSameAs('list<int>'),
         ));
     }
 
@@ -158,6 +138,32 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function filter(): void
+    {
+        assertEquals([], pipe(
+            L\from([]),
+            L\filter(fn(int $num) => 0 !== $num % 2),
+        ));
+
+        assertEquals([2, 4, 6, 8], pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filter(fn($num) => 0 === $num % 2),
+        ));
+
+        assertEquals([1, 3, 5, 7], pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filter(fn($num) => 0 !== $num % 2),
+        ));
+
+        assertEquals([1, 2, 3], pipe(
+            L\from([1, 'fst', 2, 'snd', 3, 'thr']),
+            PsalmType\isSameAs('non-empty-list<int|non-empty-string>'),
+            L\filter(is_int(...)),
+            PsalmType\isSameAs('list<int>'),
+        ));
+    }
+
+    #[Test]
     public static function prepend(): void
     {
         assertEquals([42], pipe(
@@ -185,22 +191,26 @@ final class ArrayListTest extends TestCase
         ));
     }
 
+    // endregion: ops
+
+    // region: terminal ops
+
     #[Test]
-    public static function last(): void
+    public static function contains(): void
     {
-        assertEquals(O\none, pipe(
+        assertEquals(false, pipe(
             L\from([]),
-            L\last(...),
+            L\contains(42),
         ));
 
-        assertEquals(O\some(1), pipe(
-            L\from([1]),
-            L\last(...),
-        ));
-
-        assertEquals(O\some(3), pipe(
+        assertEquals(false, pipe(
             L\from([1, 2, 3]),
-            L\last(...),
+            L\contains(42),
+        ));
+
+        assertEquals(true, pipe(
+            L\from([40, 41, 42]),
+            L\contains(42),
         ));
     }
 
@@ -277,6 +287,25 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function last(): void
+    {
+        assertEquals(O\none, pipe(
+            L\from([]),
+            L\last(...),
+        ));
+
+        assertEquals(O\some(1), pipe(
+            L\from([1]),
+            L\last(...),
+        ));
+
+        assertEquals(O\some(3), pipe(
+            L\from([1, 2, 3]),
+            L\last(...),
+        ));
+    }
+
+    #[Test]
     public static function traverseOption(): void
     {
         $proveEven = fn(int $i): Option => 0 === $i % 2
@@ -291,25 +320,6 @@ final class ArrayListTest extends TestCase
         assertEquals(O\some([2, 4, 6]), pipe(
             L\from([2, 4, 6]),
             L\traverseOption($proveEven),
-        ));
-    }
-
-    #[Test]
-    public static function contains(): void
-    {
-        assertEquals(false, pipe(
-            L\from([]),
-            L\contains(42),
-        ));
-
-        assertEquals(false, pipe(
-            L\from([1, 2, 3]),
-            L\contains(42),
-        ));
-
-        assertEquals(true, pipe(
-            L\from([40, 41, 42]),
-            L\contains(42),
         ));
     }
 
@@ -350,4 +360,6 @@ final class ArrayListTest extends TestCase
             L\all(fn($num) => 0 === $num % 2),
         ));
     }
+
+    // endregion: terminal ops
 }

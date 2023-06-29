@@ -15,7 +15,7 @@ use Closure;
  */
 function isAssignableTo(string $type): Closure
 {
-    return fn(mixed $expr): mixed => $expr;
+    return static fn(mixed $expr): mixed => $expr;
 }
 
 /**
@@ -27,5 +27,5 @@ function isAssignableTo(string $type): Closure
  */
 function isSameAs(string $type): Closure
 {
-    return fn(mixed $expr): mixed => $expr;
+    return static fn(mixed $expr): mixed => $expr;
 }

@@ -24,6 +24,8 @@ function some(mixed $value): Option
     return new Some($value);
 }
 
+const none = new None();
+
 /**
  * @template A
  *
@@ -34,8 +36,6 @@ function fromLiteral(mixed $value): Option
 {
     return some($value);
 }
-
-const none = new None();
 
 /**
  * @template A
