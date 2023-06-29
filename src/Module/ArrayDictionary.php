@@ -115,7 +115,6 @@ function mapKV(callable $callback): Closure
     };
 }
 
-
 /**
  * @template KA of array-key
  * @template A

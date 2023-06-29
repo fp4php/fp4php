@@ -7,6 +7,7 @@ namespace Fp4\PHP\Test\Module;
 use ArrayObject;
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\PHPUnit as Assert;
 use Fp4\PHP\Module\Psalm as PsalmType;
 use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\Test;
@@ -362,4 +363,66 @@ final class ArrayListTest extends TestCase
     }
 
     // endregion: terminal ops
+
+    // region: bindable
+
+    #[Test]
+    public static function bind(): void
+    {
+        pipe(
+            L\bindable(),
+            L\bind(
+                a: fn() => L\from(['a1', 'a2', 'a3']),
+                b: fn() => L\from(['b1', 'b2']),
+            ),
+            L\map(fn($i) => [$i->a, $i->b]),
+            PsalmType\isSameAs('list<array{non-empty-string, non-empty-string}>'),
+            Assert\same([
+                ['a1', 'b1'],
+                ['a1', 'b2'],
+                ['a2', 'b1'],
+                ['a2', 'b2'],
+                ['a3', 'b1'],
+                ['a3', 'b2'],
+            ]),
+        );
+    }
+
+    #[Test]
+    public static function let(): void
+    {
+        pipe(
+            L\bindable(),
+            L\let(a: fn() => 'a1', b: fn() => 'b1'),
+            L\map(fn($i) => [$i->a, $i->b]),
+            PsalmType\isSameAs('list<array{"a1", "b1"}>'),
+            Assert\same([
+                ['a1', 'b1'],
+            ]),
+        );
+
+        pipe(
+            L\bindable(),
+            L\bind(
+                a: fn() => L\from(['a1', 'a2', 'a3']),
+                b: fn() => L\from(['b1', 'b2']),
+            ),
+            L\let(
+                c: fn($_) => 'c1',
+                d: fn($_) => 'd1',
+            ),
+            L\map(fn($i) => [$i->a, $i->b, $i->c, $i->d]),
+            PsalmType\isSameAs('list<array{non-empty-string, non-empty-string, "c1", "d1"}>'),
+            Assert\same([
+                ['a1', 'b1', 'c1', 'd1'],
+                ['a1', 'b2', 'c1', 'd1'],
+                ['a2', 'b1', 'c1', 'd1'],
+                ['a2', 'b2', 'c1', 'd1'],
+                ['a3', 'b1', 'c1', 'd1'],
+                ['a3', 'b2', 'c1', 'd1'],
+            ]),
+        );
+    }
+
+    // endregion: bindable
 }

@@ -11,8 +11,11 @@ final class ArrayListModule implements RegisterPsalmHooks
     public function __invoke(callable $register): void
     {
         $register([
-            FilterCallRefinement::class,
             FromCallInference::class,
+            FilterCallRefinement::class,
+            LetFunctionStorageProvider::class,
+            BindFunctionStorageProvider::class,
+            BindableCompressor::class,
         ]);
     }
 }
