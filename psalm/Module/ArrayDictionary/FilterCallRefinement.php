@@ -23,8 +23,10 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {
         return pipe(
-            self::refineFilter('Fp4\PHP\Module\ArrayDictionary\filter')($event),
-            O\orElse(fn() => self::refineFilter('Fp4\PHP\Module\ArrayDictionary\filterKV')($event)),
+            O\first(
+                fn() => pipe($event, self::refineFilter('Fp4\PHP\Module\ArrayDictionary\filter')),
+                fn() => pipe($event, self::refineFilter('Fp4\PHP\Module\ArrayDictionary\filterKV')),
+            ),
             constNull(...),
         );
     }
@@ -47,9 +49,7 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
                 O\flatMap(PsalmApi::$types->asSingleAtomicOf(TArray::class)),
                 O\map(fn(TArray $keyed) => $keyed->type_params[1]),
             ),
-            toReturnType: fn(RefineTypeParams $refined) => new Union([
-                new TArray([$refined->key, $refined->value]),
-            ]),
+            toReturnType: fn(RefineTypeParams $refined) => PsalmApi::$create->array($refined->key, $refined->value),
         );
     }
 }

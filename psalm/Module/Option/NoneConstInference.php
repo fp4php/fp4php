@@ -10,9 +10,6 @@ use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Widening;
 use Fp4\PHP\Type\Option;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
-use Psalm\Type;
-use Psalm\Type\Atomic\TGenericObject;
-use Psalm\Type\Union;
 
 use function Fp4\PHP\Module\Functions\constNull;
 use function Fp4\PHP\Module\Functions\pipe;
@@ -25,13 +22,11 @@ final class NoneConstInference implements AfterExpressionAnalysisInterface
     {
         return pipe(
             Widening::widen($event, [self::NONE]),
-            O\map(function() {
-                $option = new TGenericObject(Option::class, [
-                    Type::getNever(),
-                ]);
-
-                return new Union([$option]);
-            }),
+            O\map(fn() => pipe(
+                PsalmApi::$create->neverAtomic(),
+                PsalmApi::$create->genericObjectAtomic(Option::class),
+                PsalmApi::$create->union(...),
+            )),
             O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
             constNull(...),
         );

@@ -13,7 +13,6 @@ use Fp4\PHP\Type\Option;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\Type\Atomic\TGenericObject;
-use Psalm\Type\Atomic\TObjectWithProperties;
 use Psalm\Type\Union;
 
 use function Fp4\PHP\Module\Functions\constNull;
@@ -23,12 +22,6 @@ final class BindableCompressor implements AfterExpressionAnalysisInterface
 {
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {
-        $unpack = fn(Union $from): Option => pipe(
-            O\some($from),
-            O\flatMap(PsalmApi::$types->asSingleAtomicOf(TGenericObject::class)),
-            O\filter(fn(TGenericObject $generic) => Option::class === $generic->value),
-        );
-
         return pipe(
             $event,
             BindablePropertiesCompressor::compress(
@@ -37,24 +30,16 @@ final class BindableCompressor implements AfterExpressionAnalysisInterface
                     'Fp4\PHP\Module\Option\let',
                 ],
                 unpack: fn(Union $original) => pipe(
-                    $unpack($original),
+                    O\some($original),
+                    O\flatMap(PsalmApi::$types->asSingleGenericObjectOf(Option::class)),
                     O\flatMap(fn(TGenericObject $option) => L\first($option->type_params)),
                 ),
-                pack: function(array $properties, Union $original) use ($unpack) {
-                    $bindable = new Union([
-                        new TGenericObject(Bindable::class, [
-                            new Union([
-                                new TObjectWithProperties($properties),
-                            ]),
-                        ]),
-                    ]);
-
-                    return pipe(
-                        $unpack($original),
-                        O\map(fn(TGenericObject $option) => $option->setTypeParams([$bindable])),
-                        O\map(PsalmApi::$types->asUnion(...)),
-                    );
-                },
+                pack: fn(array $properties) => pipe(
+                    PsalmApi::$create->objectWithProperties($properties),
+                    PsalmApi::$create->genericObject(Bindable::class),
+                    PsalmApi::$create->genericObject(Option::class),
+                    O\some(...),
+                ),
             ),
             constNull(...),
         );

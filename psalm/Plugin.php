@@ -12,6 +12,7 @@ use Fp4\PHP\PsalmIntegration\Module\Bindable\BindableModule;
 use Fp4\PHP\PsalmIntegration\Module\Functions\FunctionsModule;
 use Fp4\PHP\PsalmIntegration\Module\Option\OptionModule;
 use Fp4\PHP\PsalmIntegration\Module\Psalm\PsalmModule;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\Create\CreateType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Types;
 use Psalm\Internal\Analyzer\ProjectAnalyzer;
@@ -29,6 +30,7 @@ final class Plugin implements PluginEntryPointInterface
     public function __invoke(RegistrationInterface $registration, ?SimpleXMLElement $config = null): void
     {
         PsalmApi::$types = new Types();
+        PsalmApi::$create = new CreateType();
         PsalmApi::$codebase = ProjectAnalyzer::$instance->getCodebase();
 
         $register = self::register($registration);

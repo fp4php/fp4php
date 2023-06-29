@@ -10,7 +10,6 @@ use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefineTypeParams;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
-use Psalm\Type;
 use Psalm\Type\Atomic\TKeyedArray;
 use Psalm\Type\Union;
 
@@ -32,9 +31,7 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
                     O\filter(fn(TKeyedArray $keyed) => $keyed->isGenericList()),
                     O\map(fn(TKeyedArray $keyed) => $keyed->getGenericValueType()),
                 ),
-                toReturnType: fn(RefineTypeParams $refined) => new Union([
-                    Type::getListAtomic($refined->value),
-                ]),
+                toReturnType: fn(RefineTypeParams $refined) => PsalmApi::$create->list($refined->value),
             ),
             constNull(...),
         );

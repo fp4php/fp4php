@@ -389,6 +389,32 @@ function all(callable $callback): Closure
     };
 }
 
+/**
+ * @template K of array-key
+ * @template A
+ * @template TIn of list<A>
+ *
+ * @param callable(A): K $callback
+ * @return Closure(list<A>): array<K, A>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-list<A>
+ *         ? non-empty-array<K, A>
+ *         : array<K, A>
+ * ))
+ */
+function reindex(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $dictionary = [];
+
+        foreach ($list as $a) {
+            $dictionary[$callback($a)] = $a;
+        }
+
+        return $dictionary;
+    };
+}
+
 // endregion: terminal ops
 
 // region: bindable

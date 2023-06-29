@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\Module\Functions;
 
-use Closure;
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Psalm\Plugin\DynamicFunctionStorage;
-use Psalm\Plugin\DynamicTemplateProvider;
 use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
 use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
-use Psalm\Storage\FunctionLikeParameter;
-use Psalm\Type\Atomic;
 use Psalm\Type\Atomic\TCallable;
-use Psalm\Type\Union;
 
 use function count;
 use function Fp4\PHP\Module\Functions\pipe;
@@ -39,20 +35,31 @@ final class PipeFunctionStorageProvider implements DynamicFunctionStorageProvide
 
         $pipeCallables = pipe(
             range(start: 1, end: $argsCount - 1),
-            L\map(self::createABCallable($templates)),
+            L\map(fn(int $offset) => PsalmApi::$create->callableAtomic(
+                params: pipe(
+                    $templates->createTemplate("T{$offset}"),
+                    PsalmApi::$create->param('input'),
+                ),
+                return: pipe(
+                    $templates->createTemplate('T'.($offset + 1)),
+                    PsalmApi::$create->union(...),
+                ),
+            )),
         );
 
         $storage = new DynamicFunctionStorage();
 
         $storage->params = pipe(
             $pipeCallables,
-            L\mapKV(fn(int $offset, TCallable $callable) => self::createParam(
-                name: "fn_{$offset}",
-                type: $callable,
-            )),
-            L\prepend(self::createParam(
-                name: 'pipe_input',
-                type: $templates->createTemplate('T1'),
+            L\mapKV(
+                fn(int $offset, TCallable $callable) => pipe(
+                    $callable,
+                    PsalmApi::$create->param("fn_{$offset}"),
+                ),
+            ),
+            L\prepend(pipe(
+                $templates->createTemplate('T1'),
+                PsalmApi::$create->param('pipe_input'),
             )),
         );
 
@@ -70,33 +77,5 @@ final class PipeFunctionStorageProvider implements DynamicFunctionStorageProvide
         );
 
         return $storage;
-    }
-
-    /**
-     * @return Closure(int $offset): TCallable
-     */
-    private static function createABCallable(DynamicTemplateProvider $templates): Closure
-    {
-        return fn(int $offset) => new TCallable(
-            value: 'callable',
-            params: [
-                self::createParam(
-                    name: 'input',
-                    type: $templates->createTemplate("T{$offset}"),
-                ),
-            ],
-            return_type: new Union([
-                $templates->createTemplate('T'.($offset + 1)),
-            ]),
-        );
-    }
-
-    private static function createParam(string $name, Atomic $type): FunctionLikeParameter
-    {
-        return new FunctionLikeParameter(
-            name: $name,
-            by_ref: false,
-            type: new Union([$type]),
-        );
     }
 }

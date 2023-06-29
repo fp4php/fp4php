@@ -32,9 +32,11 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
                     O\flatMap(PsalmApi::$types->asSingleGenericObjectOf(Option::class)),
                     O\flatMap(fn(TGenericObject $option) => L\first($option->type_params)),
                 ),
-                toReturnType: fn(RefineTypeParams $refined) => new Union([
-                    new TGenericObject(Option::class, [$refined->value]),
-                ]),
+                toReturnType: fn(RefineTypeParams $refined) => pipe(
+                    $refined->value,
+                    PsalmApi::$create->genericObjectAtomic(Option::class),
+                    PsalmApi::$create->union(...),
+                ),
             ),
             constNull(...),
         );
