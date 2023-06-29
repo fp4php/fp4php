@@ -43,8 +43,8 @@ final class FirstClassCallablePredicate
             O\bindable(),
             O\bind(
                 variables: fn() => pipe(
-                    $e->getExpr(),
-                    Ev\proveOf(FuncCall::class),
+                    O\some($e->getExpr()),
+                    O\filterOf(FuncCall::class),
                     O\map(fn(FuncCall $call): mixed => $call->name->getAttribute('resolvedName')),
                     O\flatMap(Ev\proveString(...)),
                     O\map(fn($functionId) => preg_match('/^.+kv$/mi', $functionId)
@@ -52,8 +52,8 @@ final class FirstClassCallablePredicate
                         : [new VirtualVariable('val')]),
                 ),
                 callArgs: fn() => pipe(
-                    $e->getExpr(),
-                    Ev\proveOf(FuncCall::class),
+                    O\some($e->getExpr()),
+                    O\filterOf(FuncCall::class),
                     O\filter(fn(FuncCall $call) => !$call->isFirstClassCallable()),
                     O\map(fn(FuncCall $call) => $call->getArgs()),
                 ),
@@ -62,7 +62,7 @@ final class FirstClassCallablePredicate
                 L\fromIterable($i->callArgs),
                 L\first(...),
                 O\map(fn(Arg $arg) => $arg->value),
-                O\flatMap(Ev\proveOf([FuncCall::class, MethodCall::class, StaticCall::class])),
+                O\filterOf([FuncCall::class, MethodCall::class, StaticCall::class]),
                 O\filter(fn(CallLike $call) => $call->isFirstClassCallable()),
                 O\flatMap(fn(CallLike $call) => self::createVirtualCall(
                     source: $e->getStatementsSource(),
@@ -95,14 +95,14 @@ final class FirstClassCallablePredicate
         $functionId = O\first(
             // from FuncCall
             fn() => pipe(
-                $originalCall,
-                Ev\proveOf(FuncCall::class),
+                O\some($originalCall),
+                O\filterOf(FuncCall::class),
                 O\flatMap(fn(FuncCall $call) => pipe(
                     $call->name->getAttribute('resolvedName'),
                     O\fromNullable(...),
                     O\orElse(fn() => pipe(
-                        $call->name,
-                        Ev\proveOf(Name::class),
+                        O\some($call->name),
+                        O\filterOf(Name::class),
                         O\map(fn(Name $name) => $name->toString()),
                     )),
                     O\flatMap(Ev\proveNonEmptyString(...)),
@@ -113,19 +113,19 @@ final class FirstClassCallablePredicate
                 O\bindable(),
                 O\bind(
                     call: fn() => pipe(
-                        $originalCall,
-                        Ev\proveOf(MethodCall::class),
+                        O\some($originalCall),
+                        O\filterOf(MethodCall::class),
                     ),
                     class: fn($i) => pipe(
-                        $i->call->var,
-                        PsalmApi::$types->getExprType($source),
+                        O\some($i->call->var),
+                        O\flatMap(PsalmApi::$types->getExprType($source)),
                         O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
-                        O\flatMap(Ev\proveOf(TNamedObject::class)),
+                        O\filterOf(TNamedObject::class),
                         O\map(fn(TNamedObject $object) => $object->value),
                     ),
                     method: fn($i) => pipe(
-                        $i->call->name,
-                        Ev\proveOf(Identifier::class),
+                        O\some($i->call->name),
+                        O\filterOf(Identifier::class),
                         O\map(fn(Identifier $id) => $id->toString()),
                     ),
                 ),
@@ -136,12 +136,12 @@ final class FirstClassCallablePredicate
                 O\bindable(),
                 O\bind(
                     call: fn() => pipe(
-                        $originalCall,
-                        Ev\proveOf(StaticCall::class),
+                        O\some($originalCall),
+                        O\filterOf(StaticCall::class),
                     ),
                     class: fn($i) => pipe(
-                        $i->call->class,
-                        Ev\proveOf(Name::class),
+                        O\some($i->call->class),
+                        O\filterOf(Name::class),
                         O\map(fn(Name $name) => $name->toString()),
                         O\map(fn(string $name) => match ($name) {
                             'self', 'static', 'parent' => $context->self,
@@ -149,8 +149,8 @@ final class FirstClassCallablePredicate
                         }),
                     ),
                     method: fn($i) => pipe(
-                        $i->call->name,
-                        Ev\proveOf(Identifier::class),
+                        O\some($i->call->name),
+                        O\filterOf(Identifier::class),
                         O\map(fn(Identifier $id) => $id->toString()),
                     ),
                 ),

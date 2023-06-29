@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
-use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
@@ -16,6 +15,7 @@ use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\Event\MethodReturnTypeProviderEvent;
 use Psalm\StatementsSource;
 use Psalm\Type\Atomic;
+use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Union;
 
 use function Fp4\PHP\Module\Functions\pipe;
@@ -75,23 +75,23 @@ final class Types
     public function asSingleAtomicOf(string|array $class): Closure
     {
         return fn(Union $type) => pipe(
-            $type,
-            PsalmApi::$types->asSingleAtomic(...),
-            O\flatMap(Ev\proveOf($class)),
+            O\some($type),
+            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
+            O\filterOf($class),
         );
     }
 
     /**
      * @param class-string|non-empty-list<class-string> $class
-     * @return Closure(Union): Option<Atomic\TGenericObject>
+     * @return Closure(Union): Option<TGenericObject>
      */
     public function asSingleGenericObjectOf(string|array $class): Closure
     {
         return fn(Union $type) => pipe(
-            $type,
-            PsalmApi::$types->asSingleAtomic(...),
-            O\flatMap(Ev\proveOf(Atomic\TGenericObject::class)),
-            O\filter(fn(Atomic\TGenericObject $object) => in_array($object->value, is_array($class) ? $class : [$class], true)),
+            O\some($type),
+            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
+            O\filterOf(TGenericObject::class),
+            O\filter(fn(TGenericObject $object) => in_array($object->value, is_array($class) ? $class : [$class], true)),
         );
     }
 

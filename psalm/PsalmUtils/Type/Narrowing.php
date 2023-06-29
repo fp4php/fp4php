@@ -30,8 +30,8 @@ final class Narrowing
     public static function assertNarrowed(AfterExpressionAnalysisEvent $event, array $names): Option
     {
         return pipe(
-            $event->getExpr(),
-            Ev\proveOf(FuncCall::class),
+            O\some($event->getExpr()),
+            O\filterOf(FuncCall::class),
             O\filter(fn(FuncCall $c) => pipe(
                 $names,
                 L\contains($c->name->getAttribute('resolvedName')),

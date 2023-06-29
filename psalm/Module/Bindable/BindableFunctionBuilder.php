@@ -6,7 +6,6 @@ namespace Fp4\PHP\PsalmIntegration\Module\Bindable;
 
 use Fp4\PHP\Module\ArrayDictionary as D;
 use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Bindable;
@@ -59,8 +58,8 @@ final class BindableFunctionBuilder
         return pipe(
             $args,
             L\traverseOption(fn(Arg $arg) => pipe(
-                $arg->name,
-                Ev\proveOf(Identifier::class),
+                O\some($arg->name),
+                O\filterOf(Identifier::class),
                 O\map($self->nextFunction(...)),
             )),
             O\map(function(array $params) use ($self) {

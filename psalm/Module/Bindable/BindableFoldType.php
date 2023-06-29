@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\Module\Bindable;
 
 use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Bindable;
@@ -26,11 +25,11 @@ final class BindableFoldType
         return pipe(
             $type,
             PsalmApi::$types->asSingleAtomic(...),
-            O\flatMap(Ev\proveOf(TGenericObject::class)),
+            O\filterOf(TGenericObject::class),
             O\filter(fn(TGenericObject $bindable) => Bindable::class === $bindable->value),
             O\map(fn(TGenericObject $bindable) => pipe(
                 O\fromNullable($bindable->extra_types[Bindable::class.'<object>'] ?? null),
-                O\flatMap(Ev\proveOf(TGenericObject::class)),
+                O\filterOf(TGenericObject::class),
                 O\map(fn(TGenericObject $intersection) => [
                     ...self::getProperties($bindable),
                     ...self::getProperties($intersection),
@@ -49,7 +48,7 @@ final class BindableFoldType
             $bindable->type_params,
             L\first(...),
             O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
-            O\flatMap(Ev\proveOf(TObjectWithProperties::class)),
+            O\filterOf(TObjectWithProperties::class),
             O\map(fn(TObjectWithProperties $object) => $object->properties),
             O\getOrCall(fn() => []),
         );

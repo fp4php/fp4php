@@ -24,8 +24,8 @@ final class PredicateExtractor
     public static function extract(string $function): Closure
     {
         return fn(AfterExpressionAnalysisEvent $event) => pipe(
-            $event->getExpr(),
-            Ev\proveOf(Expr\FuncCall::class),
+            O\some($event->getExpr()),
+            O\filterOf(Expr\FuncCall::class),
             O\filter(fn(Expr\FuncCall $call) => $call->name->getAttribute('resolvedName') === $function),
             O\filter(fn(Expr\FuncCall $call) => !$call->isFirstClassCallable()),
             O\flatMap(fn(Expr\FuncCall $call) => pipe(
@@ -33,7 +33,7 @@ final class PredicateExtractor
                 L\first(...),
             )),
             O\map(fn(Arg $arg) => $arg->value),
-            O\flatMap(Ev\proveOf([Expr\Closure::class, Expr\ArrowFunction::class])),
+            O\filterOf([Expr\Closure::class, Expr\ArrowFunction::class]),
             O\orElse(fn() => FirstClassCallablePredicate::mock($event)),
         );
     }

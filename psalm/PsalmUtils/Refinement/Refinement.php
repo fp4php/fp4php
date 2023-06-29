@@ -105,7 +105,7 @@ final class Refinement
             )),
             O\flatMap(L\first(...)),
             O\map(fn(Param $param) => $param->var),
-            O\flatMap(Ev\proveOf(Variable::class)),
+            O\filterOf(Variable::class),
             O\map(fn(Variable $v) => $v->name),
             O\flatMap(Ev\proveString(...)),
             O\map(S\prepend('$')),
@@ -123,7 +123,7 @@ final class Refinement
             O\some(...),
             O\flatMap(L\last(...)),
             O\map(fn(Param $param) => $param->var),
-            O\flatMap(Ev\proveOf(Variable::class)),
+            O\filterOf(Variable::class),
             O\flatMap(fn(Variable $variable) => Ev\proveString($variable->name)),
             O\map(S\prepend('$')),
         );
@@ -140,7 +140,7 @@ final class Refinement
             O\flatMap(fn($stmts) => pipe(
                 L\fromIterable($stmts),
                 L\first(...),
-                O\flatMap(Ev\proveOf(Return_::class)),
+                O\filterOf(Return_::class),
                 O\flatMap(fn(Return_ $return) => O\fromNullable($return->expr)),
             )),
         );

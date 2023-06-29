@@ -41,7 +41,7 @@ final class TypeCheckerHandler implements AfterExpressionAnalysisInterface
             O\bind(
                 expresion: fn() => pipe(
                     O\some($event->getExpr()),
-                    O\flatMap(Ev\proveOf(FuncCall::class)),
+                    O\filterOf(FuncCall::class),
                     O\filter(fn(FuncCall $c) => !$c->isFirstClassCallable()),
                 ),
                 function: fn($i) => pipe(

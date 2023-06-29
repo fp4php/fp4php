@@ -25,8 +25,8 @@ final class Widening
     public static function widen(AfterExpressionAnalysisEvent $event, array $names): Option
     {
         return pipe(
-            $event->getExpr(),
-            Ev\proveOf([FuncCall::class, ConstFetch::class]),
+            O\some($event->getExpr()),
+            O\filterOf([FuncCall::class, ConstFetch::class]),
             O\filter(fn(FuncCall|ConstFetch $c) => pipe(
                 $names,
                 L\contains($c->name->getAttribute('resolvedName')),
