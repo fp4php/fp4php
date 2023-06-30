@@ -250,6 +250,31 @@ function flatMap(callable $callback): Closure
 
 /**
  * @template A
+ *
+ * @param Option<Option<A>> $option
+ * @return Option<A>
+ */
+function flatten(Option $option): Option
+{
+    return isSome($option) ? $option->value : none;
+}
+
+/**
+ * @template A
+ * @template B
+ *
+ * @param A $value
+ * @return Closure(Option<Closure(A): B>): Option<B>
+ */
+function ap(mixed $value): Closure
+{
+    return fn(Option $option) => isSome($option)
+        ? some(($option->value)($value))
+        : none;
+}
+
+/**
+ * @template A
  * @template B
  *
  * @param callable(): Option<B> $callback

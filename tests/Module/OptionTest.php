@@ -6,6 +6,7 @@ namespace Fp4\PHP\Test\Module;
 
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\Psalm as PsalmType;
+use Fp4\PHP\Module\PHPUnit as Assert;
 use Fp4\PHP\Type\None;
 use Fp4\PHP\Type\Option;
 use Fp4\PHP\Type\Some;
@@ -287,6 +288,45 @@ final class OptionTest extends TestCase
             O\flatMap(fn($i) => 0 !== $i ? O\some($i + 42) : O\none),
             O\getOrNull(...),
         ));
+    }
+
+    #[Test]
+    public static function flatten(): void
+    {
+        pipe(
+            O\none,
+            O\flatten(...),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            O\some(O\none),
+            O\flatten(...),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            O\some(O\some(42)),
+            O\flatten(...),
+            PsalmType\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
+    }
+
+    #[Test]
+    public static function ap(): void
+    {
+        pipe(
+            O\none,
+            O\ap(42),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            O\some(fn(int $a) => $a + 1),
+            O\ap(41),
+            Assert\equals(O\some(42)),
+        );
     }
 
     #[Test]
