@@ -51,12 +51,10 @@ final class PipeFunctionStorageProvider implements DynamicFunctionStorageProvide
 
         $storage->params = pipe(
             $pipeCallables,
-            L\mapKV(
-                fn(int $offset, TCallable $callable) => pipe(
-                    $callable,
-                    PsalmApi::$create->param("fn_{$offset}"),
-                ),
-            ),
+            L\mapKV(fn(int $offset, TCallable $callable) => pipe(
+                $callable,
+                PsalmApi::$create->param("fn_{$offset}"),
+            )),
             L\prepend(pipe(
                 $templates->createTemplate('T1'),
                 PsalmApi::$create->param('pipe_input'),
