@@ -98,8 +98,7 @@ final class FirstClassCallablePredicate
                 O\some($originalCall),
                 O\filterOf(FuncCall::class),
                 O\flatMap(fn(FuncCall $call) => pipe(
-                    $call->name->getAttribute('resolvedName'),
-                    O\fromNullable(...),
+                    O\fromNullable($call->name->getAttribute('resolvedName')),
                     O\orElse(fn() => pipe(
                         O\some($call->name),
                         O\filterOf(Name::class),
@@ -118,8 +117,8 @@ final class FirstClassCallablePredicate
                     ),
                     class: fn($i) => pipe(
                         O\some($i->call->var),
-                        O\flatMap(PsalmApi::$types->getExprType($source)),
-                        O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
+                        O\flatMap(PsalmApi::$type->get($source)),
+                        O\flatMap(PsalmApi::$cast->toSingleAtomic(...)),
                         O\filterOf(TNamedObject::class),
                         O\map(fn(TNamedObject $object) => $object->value),
                     ),
@@ -163,16 +162,13 @@ final class FirstClassCallablePredicate
             L\map(fn(VirtualVariable $v) => new VirtualArg($v)),
         );
 
-        return pipe(
-            $functionId,
-            O\flatMap(
-                fn($id) => self::withCustomAssertions($id, $source, match (true) {
-                    $originalCall instanceof FuncCall => new VirtualFuncCall($originalCall->name, $args),
-                    $originalCall instanceof MethodCall => new VirtualMethodCall($originalCall->var, $originalCall->name, $args),
-                    $originalCall instanceof StaticCall => new VirtualStaticCall($originalCall->class, $originalCall->name, $args),
-                }),
-            ),
-        );
+        return pipe($functionId, O\flatMap(
+            fn($id) => self::withCustomAssertions($id, $source, match (true) {
+                $originalCall instanceof FuncCall => new VirtualFuncCall($originalCall->name, $args),
+                $originalCall instanceof MethodCall => new VirtualMethodCall($originalCall->var, $originalCall->name, $args),
+                $originalCall instanceof StaticCall => new VirtualStaticCall($originalCall->class, $originalCall->name, $args),
+            }),
+        ));
     }
 
     /**

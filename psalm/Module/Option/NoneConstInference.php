@@ -27,7 +27,7 @@ final class NoneConstInference implements AfterExpressionAnalysisInterface
                 PsalmApi::$create->genericObjectAtomic(Option::class),
                 PsalmApi::$create->union(...),
             )),
-            O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
+            O\tap(PsalmApi::$type->set($event->getExpr(), $event)),
             constNull(...),
         );
     }

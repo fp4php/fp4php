@@ -50,8 +50,8 @@ final class TypeCheckerHandler implements AfterExpressionAnalysisInterface
                 ),
                 inferredType: fn($i) => pipe(
                     O\some($i->expresion),
-                    O\flatMap(PsalmApi::$types->getExprType($event)),
-                    O\flatMap(PsalmApi::$types->asSingleAtomicOf(TClosure::class)),
+                    O\flatMap(PsalmApi::$type->get($event)),
+                    O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TClosure::class)),
                     O\map(fn(TClosure $closure) => $closure->return_type ?? Type::getMixed()),
                 ),
                 expectedType: fn($i) => pipe(
@@ -61,8 +61,8 @@ final class TypeCheckerHandler implements AfterExpressionAnalysisInterface
                         L\first(...),
                     )),
                     O\map(fn(Arg $arg) => $arg->value),
-                    O\flatMap(PsalmApi::$types->getExprType($event)),
-                    O\flatMap(PsalmApi::$types->asSingleAtomicOf(TLiteralString::class)),
+                    O\flatMap(PsalmApi::$type->get($event)),
+                    O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TLiteralString::class)),
                     O\flatMap(self::parseType($source)),
                 ),
             ),

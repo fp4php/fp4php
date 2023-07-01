@@ -51,15 +51,15 @@ final class FilterRefinement
             O\map(fn(Refinement $refinement) => $refinement->refine()),
             O\flatMap(fn(RefineTypeParams $refined) => pipe(
                 O\some($event->getExpr()),
-                O\flatMap(PsalmApi::$types->getExprType($event)),
-                O\flatMap(PsalmApi::$types->asSingleAtomicOf(TClosure::class)),
+                O\flatMap(PsalmApi::$type->get($event)),
+                O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TClosure::class)),
                 O\map(fn(TClosure $closure) => $closure->replace(
                     params: $closure->params,
                     return_type: $toReturnType($refined, $closure->return_type ?? Type::getMixed()),
                 )),
                 O\map(PsalmApi::$create->union(...)),
             )),
-            O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
+            O\tap(PsalmApi::$type->set($event->getExpr(), $event)),
         );
     }
 }

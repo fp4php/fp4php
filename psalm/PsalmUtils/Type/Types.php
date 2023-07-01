@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
-use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
-use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
 use Psalm\NodeTypeProvider;
@@ -16,21 +14,27 @@ use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\Event\MethodReturnTypeProviderEvent;
 use Psalm\StatementsSource;
 use Psalm\Type\Atomic;
-use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Union;
 
 use function Fp4\PHP\Module\Functions\pipe;
-use function is_array;
 
+/**
+ * @psalm-type Score
+ *     = FunctionReturnTypeProviderEvent
+ *     | MethodReturnTypeProviderEvent
+ *     | AfterExpressionAnalysisEvent
+ *     | StatementsSource
+ */
 final class Types
 {
     /**
+     * @param Score $toScope
      * @return Closure(Union|Atomic): void
      */
-    public function setExprType(Expr $expr, FunctionReturnTypeProviderEvent|MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
+    public function set(Expr $expr, object $toScope): Closure
     {
-        return function(Union|Atomic $type) use ($expr, $scope): void {
-            self::getNodeTypeProvider($scope)->setType(
+        return function(Union|Atomic $type) use ($expr, $toScope): void {
+            self::getNodeTypeProvider($toScope)->setType(
                 node: $expr,
                 type: $type instanceof Atomic ? new Union([$type]) : $type,
             );
@@ -38,67 +42,22 @@ final class Types
     }
 
     /**
+     * @param Score $fromScope
      * @return Closure(Expr): Option<Union>
      */
-    public function getExprType(FunctionReturnTypeProviderEvent|MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): Closure
+    public function get(object $fromScope): Closure
     {
         return fn(Expr $expr) => pipe(
             $expr,
-            self::getNodeTypeProvider($scope)->getType(...),
+            self::getNodeTypeProvider($fromScope)->getType(...),
             O\fromNullable(...),
         );
     }
 
-    public function asNonLiteralType(Union $type): Union
-    {
-        return AsNonLiteralType::transform($type);
-    }
-
     /**
-     * @return Option<Atomic>
+     * @param Score $scope
      */
-    public function asSingleAtomic(Union $type): Option
-    {
-        return pipe(
-            O\some($type),
-            O\filter(fn(Union $t) => $t->isSingle()),
-            O\map(fn(Union $t) => $t->getSingleAtomic()),
-        );
-    }
-
-    /**
-     * @template TAtomic of Atomic
-     *
-     * @param class-string<TAtomic>|non-empty-list<class-string<TAtomic>> $class
-     * @return Closure(Union): Option<TAtomic>
-     */
-    public function asSingleAtomicOf(string|array $class): Closure
-    {
-        return fn(Union $type) => pipe(
-            O\some($type),
-            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
-            O\filterOf($class),
-        );
-    }
-
-    /**
-     * @param class-string|non-empty-list<class-string> $class
-     * @return Closure(Union): Option<TGenericObject>
-     */
-    public function asSingleGenericObjectOf(string|array $class): Closure
-    {
-        return fn(Union $type) => pipe(
-            O\some($type),
-            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
-            O\filterOf(TGenericObject::class),
-            O\filter(fn(TGenericObject $object) => pipe(
-                is_array($class) ? $class : [$class],
-                L\contains($object->value),
-            )),
-        );
-    }
-
-    private static function getNodeTypeProvider(FunctionReturnTypeProviderEvent|MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): NodeTypeProvider
+    private static function getNodeTypeProvider(object $scope): NodeTypeProvider
     {
         return match (true) {
             $scope instanceof StatementsSource => $scope

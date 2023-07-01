@@ -33,9 +33,9 @@ final class RefineTypeParams
             O\bindable(),
             O\bind(
                 closureReturnType: fn() => pipe(
-                    $event->getExpr(),
-                    PsalmApi::$types->getExprType($event),
-                    O\flatMap(PsalmApi::$types->asSingleAtomicOf(TClosure::class)),
+                    O\some($event->getExpr()),
+                    O\flatMap(PsalmApi::$type->get($event)),
+                    O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TClosure::class)),
                     O\flatMap(fn(TClosure $closure) => O\fromNullable($closure->return_type)),
                 ),
                 keyType: fn($i) => $extractKey($i->closureReturnType),

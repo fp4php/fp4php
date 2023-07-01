@@ -31,9 +31,9 @@ final class Widening
                 L\contains($c->name->getAttribute('resolvedName')),
             )),
             O\filter(fn(FuncCall|ConstFetch $c) => $c instanceof ConstFetch || !$c->isFirstClassCallable()),
-            O\flatMap(PsalmApi::$types->getExprType($event)),
-            O\map(PsalmApi::$types->asNonLiteralType(...)),
-            O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
+            O\flatMap(PsalmApi::$type->get($event)),
+            O\map(PsalmApi::$cast->toNonLiteralType(...)),
+            O\tap(PsalmApi::$type->set($event->getExpr(), $event)),
             O\map(constVoid(...)),
         );
     }

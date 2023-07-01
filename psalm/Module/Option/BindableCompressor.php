@@ -31,7 +31,7 @@ final class BindableCompressor implements AfterExpressionAnalysisInterface
                 ],
                 unpack: fn(Union $original) => pipe(
                     O\some($original),
-                    O\flatMap(PsalmApi::$types->asSingleGenericObjectOf(Option::class)),
+                    O\flatMap(PsalmApi::$cast->toSingleGenericObjectOf(Option::class)),
                     O\flatMap(fn(TGenericObject $option) => L\first($option->type_params)),
                 ),
                 pack: fn(array $properties) => pipe(

@@ -41,12 +41,12 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
             function: $function,
             getKeyType: O\some(fn(Union $inferred) => pipe(
                 O\some($inferred),
-                O\flatMap(PsalmApi::$types->asSingleAtomicOf(TArray::class)),
+                O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TArray::class)),
                 O\map(fn(TArray $keyed) => $keyed->type_params[0]),
             )),
             getValType: fn(Union $inferred) => pipe(
                 O\some($inferred),
-                O\flatMap(PsalmApi::$types->asSingleAtomicOf(TArray::class)),
+                O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TArray::class)),
                 O\map(fn(TArray $keyed) => $keyed->type_params[1]),
             ),
             toReturnType: fn(RefineTypeParams $refined) => PsalmApi::$create->array($refined->key, $refined->value),

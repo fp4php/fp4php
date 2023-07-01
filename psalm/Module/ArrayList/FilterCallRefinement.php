@@ -27,7 +27,7 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
                 getKeyType: O\none,
                 getValType: fn(Union $inferred) => pipe(
                     O\some($inferred),
-                    O\flatMap(PsalmApi::$types->asSingleAtomicOf(TKeyedArray::class)),
+                    O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TKeyedArray::class)),
                     O\filter(fn(TKeyedArray $keyed) => $keyed->isGenericList()),
                     O\map(fn(TKeyedArray $keyed) => $keyed->getGenericValueType()),
                 ),

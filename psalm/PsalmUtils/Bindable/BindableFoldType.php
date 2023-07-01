@@ -24,7 +24,7 @@ final class BindableFoldType
     {
         return pipe(
             $type,
-            PsalmApi::$types->asSingleAtomic(...),
+            PsalmApi::$cast->toSingleAtomic(...),
             O\filterOf(TGenericObject::class),
             O\filter(fn(TGenericObject $bindable) => Bindable::class === $bindable->value),
             O\map(fn(TGenericObject $bindable) => pipe(
@@ -47,7 +47,7 @@ final class BindableFoldType
         return pipe(
             $bindable->type_params,
             L\first(...),
-            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
+            O\flatMap(PsalmApi::$cast->toSingleAtomic(...)),
             O\filterOf(TObjectWithProperties::class),
             O\map(fn(TObjectWithProperties $object) => $object->properties),
             O\getOrCall(fn() => []),

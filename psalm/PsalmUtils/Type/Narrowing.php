@@ -41,7 +41,7 @@ final class Narrowing
                 L\first(...),
                 O\map(fn(Arg $arg) => $arg->value),
             )),
-            O\flatMap(PsalmApi::$types->getExprType($event)),
+            O\flatMap(PsalmApi::$type->get($event)),
             O\filter(fn(Union $type) => !self::isLiteral($type)),
             O\tap(fn(Union $type) => self::raiseIssueIfTypeIsNotLiteral($type, $event)),
             O\map(constVoid(...)),
@@ -58,7 +58,7 @@ final class Narrowing
 
         $isNonGenericKeyedArray = fn(): Option => pipe(
             O\some($type),
-            O\flatMap(PsalmApi::$types->asSingleAtomicOf(TKeyedArray::class)),
+            O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TKeyedArray::class)),
             O\filter(fn(TKeyedArray $keyed) => !$keyed->isGenericList()),
             O\map(fn() => true),
         );

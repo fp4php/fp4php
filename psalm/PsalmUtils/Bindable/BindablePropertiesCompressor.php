@@ -35,11 +35,11 @@ final class BindablePropertiesCompressor
                 L\from($functions),
                 L\contains($call->name->getAttribute('resolvedName')),
             )),
-            O\flatMap(PsalmApi::$types->getExprType($event)),
-            O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
+            O\flatMap(PsalmApi::$type->get($event)),
+            O\flatMap(PsalmApi::$cast->toSingleAtomic(...)),
             O\filterOf(TClosure::class),
             O\flatMap(self::inferClosure($unpack, $pack)),
-            O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
+            O\tap(PsalmApi::$type->set($event->getExpr(), $event)),
             O\map(constVoid(...)),
         );
     }

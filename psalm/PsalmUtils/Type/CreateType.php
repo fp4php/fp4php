@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Create;
+namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
 use Fp4\PHP\Module\ArrayDictionary as D;

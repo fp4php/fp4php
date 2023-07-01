@@ -55,8 +55,8 @@ final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInt
             O\map(fn(Arg $arg) => $arg->value),
             O\filterOf(VirtualString::class),
             O\flatMap(fn(VirtualString $string) => pipe(
-                $call->var,
-                PsalmApi::$types->getExprType($event),
+                O\some($call->var),
+                O\flatMap(PsalmApi::$type->get($event)),
                 O\flatMap(BindableFoldType::for(...)),
                 O\flatMap(self::getPropertyFromBindableScope($string->value, $event)),
             )),
@@ -68,10 +68,9 @@ final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInt
      */
     private static function getPropertyFromBindableScope(string $property, MethodReturnTypeProviderEvent $event): Closure
     {
-        return fn(array $context) => pipe(
-            $context,
-            D\get($property),
-            O\orElse(fn() => PropertyIsNotDefinedInScope::raise($context, $property, $event)),
+        return fn(array $context) => O\first(
+            fn() => pipe($context, D\get($property)),
+            fn() => PropertyIsNotDefinedInScope::raise($context, $property, $event),
         );
     }
 }
