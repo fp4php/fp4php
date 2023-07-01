@@ -7,6 +7,7 @@ namespace Fp4\PHP\Module\PHPUnit;
 use Closure;
 
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertInstanceOf;
 use function PHPUnit\Framework\assertSame;
 
 /**
@@ -30,6 +31,20 @@ function same(mixed $expected, string $message = ''): Closure
 {
     return function(mixed $actual) use ($expected, $message): mixed {
         assertSame($expected, $actual, $message);
+
+        return $actual;
+    };
+}
+
+/**
+ * @template T
+ * @param class-string $expected
+ * @return Closure(T): T
+ */
+function instance(string $expected, string $message = ''): Closure
+{
+    return function(mixed $actual) use ($expected, $message): mixed {
+        assertInstanceOf($expected, $actual, $message);
 
         return $actual;
     };
