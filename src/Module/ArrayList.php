@@ -138,13 +138,13 @@ function mapKV(callable $callback): Closure
  * @template A
  * @template B
  * @template TIn of list<A>
+ * @template TFlatten of array<B>
  *
- * @param callable(A): list<B> $callback
- * @return Closure(list<A>): list<B>
- * @psalm-return (Closure(TIn): (
- *     TIn is non-empty-array<A>
- *         ? non-empty-list<B>
- *         : list<B>
+ * @param callable(A): TFlatten $callback
+ * @return (Closure(TIn): (
+ *    TIn is non-empty-list<A>
+ *        ? (TFlatten is non-empty-array<B> ? non-empty-list<B> : list<B>)
+ *        : (list<B>)
  * ))
  */
 function flatMap(callable $callback): Closure
@@ -166,13 +166,13 @@ function flatMap(callable $callback): Closure
  * @template A
  * @template B
  * @template TIn of list<A>
+ * @template TFlatten of iterable<B>
  *
- * @param callable(int, A): list<B> $callback
- * @return Closure(list<A>): list<B>
- * @psalm-return (Closure(TIn): (
- *     TIn is non-empty-array<A>
- *         ? non-empty-list<B>
- *         : list<B>
+ * @param callable(int, A): TFlatten $callback
+ * @return (Closure(TIn): (
+ *    TIn is non-empty-list<A>
+ *        ? (TFlatten is non-empty-array<B> ? non-empty-list<B> : list<B>)
+ *        : (list<B>)
  * ))
  */
 function flatMapKV(callable $callback): Closure
