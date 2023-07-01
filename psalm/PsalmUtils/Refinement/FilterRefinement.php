@@ -57,7 +57,7 @@ final class FilterRefinement
                     params: $closure->params,
                     return_type: $toReturnType($refined, $closure->return_type ?? Type::getMixed()),
                 )),
-                O\map(PsalmApi::$types->asUnion(...)),
+                O\map(PsalmApi::$create->union(...)),
             )),
             O\tap(PsalmApi::$types->setExprType($event->getExpr(), $event)),
         );

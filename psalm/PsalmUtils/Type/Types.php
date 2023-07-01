@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
+use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
@@ -19,7 +20,6 @@ use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Union;
 
 use function Fp4\PHP\Module\Functions\pipe;
-use function in_array;
 use function is_array;
 
 final class Types
@@ -91,13 +91,11 @@ final class Types
             O\some($type),
             O\flatMap(PsalmApi::$types->asSingleAtomic(...)),
             O\filterOf(TGenericObject::class),
-            O\filter(fn(TGenericObject $object) => in_array($object->value, is_array($class) ? $class : [$class], true)),
+            O\filter(fn(TGenericObject $object) => pipe(
+                is_array($class) ? $class : [$class],
+                L\contains($object->value),
+            )),
         );
-    }
-
-    public function asUnion(Atomic $atomic): Union
-    {
-        return new Union([$atomic]);
     }
 
     private static function getNodeTypeProvider(FunctionReturnTypeProviderEvent|MethodReturnTypeProviderEvent|AfterExpressionAnalysisEvent|StatementsSource $scope): NodeTypeProvider
