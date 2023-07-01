@@ -44,7 +44,7 @@ function fromLiteral(mixed $value): Option
  * @template A
  *
  * @param A|null $value
- * @return ($value is null ? None : Option<A>)
+ * @return ($value is null ? Option<never> : Option<A>)
  */
 function fromNullable(mixed $value): Option
 {
@@ -55,7 +55,7 @@ function fromNullable(mixed $value): Option
  * @template A
  *
  * @param A|null $value
- * @return ($value is null ? None : Option<A>)
+ * @return ($value is null ? Option<never> : Option<A>)
  */
 function fromNullableLiteral(mixed $value): Option
 {

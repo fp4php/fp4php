@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Fp4\PHP\Test\Module;
 
 use Fp4\PHP\Module\Option as O;
-use Fp4\PHP\Module\Psalm as PsalmType;
 use Fp4\PHP\Module\PHPUnit as Assert;
+use Fp4\PHP\Module\Psalm as Type;
+use Fp4\PHP\Type\Bindable;
 use Fp4\PHP\Type\None;
 use Fp4\PHP\Type\Option;
 use Fp4\PHP\Type\Some;
@@ -16,13 +17,10 @@ use RuntimeException;
 use stdClass;
 
 use function Fp4\PHP\Module\Functions\pipe;
-use function PHPUnit\Framework\assertEquals;
-use function PHPUnit\Framework\assertFalse;
-use function PHPUnit\Framework\assertInstanceOf;
-use function PHPUnit\Framework\assertTrue;
 
 /**
  * @api
+ * @see Option, Bindable
  */
 final class OptionTest extends TestCase
 {
@@ -31,114 +29,137 @@ final class OptionTest extends TestCase
     #[Test]
     public static function some(): void
     {
-        assertInstanceOf(Option::class, O\some(42));
-        assertInstanceOf(Some::class, O\some(42));
-
-        assertEquals(42, pipe(
+        pipe(
             O\some(42),
-            PsalmType\isSameAs('Option<int>'),
+            Type\isSameAs('Option<int>'),
             O\getOrNull(...),
-        ));
+            Assert\equals(42),
+        );
     }
 
     #[Test]
     public static function none(): void
     {
-        assertInstanceOf(Option::class, O\none);
-        assertInstanceOf(None::class, O\none);
-
-        assertEquals(null, pipe(
+        pipe(
             O\none,
-            PsalmType\isSameAs('Option<never>'),
+            Type\isSameAs('Option<never>'),
             O\getOrNull(...),
-        ));
+            Assert\equals(null),
+        );
     }
 
     #[Test]
     public static function fromLiteral(): void
     {
-        assertEquals(O\some(42), pipe(
+        pipe(
             O\fromLiteral(42),
-            PsalmType\isSameAs('Option<42>'),
-        ));
+            Type\isSameAs('Option<42>'),
+            Assert\equals(O\some(42)),
+        );
 
-        assertEquals(O\some(null), pipe(
+        pipe(
             O\fromLiteral(null),
-            PsalmType\isSameAs('Option<null>'),
-        ));
+            Type\isSameAs('Option<null>'),
+            Assert\equals(O\some(null)),
+        );
     }
 
     #[Test]
     public static function fromNullable(): void
     {
-        assertEquals(O\some(42), pipe(
+        pipe(
             O\fromNullable(42),
-            PsalmType\isSameAs('Option<int>'),
-        ));
-        assertEquals(O\none, pipe(
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
+
+        pipe(
             O\fromNullable(null),
-            PsalmType\isSameAs('None'),
-        ));
+            Type\isSameAs('Option<never>'),
+            Assert\equals(O\none),
+        );
     }
 
     #[Test]
     public static function fromNullableLiteral(): void
     {
-        assertEquals(O\some(42), pipe(
+        pipe(
             O\fromNullableLiteral(42),
-            PsalmType\isSameAs('Option<42>'),
-        ));
+            Type\isSameAs('Option<42>'),
+            Assert\equals(O\some(42)),
+        );
 
-        assertEquals(O\none, pipe(
+        pipe(
             O\fromNullableLiteral(null),
-            PsalmType\isSameAs('None'),
-        ));
+            Type\isSameAs('Option<never>'),
+            Assert\equals(O\none),
+        );
     }
 
     #[Test]
     public static function tryCatch(): void
     {
-        assertEquals(null, pipe(
+        pipe(
             O\tryCatch(fn() => throw new RuntimeException()),
+            Type\isSameAs('Option<never>'),
             O\getOrNull(...),
-        ));
+            Assert\equals(null),
+        );
 
-        assertEquals(42, pipe(
+        pipe(
             O\tryCatch(fn() => 42),
+            Type\isSameAs('Option<int>'),
             O\getOrNull(...),
-        ));
+            Assert\equals(42),
+        );
     }
 
     #[Test]
     public static function first(): void
     {
-        assertEquals(O\none, O\first(
-            fn() => O\none,
-        ));
+        pipe(
+            O\first(
+                fn() => O\none,
+            ),
+            Type\isSameAs('Option<never>'),
+            Assert\equals(O\none),
+        );
 
-        assertEquals(O\none, O\first(
-            fn() => O\none,
-            fn() => O\none,
-        ));
+        pipe(
+            O\first(
+                fn() => O\none,
+                fn() => O\some(42),
+                fn() => O\some('str'),
+            ),
+            Type\isSameAs('Option<int|non-empty-string>'),
+            Assert\equals(O\some(42)),
+        );
 
-        assertEquals(O\some(42), O\first(
-            fn() => O\none,
-            fn() => O\some(42),
-            fn() => O\some(42),
-        ));
-
-        assertEquals(O\some(42), O\first(
-            fn() => O\none,
-            fn() => O\none,
-            fn() => O\some(42),
-        ));
+        pipe(
+            O\first(
+                fn() => O\none,
+                fn() => O\none,
+                fn() => O\some(42),
+            ),
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
     }
 
     #[Test]
     public static function when(): void
     {
-        assertEquals(O\none, O\when(false, fn() => 42));
-        assertEquals(O\some(42), O\when(true, fn() => 42));
+        pipe(
+            O\when(false, fn() => 42),
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            O\when(true, fn() => 42),
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
     }
 
     // endregion: constructor
@@ -148,57 +169,73 @@ final class OptionTest extends TestCase
     #[Test]
     public static function getOrNull(): void
     {
-        assertEquals(42, pipe(
+        pipe(
             O\some(42),
             O\getOrNull(...),
-        ));
+            Type\isSameAs('int|null'),
+            Assert\equals(42),
+        );
 
-        assertEquals(null, pipe(
+        pipe(
             O\none,
             O\getOrNull(...),
-        ));
+            Type\isSameAs('null'),
+            Assert\equals(null),
+        );
     }
 
     #[Test]
     public static function getOrElse(): void
     {
-        assertEquals(42, pipe(
+        pipe(
             O\some(42),
             O\getOrElse(0),
-        ));
+            Type\isSameAs('int'),
+            Assert\equals(42),
+        );
 
-        assertEquals(42, pipe(
+        pipe(
             O\none,
             O\getOrElse(42),
-        ));
+            Type\isSameAs('42'),
+            Assert\equals(42),
+        );
     }
 
     #[Test]
     public static function getOrCall(): void
     {
-        assertEquals(42, pipe(
+        pipe(
             O\some(42),
             O\getOrCall(fn() => 0),
-        ));
+            Type\isSameAs('int'),
+            Assert\equals(42),
+        );
 
-        assertEquals(42, pipe(
+        pipe(
             O\none,
             O\getOrCall(fn() => 42),
-        ));
+            Type\isSameAs('42'),
+            Assert\equals(42),
+        );
     }
 
     #[Test]
     public static function fold(): void
     {
-        assertEquals('none', pipe(
+        pipe(
             O\none,
             O\fold(fn() => 'none', fn() => 'some'),
-        ));
+            Type\isSameAs('"none"|"some"'),
+            Assert\equals('none'),
+        );
 
-        assertEquals('some: 42', pipe(
+        pipe(
             O\some(42),
             O\fold(fn() => 'none', fn($value) => "some: {$value}"),
-        ));
+            Type\isSameAs('non-empty-string'),
+            Assert\equals('some: 42'),
+        );
     }
 
     // endregion: destructors
@@ -208,29 +245,37 @@ final class OptionTest extends TestCase
     #[Test]
     public static function isSome(): void
     {
-        assertFalse(pipe(
+        pipe(
             O\none,
             O\isSome(...),
-        ));
+            Type\isSameAs('bool'),
+            Assert\equals(false),
+        );
 
-        assertTrue(pipe(
+        pipe(
             O\some(42),
             O\isSome(...),
-        ));
+            Type\isSameAs('bool'),
+            Assert\equals(true),
+        );
     }
 
     #[Test]
     public static function isNone(): void
     {
-        assertFalse(pipe(
+        pipe(
             O\some(42),
             O\isNone(...),
-        ));
+            Type\isSameAs('bool'),
+            Assert\equals(false),
+        );
 
-        assertTrue(pipe(
+        pipe(
             O\none,
             O\isNone(...),
-        ));
+            Type\isSameAs('bool'),
+            Assert\equals(true),
+        );
     }
 
     // endregion: refinements
@@ -240,17 +285,19 @@ final class OptionTest extends TestCase
     #[Test]
     public static function map(): void
     {
-        assertEquals(42, pipe(
+        pipe(
             O\some(0),
             O\map(fn($i) => $i + 42),
-            O\getOrNull(...),
-        ));
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
 
-        assertEquals(null, pipe(
+        pipe(
             O\none,
-            O\map(fn($i) => $i + 42),
-            O\getOrNull(...),
-        ));
+            O\map(fn($i) => $i),
+            Type\isSameAs('Option<never>'),
+            Assert\equals(O\none),
+        );
     }
 
     #[Test]
@@ -261,33 +308,41 @@ final class OptionTest extends TestCase
 
         $actual = new stdClass();
 
-        assertInstanceOf(Some::class, pipe(
+        pipe($expected, Assert\equals($expected));
+
+        pipe(
             O\some($actual),
-            O\tap(fn($obj) => $obj->value = 42),
-        ));
+            O\tap(fn(stdClass $obj): int => $obj->value = 42),
+            Type\isSameAs('Option<stdClass>'),
+            Assert\instance(Some::class),
+        );
 
-        assertEquals($expected, $actual);
+        pipe($expected, Assert\equals($actual));
 
-        assertInstanceOf(None::class, pipe(
+        pipe(
             O\none,
             O\tap(fn(stdClass $obj) => print_r($obj)),
-        ));
+            Type\isSameAs('Option<never>'),
+            Assert\instance(None::class),
+        );
     }
 
     #[Test]
     public static function flatMap(): void
     {
-        assertEquals(42, pipe(
+        pipe(
             O\some(0),
             O\flatMap(fn($i) => 0 === $i ? O\some($i + 42) : O\none),
-            O\getOrNull(...),
-        ));
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
 
-        assertEquals(null, pipe(
+        pipe(
             O\some(0),
             O\flatMap(fn($i) => 0 !== $i ? O\some($i + 42) : O\none),
-            O\getOrNull(...),
-        ));
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\none),
+        );
     }
 
     #[Test]
@@ -308,7 +363,7 @@ final class OptionTest extends TestCase
         pipe(
             O\some(O\some(42)),
             O\flatten(...),
-            PsalmType\isSameAs('Option<int>'),
+            Type\isSameAs('Option<int>'),
             Assert\equals(O\some(42)),
         );
     }
@@ -332,60 +387,76 @@ final class OptionTest extends TestCase
     #[Test]
     public static function orElse(): void
     {
-        assertEquals(42, pipe(
+        pipe(
             O\some(42),
             O\orElse(fn() => O\some(0)),
-            O\getOrNull(...),
-        ));
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
 
-        assertEquals(42, pipe(
+        pipe(
             O\none,
             O\orElse(fn() => O\some(42)),
-            O\getOrNull(...),
-        ));
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
+
+        pipe(
+            O\none,
+            O\orElse(fn() => O\none),
+            Type\isSameAs('Option<never>'),
+            Assert\equals(O\none),
+        );
     }
 
     #[Test]
-    public static function filter(): void
+    public static function filter(string|int $stringOrInt = 42): void
     {
-        assertInstanceOf(None::class, pipe(
-            O\some(42),
-            O\filter(fn($i) => $i > 50),
-        ));
-
-        assertInstanceOf(None::class, pipe(
-            O\none,
-            O\filter(fn($i) => $i >= 42),
-        ));
-
-        assertEquals(42, pipe(
-            O\some(42),
-            O\filter(fn($i) => $i >= 42),
-            O\getOrNull(...),
-        ));
-
-        /** @var string|int */
-        $stringOrInt = 42;
-
-        assertEquals(O\some(42), pipe(
+        pipe(
             O\some($stringOrInt),
             O\filter(is_int(...)),
-            PsalmType\isSameAs('Option<int>'),
-        ));
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
+
+        pipe(
+            O\some(42),
+            O\filter(fn($i) => $i >= 0 && $i <= 100),
+            Type\isSameAs('Option<int<0, 100>>'),
+            Assert\equals(O\some(42)),
+        );
+
+        pipe(
+            O\none,
+            O\filter(fn($i) => $i >= 42),
+            Type\isSameAs('Option<never>'),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            O\some(42),
+            O\filter(fn($i) => $i > 42),
+            Type\isSameAs('Option<int<43, max>>'),
+            Assert\equals(O\none),
+        );
     }
 
     #[Test]
     public static function filterOf(): void
     {
-        assertEquals(O\none, pipe(
+        pipe(
             O\some(42),
             O\filterOf(stdClass::class),
-        ));
+            Type\isSameAs('Option<stdClass>'),
+            Assert\equals(O\none),
+        );
 
-        assertEquals(O\some(new stdClass()), pipe(
+        pipe(
             O\some(new stdClass()),
             O\filterOf(stdClass::class),
-        ));
+            Type\isSameAs('Option<stdClass>'),
+            Assert\equals(O\some(new stdClass())),
+        );
     }
 
     // endregion: ops
@@ -395,73 +466,91 @@ final class OptionTest extends TestCase
     #[Test]
     public static function bind(): void
     {
-        assertEquals(O\none, pipe(
+        pipe(
             O\bindable(),
             O\bind(
                 a: fn() => O\some(31),
                 b: fn() => O\none,
             ),
-        ));
+            Type\isSameAs('Option<Bindable<object{a: int, b: never}>>'),
+            Assert\equals(O\none),
+        );
 
-        assertEquals(O\none, pipe(
+        pipe(
             O\bindable(),
             O\bind(
                 a: fn() => O\some(31),
                 b: fn() => O\none,
             ),
-            O\bind(c: fn() => O\some(32)),
-        ));
+            O\bind(c: fn($_) => O\some(32)),
+            Type\isSameAs('Option<Bindable<object{a: int, b: never, c: int}>>'),
+            Assert\equals(O\none),
+        );
 
-        assertEquals(O\some(42), pipe(
+        pipe(
             O\bindable(),
             O\bind(
                 a: fn() => O\some(31),
                 b: fn() => O\some(11),
             ),
+            Type\isSameAs('Option<Bindable<object{a: int, b: int}>>'),
             O\map(fn($i) => $i->a + $i->b),
-        ));
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
 
-        assertEquals(O\some(42), pipe(
+        pipe(
             O\bindable(),
             O\bind(
                 a: fn() => O\some(30),
                 b: fn() => O\some(10),
                 c: fn($i) => O\some($i->a + $i->b + 2),
             ),
+            Type\isSameAs('Option<Bindable<object{a: int, b: int, c: int}>>'),
             O\map(fn($i) => $i->c),
-        ));
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
     }
 
     #[Test]
     public static function let(): void
     {
-        assertEquals(O\none, pipe(
+        pipe(
             O\bindable(),
             O\bind(
                 a: fn() => O\some(31),
                 b: fn() => O\none,
             ),
-            O\let(c: fn() => 32),
-        ));
+            O\let(c: fn($_) => 42),
+            Type\isAssignableTo('Option<Bindable<object{a: int, b: never, c: int}>>'),
+            Assert\equals(O\none),
+        );
 
-        assertEquals(O\some(42), pipe(
+        pipe(
             O\bindable(),
             O\let(
                 a: fn() => 31,
                 b: fn() => 11,
             ),
+            Type\isAssignableTo('Option<Bindable<object{a: int, b: int}>>'),
             O\map(fn($i) => $i->a + $i->b),
-        ));
+            Type\isAssignableTo('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
 
-        assertEquals(O\some(42), pipe(
+        pipe(
             O\bindable(),
             O\let(
                 a: fn() => 30,
                 b: fn() => 10,
                 c: fn($i) => $i->a + $i->b + 2,
             ),
+            Type\isAssignableTo('Option<Bindable<object{a: int, b: int, c: int}>>'),
             O\map(fn($i) => $i->c),
-        ));
+            Type\isAssignableTo('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
     }
 
     // endregion: bindable
