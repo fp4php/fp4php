@@ -174,15 +174,11 @@ final class ArrayDictionaryTest extends TestCase
             Assert\same([1 => 2, 3 => 4, 5 => 6, 7 => 8]),
         );
 
-        /**
-         * @psalm-suppress CheckType
-         * todo: array<empty-mixed, int> instead of array<non-empty-string, int>
-         */
         pipe(
             D\from(['fst' => 1, 'snd' => '2', 'thr' => 3]),
-            Type\isSameAs('non-empty-array<non-empty-string, int|non-empty-string>'),
+            Type\isSameAs('array<string, int|string>'),
             D\filter(is_int(...)),
-            Type\isSameAs('array<non-empty-string, int>'),
+            Type\isSameAs('array<string, int>'),
             Assert\same(['fst' => 1, 'thr' => 3]),
         );
     }

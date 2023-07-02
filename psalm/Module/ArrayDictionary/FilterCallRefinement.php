@@ -6,8 +6,10 @@ namespace Fp4\PHP\PsalmIntegration\Module\ArrayDictionary;
 
 use Closure;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefinementType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefineTypeParams;
 use Fp4\PHP\Type\Option;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
@@ -42,14 +44,21 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
             getKeyType: O\some(fn(Union $inferred) => pipe(
                 O\some($inferred),
                 O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TArray::class)),
-                O\map(fn(TArray $keyed) => $keyed->type_params[0]),
+                O\flatMap(fn(TArray $keyed) => pipe(
+                    $keyed->type_params,
+                    L\first(...),
+                )),
             )),
             getValType: fn(Union $inferred) => pipe(
                 O\some($inferred),
                 O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TArray::class)),
-                O\map(fn(TArray $keyed) => $keyed->type_params[1]),
+                O\flatMap(fn(TArray $keyed) => pipe(
+                    $keyed->type_params,
+                    L\second(...),
+                )),
             ),
             toReturnType: fn(RefineTypeParams $refined) => PsalmApi::$create->array($refined->key, $refined->value),
+            type: str_ends_with($function, 'filterKV') ? RefinementType::KeyValue : RefinementType::Value,
         );
     }
 }

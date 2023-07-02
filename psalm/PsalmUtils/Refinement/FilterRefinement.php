@@ -31,6 +31,7 @@ final class FilterRefinement
         Option $getKeyType,
         callable $getValType,
         callable $toReturnType,
+        RefinementType $type,
     ): Closure {
         return fn(AfterExpressionAnalysisEvent $event) => pipe(
             O\bindable(),
@@ -42,7 +43,7 @@ final class FilterRefinement
                     : pipe($event, RefineTypeParams::from($getKeyType->value, $getValType)),
             ),
             O\map(fn($i) => new Refinement(
-                type: O\isNone($getKeyType) ? RefinementType::Value : RefinementType::KeyValue,
+                type: $type,
                 typeParams: $i->typeParams,
                 predicate: $i->predicate,
                 source: $i->source,

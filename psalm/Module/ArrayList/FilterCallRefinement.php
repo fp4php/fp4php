@@ -7,6 +7,7 @@ namespace Fp4\PHP\PsalmIntegration\Module\ArrayList;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefinementType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefineTypeParams;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
@@ -32,6 +33,7 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
                     O\map(fn(TKeyedArray $keyed) => $keyed->getGenericValueType()),
                 ),
                 toReturnType: fn(RefineTypeParams $refined) => PsalmApi::$create->list($refined->value),
+                type: RefinementType::Value,
             ),
             constNull(...),
         );
