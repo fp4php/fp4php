@@ -24,6 +24,8 @@
     },
     "files": [
       "src/Module/Str.php",
+      "src/Module/Tuple.php",
+      "src/Module/Shape.php",
       "src/Module/Evidence.php",
       "src/Module/Functions.php",
       "src/Module/Option.php",
