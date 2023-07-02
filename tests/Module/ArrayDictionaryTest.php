@@ -45,6 +45,16 @@ final class ArrayDictionaryTest extends TestCase
         );
     }
 
+    #[Test]
+    public static function fromNonEmpty(): void
+    {
+        pipe(
+            D\fromNonEmpty(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+            Type\isSameAs('non-empty-array<string, int>'),
+            Assert\same(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+        );
+    }
+
     // endregion: constructor
 
     // region: ops
