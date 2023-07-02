@@ -120,14 +120,14 @@ function mapKV(callable $callback): Closure
  * @template A
  * @template KB of array-key
  * @template B
+ * @template TIn of array<KA, A>
  * @template TFlatten of array<KB, B>
  *
  * @param callable(A): TFlatten $callback
- * @return Closure(array<KA, A>): array<KB, B>
- * @psalm-return (Closure(array<KA, A>): (
- *     TFlatten is non-empty-array<KB, B>
- *         ? non-empty-array<KB, B>
- *         : array<KB, B>
+ * @psalm-return (Closure(TIn): (
+ *    TIn is non-empty-array<KA, A>
+ *        ? (TFlatten is non-empty-array<KB, B> ? non-empty-array<KB, B> : array<KB, B>)
+ *        : (array<KB, B>)
  * ))
  */
 function flatMap(callable $callback): Closure
@@ -150,14 +150,14 @@ function flatMap(callable $callback): Closure
  * @template A
  * @template KB of array-key
  * @template B
+ * @template TIn of array<KA, A>
  * @template TFlatten of array<KB, B>
  *
  * @param callable(KA, A): TFlatten $callback
- * @return Closure(array<KA, A>): array<KB, B>
- * @psalm-return (Closure(array<KA, A>): (
- *     TFlatten is non-empty-array<KB, B>
- *         ? non-empty-array<KB, B>
- *         : array<KB, B>
+ * @psalm-return (Closure(TIn): (
+ *    TIn is non-empty-array<KA, A>
+ *        ? (TFlatten is non-empty-array<KB, B> ? non-empty-array<KB, B> : array<KB, B>)
+ *        : (array<KB, B>)
  * ))
  */
 function flatMapKV(callable $callback): Closure
