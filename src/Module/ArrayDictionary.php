@@ -37,7 +37,6 @@ function fromIterable(iterable $iterable): array
  *
  * @param array<K, A> $dictionary
  * @return array<K, A>
- * @psalm-return ($dictionary is non-empty-array<K, A> ? non-empty-array<K, A> : array<K, A>)
  */
 function from(array $dictionary): array
 {
@@ -48,11 +47,10 @@ function from(array $dictionary): array
  * @template K of array-key
  * @template A
  *
- * @param array<K, A> $dictionary
- * @return array<K, A>
- * @psalm-return ($dictionary is non-empty-array<K, A> ? non-empty-array<K, A> : array<K, A>)
+ * @param non-empty-array<K, A> $dictionary
+ * @return non-empty-array<K, A>
  */
-function fromLiteral(array $dictionary): array
+function fromNonEmpty(array $dictionary): array
 {
     return $dictionary;
 }

@@ -9,6 +9,8 @@ use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\PHPUnit as Assert;
 use Fp4\PHP\Module\Psalm as Type;
+use Fp4\PHP\Module\Str;
+use Fp4\PHP\Module\Tuple as T;
 use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -39,17 +41,17 @@ final class ArrayListTest extends TestCase
     {
         pipe(
             L\from([1, 2, 3]),
-            Type\isSameAs('non-empty-list<int>'),
+            Type\isSameAs('list<int>'),
             Assert\equals([1, 2, 3]),
         );
     }
 
     #[Test]
-    public static function fromLiteral(): void
+    public static function fromNonEmpty(): void
     {
         pipe(
-            L\fromLiteral([1, 2, 3]),
-            Type\isSameAs('list{1, 2, 3}'),
+            L\fromNonEmpty([1, 2, 3]),
+            Type\isSameAs('non-empty-list<int>'),
             Assert\equals([1, 2, 3]),
         );
     }
@@ -73,7 +75,7 @@ final class ArrayListTest extends TestCase
         pipe(
             L\from([1, 2, 3]),
             L\map($addOne),
-            Type\isSameAs('non-empty-list<int>'),
+            Type\isSameAs('list<int>'),
             Assert\equals([2, 3, 4]),
         );
     }
@@ -87,7 +89,7 @@ final class ArrayListTest extends TestCase
         pipe(
             L\from([1, 2, 3]),
             L\tap(fn($num) => $toMutate->{"key-{$num}"} = $num),
-            Type\isSameAs('non-empty-list<int>'),
+            Type\isSameAs('list<int>'),
             Assert\equals([1, 2, 3]),
         );
 
@@ -100,19 +102,19 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function mapKV(): void
     {
-        $joinWithIndex = fn(int $index, string $offset): string => "{$index}-{$offset}";
+        $joinWithIndex = fn(int $index, string $offset): string => Str\from("{$index}-{$offset}");
 
         pipe(
             L\from([]),
             L\mapKV($joinWithIndex),
-            Type\isSameAs('list<non-empty-string>'),
+            Type\isSameAs('list<string>'),
             Assert\equals([]),
         );
 
         pipe(
             L\from(['fst', 'snd', 'thr']),
             L\mapKV($joinWithIndex),
-            Type\isSameAs('non-empty-list<non-empty-string>'),
+            Type\isSameAs('list<string>'),
             Assert\equals(['0-fst', '1-snd', '2-thr']),
         );
     }
@@ -133,7 +135,7 @@ final class ArrayListTest extends TestCase
         pipe(
             L\from([1, 2, 3]),
             L\flatMap($getSiblings),
-            Type\isSameAs('non-empty-list<int>'),
+            Type\isSameAs('list<int>'),
             Assert\equals([0, 1, 2, 1, 2, 3, 2, 3, 4]),
         );
 
@@ -148,31 +150,31 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function flatMapKV(): void
     {
-        $getEmptyList = fn(int $_position, int $_i): array => /** @var list<non-empty-string> */ [];
+        $getEmptyList = fn(int $_position, int $_i): array => /** @var list<string> */ [];
         $getSiblingsAtPosition = fn(int $position, int $i): array => [
-            sprintf('%s:[%s]', $position, $i - 1),
-            sprintf('%s:[%s]', $position, $i),
-            sprintf('%s:[%s]', $position, $i + 1),
+            Str\from(sprintf('%s:[%s]', $position, $i - 1)),
+            Str\from(sprintf('%s:[%s]', $position, $i)),
+            Str\from(sprintf('%s:[%s]', $position, $i + 1)),
         ];
 
         pipe(
             L\from([]),
             L\flatMapKV($getSiblingsAtPosition),
-            Type\isSameAs('list<non-empty-string>'),
+            Type\isSameAs('list<string>'),
             Assert\equals([]),
         );
 
         pipe(
             L\from([1, 2, 3]),
             L\flatMapKV($getSiblingsAtPosition),
-            Type\isSameAs('non-empty-list<non-empty-string>'),
+            Type\isSameAs('list<string>'),
             Assert\equals(['0:[0]', '0:[1]', '0:[2]', '1:[1]', '1:[2]', '1:[3]', '2:[2]', '2:[3]', '2:[4]']),
         );
 
         pipe(
             L\from([1, 2, 3]),
             L\flatMapKV($getEmptyList),
-            Type\isSameAs('list<non-empty-string>'),
+            Type\isSameAs('list<string>'),
             Assert\equals([]),
         );
     }
@@ -183,7 +185,7 @@ final class ArrayListTest extends TestCase
         pipe(
             L\from([]),
             L\filter(fn(int $num) => 0 !== $num % 2),
-            Type\isSameAs('list<int>'),
+            Type\isSameAs('list<never>'),
             Assert\equals([]),
         );
 
@@ -401,14 +403,14 @@ final class ArrayListTest extends TestCase
         pipe(
             L\from([1, 2, 3]),
             L\traverseOption($proveEven),
-            Type\isSameAs('Option<non-empty-list<int>>'),
+            Type\isSameAs('Option<list<int>>'),
             Assert\equals(O\none),
         );
 
         pipe(
             L\from([2, 4, 6]),
             L\traverseOption($proveEven),
-            Type\isSameAs('Option<non-empty-list<int>>'),
+            Type\isSameAs('Option<list<int>>'),
             Assert\equals(O\some([2, 4, 6])),
         );
     }
@@ -476,8 +478,8 @@ final class ArrayListTest extends TestCase
                 a: fn() => L\from(['a1', 'a2', 'a3']),
                 b: fn() => L\from(['b1', 'b2']),
             ),
-            L\map(fn($i) => [$i->a, $i->b]),
-            Type\isSameAs('list<array{non-empty-string, non-empty-string}>'),
+            L\map(fn($i) => T\from([$i->a, $i->b])),
+            Type\isSameAs('list<array{string, string}>'),
             Assert\same([
                 ['a1', 'b1'],
                 ['a1', 'b2'],
@@ -509,11 +511,11 @@ final class ArrayListTest extends TestCase
                 b: fn() => L\from(['b1', 'b2']),
             ),
             L\let(
-                c: fn($_) => 'c1',
-                d: fn($_) => 'd1',
+                c: fn($_) => Str\from('c1'),
+                d: fn($_) => Str\from('d1'),
             ),
-            L\map(fn($i) => [$i->a, $i->b, $i->c, $i->d]),
-            Type\isSameAs('list<array{non-empty-string, non-empty-string, "c1", "d1"}>'),
+            L\map(fn($i) => T\from([$i->a, $i->b, $i->c, $i->d])),
+            Type\isSameAs('list<array{string, string, string, string}>'),
             Assert\same([
                 ['a1', 'b1', 'c1', 'd1'],
                 ['a1', 'b2', 'c1', 'd1'],

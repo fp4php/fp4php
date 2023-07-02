@@ -9,6 +9,7 @@ use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\Str as S;
+use Fp4\PHP\Module\Tuple as T;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
@@ -68,8 +69,8 @@ final class Refinement
                 argument: fn() => 'value' === $for
                     ? self::getValueArgumentFromPredicate($this)
                     : self::getKeyArgumentFromPredicate($this),
-                reconciled_types: fn($i) => O\fromLiteral(
-                    Reconciler::reconcileKeyedTypes(
+                reconciled_types: fn($i) => O\some(
+                    T\from(Reconciler::reconcileKeyedTypes(
                         new_types: $i->assertions,
                         active_new_types: $i->assertions,
                         existing_types: [
@@ -83,7 +84,7 @@ final class Refinement
                         statements_analyzer: $this->source,
                         template_type_map: $this->source->getTemplateTypeMap() ?: [],
                         code_location: new CodeLocation($this->source, $i->return),
-                    ),
+                    )),
                 ),
             ),
             O\flatMap(fn($i) => pipe(

@@ -21,7 +21,7 @@ final class Widening
      * @param non-empty-list<non-empty-string> $names
      * @return Option<void>
      */
-    public static function widen(AfterExpressionAnalysisEvent $event, array $names): Option
+    public static function widen(AfterExpressionAnalysisEvent $event, array $names, AsNonLiteralTypeConfig $config = new AsNonLiteralTypeConfig()): Option
     {
         return pipe(
             O\some($event->getExpr()),
@@ -32,7 +32,7 @@ final class Widening
             )),
             O\filter(fn(FuncCall|ConstFetch $c) => $c instanceof ConstFetch || !$c->isFirstClassCallable()),
             O\flatMap(PsalmApi::$type->get($event)),
-            O\map(PsalmApi::$cast->toNonLiteralType(...)),
+            O\map(fn($t) => PsalmApi::$cast->toNonLiteralType($t, $config)),
             O\tap(PsalmApi::$type->set($event->getExpr(), $event)),
             O\map(constVoid(...)),
         );

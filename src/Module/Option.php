@@ -32,34 +32,12 @@ const none = new None();
 /**
  * @template A
  *
- * @param A $value
- * @return Option<A>
- */
-function fromLiteral(mixed $value): Option
-{
-    return some($value);
-}
-
-/**
- * @template A
- *
  * @param A|null $value
  * @return ($value is null ? Option<never> : Option<A>)
  */
 function fromNullable(mixed $value): Option
 {
     return null !== $value ? some($value) : none;
-}
-
-/**
- * @template A
- *
- * @param A|null $value
- * @return ($value is null ? Option<never> : Option<A>)
- */
-function fromNullableLiteral(mixed $value): Option
-{
-    return fromNullable($value);
 }
 
 /**

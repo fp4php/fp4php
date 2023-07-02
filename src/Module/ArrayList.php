@@ -33,10 +33,10 @@ function fromIterable(iterable $iter): array
 }
 
 /**
- * @template A of list<mixed>
+ * @template A
  *
- * @param A $list
- * @return A
+ * @param list<A> $list
+ * @return ($list is array<never, never> ? list<never> : list<A>)
  */
 function from(array $list): array
 {
@@ -44,12 +44,12 @@ function from(array $list): array
 }
 
 /**
- * @template A of list<mixed>
+ * @template A
  *
- * @param A $list
- * @return A
+ * @param non-empty-list<A> $list
+ * @return non-empty-list<A>
  */
-function fromLiteral(array $list): array
+function fromNonEmpty(array $list): array
 {
     return $list;
 }

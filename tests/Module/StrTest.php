@@ -15,10 +15,30 @@ use function Fp4\PHP\Module\Functions\pipe;
 final class StrTest extends TestCase
 {
     #[Test]
+    public static function from(): void
+    {
+        pipe(
+            Str\from('str'),
+            Type\isSameAs('string'),
+            Assert\same('str'),
+        );
+    }
+
+    #[Test]
+    public static function fromNonEmpty(): void
+    {
+        pipe(
+            Str\fromNonEmpty('str'),
+            Type\isSameAs('non-empty-string'),
+            Assert\same('str'),
+        );
+    }
+
+    #[Test]
     public static function prepend(): void
     {
         pipe(
-            'val',
+            Str\from('val'),
             Str\prepend('pref-'),
             Type\isSameAs('non-empty-string'),
             Assert\same('pref-val'),

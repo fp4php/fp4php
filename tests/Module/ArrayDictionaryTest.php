@@ -9,6 +9,7 @@ use Fp4\PHP\Module\ArrayDictionary as D;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\PHPUnit as Assert;
 use Fp4\PHP\Module\Psalm as Type;
+use Fp4\PHP\Module\Shape as S;
 use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ final class ArrayDictionaryTest extends TestCase
     {
         pipe(
             D\fromIterable(new ArrayObject(['fst' => 1, 'snd' => 2, 'thr' => 3])),
-            Type\isSameAs('array<non-empty-string, int>'),
+            Type\isSameAs('array<string, int>'),
             Assert\same(['fst' => 1, 'snd' => 2, 'thr' => 3]),
         );
     }
@@ -39,17 +40,7 @@ final class ArrayDictionaryTest extends TestCase
     {
         pipe(
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
-            Type\isSameAs('non-empty-array<non-empty-string, int>'),
-            Assert\same(['fst' => 1, 'snd' => 2, 'thr' => 3]),
-        );
-    }
-
-    #[Test]
-    public static function fromLiteral(): void
-    {
-        pipe(
-            D\fromLiteral(['fst' => 1, 'snd' => 2, 'thr' => 3]),
-            Type\isSameAs('non-empty-array<"fst"|"snd"|"thr", 1|2|3>'),
+            Type\isSameAs('array<string, int>'),
             Assert\same(['fst' => 1, 'snd' => 2, 'thr' => 3]),
         );
     }
@@ -70,8 +61,8 @@ final class ArrayDictionaryTest extends TestCase
 
         pipe(
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
-            D\map(fn($num) => ['num' => $num]),
-            Type\isSameAs('non-empty-array<non-empty-string, array{num: int}>'),
+            D\map(fn($num) => S\from(['num' => $num])),
+            Type\isSameAs('array<string, array{num: int}>'),
             Assert\same([
                 'fst' => ['num' => 1],
                 'snd' => ['num' => 2],
@@ -92,8 +83,8 @@ final class ArrayDictionaryTest extends TestCase
 
         pipe(
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
-            D\mapKV(fn($key, $num) => ['num' => $num, 'key' => "k-{$key}"]),
-            Type\isSameAs('non-empty-array<non-empty-string, array{num: int, key: non-empty-string}>'),
+            D\mapKV(fn($key, $num) => S\from(['num' => $num, 'key' => "k-{$key}"])),
+            Type\isSameAs('array<string, array{num: int, key: non-empty-string}>'),
             Assert\same([
                 'fst' => ['num' => 1, 'key' => 'k-fst'],
                 'snd' => ['num' => 2, 'key' => 'k-snd'],
@@ -113,7 +104,7 @@ final class ArrayDictionaryTest extends TestCase
         );
 
         pipe(
-            D\fromLiteral(['fst' => 1, 'snd' => 2, 'thr' => 3, 'fth' => 4]),
+            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3, 'fth' => 4]),
             D\flatMap(fn($num) => match ($num) {
                 1 => D\from([10 => $num - 1, 20 => $num + 0, 30 => $num + 1]),
                 2 => D\from([40 => $num - 1, 50 => $num + 0, 60 => $num + 1]),
@@ -140,7 +131,7 @@ final class ArrayDictionaryTest extends TestCase
         );
 
         pipe(
-            D\fromLiteral(['fst' => 1, 'snd' => 2, 'thr' => 3, 'fth' => 4]),
+            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3, 'fth' => 4]),
             D\flatMapKV(fn($key, $num) => match ($key) {
                 'fst' => D\from([10 => $num - 1, 20 => $num + 0, 30 => $num + 1]),
                 'snd' => D\from([40 => $num - 1, 50 => $num + 0, 60 => $num + 1]),
@@ -205,7 +196,7 @@ final class ArrayDictionaryTest extends TestCase
 
         pipe(
             D\from([1 => 1, 'snd' => 2, 3 => 3]),
-            Type\isSameAs('non-empty-array<int|non-empty-string, int>'),
+            Type\isSameAs('array<int|string, int>'),
             D\filterKV(fn($key, $_val) => is_int($key)),
             Type\isSameAs('array<int, int>'),
             Assert\same([1 => 1, 3 => 3]),
@@ -232,7 +223,7 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from(['fst' => 1, 'snd' => '2', 'thr' => 3]),
             D\get('fst'),
-            Type\isSameAs('Option<int|non-empty-string>'),
+            Type\isSameAs('Option<int|string>'),
             Assert\equals(O\some(1)),
         );
     }
@@ -250,7 +241,7 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from(['fst' => 1, 'snd' => 2]),
             D\prepend('thr', 3),
-            Type\isSameAs('non-empty-array<non-empty-string, int>'),
+            Type\isSameAs('non-empty-array<string, int>'),
             Assert\same(['thr' => 3, 'fst' => 1, 'snd' => 2]),
         );
     }
@@ -268,7 +259,7 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from(['fst' => 1, 'snd' => 2]),
             D\append('thr', 3),
-            Type\isSameAs('non-empty-array<non-empty-string, int>'),
+            Type\isSameAs('non-empty-array<string, int>'),
             Assert\same(['fst' => 1, 'snd' => 2, 'thr' => 3]),
         );
     }
@@ -283,7 +274,7 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
             D\keys(...),
-            Type\isSameAs('non-empty-list<non-empty-string>'),
+            Type\isSameAs('list<string>'),
             Assert\same(['fst', 'snd', 'thr']),
         );
     }
@@ -294,7 +285,7 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
             D\values(...),
-            Type\isSameAs('non-empty-list<int>'),
+            Type\isSameAs('list<int>'),
             Assert\same([1, 2, 3]),
         );
     }
@@ -327,14 +318,14 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
             D\traverseOption($proveEven),
-            Type\isSameAs('Option<non-empty-array<non-empty-string, int>>'),
+            Type\isSameAs('Option<array<string, int>>'),
             Assert\equals(O\none),
         );
 
         pipe(
             D\from(['fst' => 2, 'snd' => 4, 'thr' => 6]),
             D\traverseOption($proveEven),
-            Type\isSameAs('Option<non-empty-array<non-empty-string, int>>'),
+            Type\isSameAs('Option<array<string, int>>'),
             Assert\equals(O\some(['fst' => 2, 'snd' => 4, 'thr' => 6])),
         );
     }

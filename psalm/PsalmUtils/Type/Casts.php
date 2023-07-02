@@ -17,9 +17,9 @@ use function is_array;
 
 final class Casts
 {
-    public function toNonLiteralType(Union $type): Union
+    public function toNonLiteralType(Union $type, AsNonLiteralTypeConfig $config = new AsNonLiteralTypeConfig()): Union
     {
-        return AsNonLiteralType::transform($type);
+        return AsNonLiteralType::transform($type, $config);
     }
 
     /**

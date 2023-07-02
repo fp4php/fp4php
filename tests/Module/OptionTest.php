@@ -49,22 +49,6 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
-    public static function fromLiteral(): void
-    {
-        pipe(
-            O\fromLiteral(42),
-            Type\isSameAs('Option<42>'),
-            Assert\equals(O\some(42)),
-        );
-
-        pipe(
-            O\fromLiteral(null),
-            Type\isSameAs('Option<null>'),
-            Assert\equals(O\some(null)),
-        );
-    }
-
-    #[Test]
     public static function fromNullable(): void
     {
         pipe(
@@ -75,22 +59,6 @@ final class OptionTest extends TestCase
 
         pipe(
             O\fromNullable(null),
-            Type\isSameAs('Option<never>'),
-            Assert\equals(O\none),
-        );
-    }
-
-    #[Test]
-    public static function fromNullableLiteral(): void
-    {
-        pipe(
-            O\fromNullableLiteral(42),
-            Type\isSameAs('Option<42>'),
-            Assert\equals(O\some(42)),
-        );
-
-        pipe(
-            O\fromNullableLiteral(null),
             Type\isSameAs('Option<never>'),
             Assert\equals(O\none),
         );
@@ -131,7 +99,7 @@ final class OptionTest extends TestCase
                 fn() => O\some(42),
                 fn() => O\some('str'),
             ),
-            Type\isSameAs('Option<int|non-empty-string>'),
+            Type\isSameAs('Option<int|string>'),
             Assert\equals(O\some(42)),
         );
 
