@@ -465,6 +465,17 @@ final class ArrayListTest extends TestCase
         );
     }
 
+    #[Test]
+    public static function reindex(): void
+    {
+        pipe(
+            L\from([1, 2, 3]),
+            L\reindex(fn(int $num) => Str\from("key-{$num}")),
+            Type\isSameAs('array<string, int>'),
+            Assert\equals(['key-1' => 1, 'key-2' => 2, 'key-3' => 3]),
+        );
+    }
+
     // endregion: terminal ops
 
     // region: bindable
