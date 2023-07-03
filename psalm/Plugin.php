@@ -9,6 +9,7 @@ use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\ArrayDictionaryModule;
 use Fp4\PHP\PsalmIntegration\Module\ArrayList\ArrayListModule;
 use Fp4\PHP\PsalmIntegration\Module\Bindable\BindableModule;
+use Fp4\PHP\PsalmIntegration\Module\Either\EitherModule;
 use Fp4\PHP\PsalmIntegration\Module\Functions\FunctionsModule;
 use Fp4\PHP\PsalmIntegration\Module\Option\OptionModule;
 use Fp4\PHP\PsalmIntegration\Module\Psalm\PsalmModule;
@@ -49,6 +50,7 @@ final class Plugin implements PluginEntryPointInterface
                 new BindableModule(),
                 new ShapeModule(),
                 new TupleModule(),
+                new EitherModule(),
             ]),
             L\tap(fn(RegisterPsalmHooks $hooks) => $hooks($register)),
         );
