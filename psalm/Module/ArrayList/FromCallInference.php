@@ -14,13 +14,14 @@ use function Fp4\PHP\Module\Functions\pipe;
 final class FromCallInference implements AfterExpressionAnalysisInterface
 {
     private const FROM = 'Fp4\PHP\Module\ArrayList\from';
+    private const SINGLETON = 'Fp4\PHP\Module\ArrayList\singleton';
     private const FROM_NON_EMPTY = 'Fp4\PHP\Module\ArrayList\fromNonEmpty';
     private const FROM_ITERABLE = 'Fp4\PHP\Module\ArrayList\fromIterable';
 
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {
         return pipe(
-            Widening::widen($event, [self::FROM, self::FROM_NON_EMPTY, self::FROM_ITERABLE]),
+            Widening::widen($event, [self::FROM, self::SINGLETON, self::FROM_NON_EMPTY, self::FROM_ITERABLE]),
             constNull(...),
         );
     }

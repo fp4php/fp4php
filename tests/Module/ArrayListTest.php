@@ -56,6 +56,16 @@ final class ArrayListTest extends TestCase
         );
     }
 
+    #[Test]
+    public static function singleton(): void
+    {
+        pipe(
+            L\singleton(42),
+            Type\isSameAs('non-empty-list<int>'),
+            Assert\equals([42]),
+        );
+    }
+
     // endregion: constructor
 
     // region: ops

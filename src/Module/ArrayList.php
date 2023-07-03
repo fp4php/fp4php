@@ -54,6 +54,17 @@ function fromNonEmpty(array $list): array
     return $list;
 }
 
+/**
+ * @template A
+ *
+ * @param A $value
+ * @return non-empty-list<A>
+ */
+function singleton(mixed $value): array
+{
+    return [$value];
+}
+
 // endregion: constructor
 
 // region: ops
