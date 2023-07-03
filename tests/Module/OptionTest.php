@@ -341,13 +341,25 @@ final class OptionTest extends TestCase
     {
         pipe(
             O\none,
-            O\ap(42),
+            O\ap(O\some(42)),
             Assert\equals(O\none),
         );
 
         pipe(
             O\some(fn(int $a) => $a + 1),
-            O\ap(41),
+            O\ap(O\none),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            O\none,
+            O\ap(O\none),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            O\some(fn(int $a) => $a + 1),
+            O\ap(O\some(41)),
             Assert\equals(O\some(42)),
         );
     }

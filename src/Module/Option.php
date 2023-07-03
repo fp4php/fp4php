@@ -241,14 +241,18 @@ function flatten(Option $option): Option
  * @template A
  * @template B
  *
- * @param A $value
+ * @param Option<A> $fa
  * @return Closure(Option<Closure(A): B>): Option<B>
  */
-function ap(mixed $value): Closure
+function ap(Option $fa): Closure
 {
-    return fn(Option $option) => isSome($option)
-        ? some(($option->value)($value))
-        : none;
+    return fn(Option $fab) => match (true) {
+        isSome($fa) => match (true) {
+            isSome($fab) => some(($fab->value)($fa->value)),
+            default => none,
+        },
+        default => none,
+    };
 }
 
 /**
