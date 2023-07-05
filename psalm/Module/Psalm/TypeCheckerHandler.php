@@ -19,7 +19,6 @@ use Psalm\Issue\CheckType;
 use Psalm\IssueBuffer;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
-use Psalm\StatementsSource;
 use Psalm\Type;
 use Psalm\Type\Atomic\TClosure;
 use Psalm\Type\Atomic\TLiteralString;
@@ -63,7 +62,7 @@ final class TypeCheckerHandler implements AfterExpressionAnalysisInterface
                     O\map(fn(Arg $arg) => $arg->value),
                     O\flatMap(PsalmApi::$type->get($event)),
                     O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TLiteralString::class)),
-                    O\flatMap(self::parseType($source)),
+                    O\flatMap(self::parseType($event)),
                 ),
             ),
             O\filter(fn($i) => match ($i->function) {
@@ -88,13 +87,23 @@ final class TypeCheckerHandler implements AfterExpressionAnalysisInterface
     /**
      * @return Closure(TLiteralString): Option<Type\Union>
      */
-    private static function parseType(StatementsSource $source): Closure
+    private static function parseType(AfterExpressionAnalysisEvent $event): Closure
     {
-        return fn(TLiteralString $literal) => O\tryCatch(fn() => TypeParser::parseTokens(
-            TypeTokenizer::getFullyQualifiedTokens(
-                string_type: $literal->value,
-                aliases: $source->getAliases(),
-            ),
-        ));
+        $source = $event->getStatementsSource();
+        $context = $event->getContext();
+
+        return fn(TLiteralString $literal) => pipe(
+            O\tryCatch(fn() => TypeParser::parseTokens(
+                type_tokens: TypeTokenizer::getFullyQualifiedTokens(
+                    string_type: $literal->value,
+                    aliases: $source->getAliases(),
+                    template_type_map: $source->getTemplateTypeMap(),
+                    self_fqcln: $context->self,
+                    parent_fqcln: $context->parent,
+                ),
+                template_type_map: $source->getTemplateTypeMap() ?? [],
+            )),
+            O\orElse(fn() => InvalidType::raise($literal->value, $event)),
+        );
     }
 }
