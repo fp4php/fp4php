@@ -250,13 +250,13 @@ function ap(Either $fa): Closure
  * @template EB
  * @template B
  *
- * @param callable(): Either<EB, B> $callback
+ * @param callable(EA): Either<EB, B> $callback
  * @return Closure(Either<EA, A>): Either<EA|EB, A|B>
  */
 function orElse(callable $callback): Closure
 {
     return fn(Either $e) => match (true) {
-        isLeft($e) => $callback(),
+        isLeft($e) => $callback($e->value),
         default => $e,
     };
 }
