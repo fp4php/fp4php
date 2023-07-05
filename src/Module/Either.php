@@ -11,6 +11,7 @@ use Fp4\PHP\Type\Either;
 use Fp4\PHP\Type\Left;
 use Fp4\PHP\Type\Option;
 use Fp4\PHP\Type\Right;
+use Throwable;
 
 // region: constructor
 
@@ -34,6 +35,21 @@ function left(mixed $value): Either
 function right(mixed $value): Either
 {
     return new Right($value);
+}
+
+/**
+ * @template A
+ *
+ * @param callable(): A $callback
+ * @return Either<Throwable, A>
+ */
+function tryCatch(callable $callback): Either
+{
+    try {
+        return right($callback());
+    } catch (Throwable $e) {
+        return left($e);
+    }
 }
 
 // endregion: constructor
