@@ -12,6 +12,7 @@ final class FunctionsModule implements RegisterPsalmHooks
     {
         $register([
             PipeFunctionStorageProvider::class,
+            CtorFunctionReturnTypeProvider::class,
         ]);
     }
 }

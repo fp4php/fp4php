@@ -204,4 +204,18 @@ final class CreateType
             self::union(...),
         );
     }
+
+    public function namedObject(string $class): Union
+    {
+        return pipe(
+            $class,
+            self::namedObjectAtomic(...),
+            self::union(...),
+        );
+    }
+
+    public function namedObjectAtomic(string $class): TNamedObject
+    {
+        return new TNamedObject($class);
+    }
 }

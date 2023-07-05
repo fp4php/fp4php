@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\Module\Functions;
 
+use Closure;
+
 /**
  * @no-named-arguments
  */
@@ -14,6 +16,18 @@ function pipe(mixed $a, callable $head, callable ...$tail): mixed
     }
 
     return $a;
+}
+
+/**
+ * @template A
+ *
+ * @param class-string<A> $ofClass
+ * @return Closure(mixed...): A
+ */
+function ctor(string $ofClass): Closure
+{
+    /** @psalm-suppress MixedMethodCall */
+    return fn(mixed ...$args) => new $ofClass(...$args);
 }
 
 /**
