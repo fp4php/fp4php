@@ -314,6 +314,31 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
+    public static function flatMapNullable(): void
+    {
+        pipe(
+            O\none,
+            O\flatMapNullable(fn($i) => $i),
+            Type\isSameAs('Option<never>'),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            O\some(0),
+            O\flatMapNullable(fn($i) => 1 !== $i ? $i + 42 : null),
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(42)),
+        );
+
+        pipe(
+            O\some(0),
+            O\flatMapNullable(fn($i) => 0 !== $i ? $i + 42 : null),
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\none),
+        );
+    }
+
+    #[Test]
     public static function flatten(): void
     {
         pipe(

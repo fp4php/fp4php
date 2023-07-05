@@ -228,6 +228,20 @@ function flatMap(callable $callback): Closure
 
 /**
  * @template A
+ * @template B
+ *
+ * @param callable(A): (null|B) $callback
+ * @return Closure(Option<A>): Option<B>
+ */
+function flatMapNullable(callable $callback): Closure
+{
+    return fn(Option $option) => isSome($option)
+        ? fromNullable($callback($option->value))
+        : none;
+}
+
+/**
+ * @template A
  *
  * @param Option<Option<A>> $option
  * @return Option<A>
