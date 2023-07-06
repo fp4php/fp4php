@@ -7,6 +7,7 @@ namespace Fp4\PHP\Test\Module;
 use ArrayObject;
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\Either as E;
 use Fp4\PHP\Module\PHPUnit as Assert;
 use Fp4\PHP\Module\Psalm as Type;
 use Fp4\PHP\Module\Str;
@@ -483,6 +484,84 @@ final class ArrayListTest extends TestCase
             L\reindex(fn(int $num) => Str\from("key-{$num}")),
             Type\isSameAs('array<string, int>'),
             Assert\equals(['key-1' => 1, 'key-2' => 2, 'key-3' => 3]),
+        );
+    }
+
+    #[Test]
+    public static function partition(): void
+    {
+        pipe(
+            L\from([]),
+            L\partition(fn($_) => true),
+            Type\isSameAs('array{list<never>, list<never>}'),
+            Assert\equals([[], []]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            L\partition(fn($i) => 0 === $i % 2),
+            Type\isSameAs('array{list<int>, list<int>}'),
+            Assert\equals([[1, 3, 5, 7, 9], [2, 4, 6, 8]]),
+        );
+
+        pipe(
+            L\from([1, 3, 5, 7, 9]),
+            L\partition(fn($i) => 0 === $i % 2),
+            Type\isSameAs('array{list<int>, list<int>}'),
+            Assert\equals([[1, 3, 5, 7, 9], []]),
+        );
+
+        pipe(
+            L\from([2, 4, 6, 8]),
+            L\partition(fn($i) => 0 === $i % 2),
+            Type\isSameAs('array{list<int>, list<int>}'),
+            Assert\equals([[], [2, 4, 6, 8]]),
+        );
+
+        pipe(
+            L\from(['fst', 1, 'snd', 2, 'thr', 3]),
+            L\partition(fn($i) => is_string($i)),
+            Type\isSameAs('array{list<int>, list<string>}'),
+            Assert\equals([[1, 2, 3], ['fst', 'snd', 'thr']]),
+        );
+    }
+
+    #[Test]
+    public static function partitionMap(): void
+    {
+        pipe(
+            L\from([]),
+            L\partitionMap(fn($i) => E\right($i)),
+            Type\isSameAs('array{list<never>, list<never>}'),
+            Assert\equals([[], []]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            L\partitionMap(fn($i) => 0 !== $i % 2 ? E\left($i) : E\right($i)),
+            Type\isSameAs('array{list<int>, list<int>}'),
+            Assert\equals([[1, 3, 5, 7, 9], [2, 4, 6, 8]]),
+        );
+
+        pipe(
+            L\from([1, 3, 5, 7, 9]),
+            L\partitionMap(fn($i) => 0 !== $i % 2 ? E\left($i) : E\right($i)),
+            Type\isSameAs('array{list<int>, list<int>}'),
+            Assert\equals([[1, 3, 5, 7, 9], []]),
+        );
+
+        pipe(
+            L\from([2, 4, 6, 8]),
+            L\partitionMap(fn($i) => 0 !== $i % 2 ? E\left($i) : E\right($i)),
+            Type\isSameAs('array{list<int>, list<int>}'),
+            Assert\equals([[], [2, 4, 6, 8]]),
+        );
+
+        pipe(
+            L\from(['fst', 1, 'snd', 2, 'thr', 3]),
+            L\partitionMap(fn($i) => is_int($i) ? E\left($i) : E\right($i)),
+            Type\isSameAs('array{list<int>, list<string>}'),
+            Assert\equals([[1, 2, 3], ['fst', 'snd', 'thr']]),
         );
     }
 

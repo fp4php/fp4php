@@ -6,7 +6,9 @@ namespace Fp4\PHP\Module\ArrayList;
 
 use Closure;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\Either as E;
 use Fp4\PHP\Type\Bindable;
+use Fp4\PHP\Type\Either;
 use Fp4\PHP\Type\Option;
 
 use function array_key_exists;
@@ -423,6 +425,58 @@ function reindex(callable $callback): Closure
         }
 
         return $dictionary;
+    };
+}
+
+/**
+ * @template A
+ *
+ * @param callable(A): bool $callback
+ * @return Closure(list<A>): array{list<A>, list<A>}
+ */
+function partition(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $outLeft = [];
+        $outRight = [];
+
+        foreach ($list as $item) {
+            if (!$callback($item)) {
+                $outLeft[] = $item;
+            } else {
+                $outRight[] = $item;
+            }
+        }
+
+        return [$outLeft, $outRight];
+    };
+}
+
+/**
+ * @template L
+ * @template R
+ * @template A
+ *
+ * @param callable(A): Either<L, R> $callback
+ * @return Closure(list<A>): array{list<L>, list<R>}
+ */
+function partitionMap(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $outLeft = [];
+        $outRight = [];
+
+        foreach ($list as $item) {
+            $either = $callback($item);
+
+            if (E\isLeft($either)) {
+                $outLeft[] = $either->value;
+            } else {
+                $outRight[] = $either->value;
+            }
+        }
+
+        return [$outLeft, $outRight];
     };
 }
 

@@ -218,4 +218,24 @@ final class CreateType
     {
         return new TNamedObject($class);
     }
+
+    /**
+     * @param non-empty-array<int|string, Union> $properties
+     */
+    public function keyedArrayListAtomic(array $properties): TKeyedArray
+    {
+        return new TKeyedArray($properties, is_list: true);
+    }
+
+    /**
+     * @param non-empty-array<int|string, Union> $properties
+     */
+    public function keyedArrayList(array $properties): Union
+    {
+        return pipe(
+            $properties,
+            self::keyedArrayListAtomic(...),
+            self::union(...),
+        );
+    }
 }

@@ -16,6 +16,7 @@ use Psalm\StatementsSource;
 use Psalm\Type\Atomic;
 use Psalm\Type\Union;
 
+use function count;
 use function Fp4\PHP\Module\Functions\pipe;
 
 /**
@@ -52,6 +53,30 @@ final class Types
             self::getNodeTypeProvider($fromScope)->getType(...),
             O\fromNullable(...),
         );
+    }
+
+    /**
+     * @return Closure(Union $from): Option<Union>
+     */
+    public static function remove(Union $types): Closure
+    {
+        return function(Union $from) use ($types) {
+            if ($from->getId() === $types->getId()) {
+                return O\none;
+            }
+
+            if (1 === count($from->getAtomicTypes())) {
+                return O\none;
+            }
+
+            $builder = $from->getBuilder();
+
+            foreach ($types->getAtomicTypes() as $atomic) {
+                $builder->removeType($atomic->getKey());
+            }
+
+            return O\some($builder->freeze());
+        };
     }
 
     /**
