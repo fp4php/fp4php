@@ -6,8 +6,8 @@ namespace Fp4\PHP\Test\Module;
 
 use ArrayObject;
 use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\Either as E;
+use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\PHPUnit as Assert;
 use Fp4\PHP\Module\Psalm as Type;
 use Fp4\PHP\Module\Str;
@@ -19,6 +19,8 @@ use stdClass;
 
 use function Fp4\PHP\Module\Functions\constTrue;
 use function Fp4\PHP\Module\Functions\pipe;
+use function is_int;
+use function is_string;
 
 /**
  * @api

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Fp4\PHP\Module\ArrayList;
 
 use Closure;
-use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\Either as E;
+use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Bindable;
 use Fp4\PHP\Type\Either;
 use Fp4\PHP\Type\Option;
