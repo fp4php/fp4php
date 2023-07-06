@@ -60,6 +60,19 @@ function tryCatch(callable $callback): Either
  * @template E
  * @template A
  * @param Either<E, A> $e
+ * @return E|A
+ */
+function unwrap(Either $e): mixed
+{
+    /** @var Left<E>|Right<A> $e */;
+
+    return $e->value;
+}
+
+/**
+ * @template E
+ * @template A
+ * @param Either<E, A> $e
  * @return Option<E>
  */
 function getLeft(Either $e): Option
@@ -238,8 +251,8 @@ function flatten(Either $e): Either
 function ap(Either $fa): Closure
 {
     return fn(Either $fab) => match (true) {
-        isLeft($fa) => $fa,
         isLeft($fab) => $fab,
+        isLeft($fa) => $fa,
         default => right(($fab->value)($fa->value)),
     };
 }
