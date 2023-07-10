@@ -98,11 +98,7 @@ final class BindableBuilder implements BaseBindableBuilder
 
     private function compileLefts(): Union
     {
-        return pipe(
-            Ev\proveNonEmptyList($this->previousLefts),
-            O\map(PsalmApi::$create->union(...)),
-            O\getOrCall(PsalmApi::$create->never(...)),
-        );
+        return PsalmApi::$create->union([$this->leftTemplate, ...$this->previousLefts]);
     }
 
     private function compiledBindable(): Union

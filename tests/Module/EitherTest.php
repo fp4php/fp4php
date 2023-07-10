@@ -444,11 +444,6 @@ final class EitherTest extends TestCase
             Assert\equals(E\right(42)),
         );
 
-        /**
-         * @psalm-suppress CheckType
-         * todo: The type Either<never, int> is not exactly the same as the type Either<string, int>
-         *    Need to fix plugin
-         */
         pipe(
             E\bindable(),
             E\bind(
@@ -477,11 +472,6 @@ final class EitherTest extends TestCase
             Assert\equals(E\right(42)),
         );
 
-        /**
-         * @psalm-suppress CheckType
-         * todo: The type Either<never, 42> is not exactly the same as the type Either<string, 42>
-         *    Need to fix plugin
-         */
         pipe(
             E\bindable(),
             E\bind(
