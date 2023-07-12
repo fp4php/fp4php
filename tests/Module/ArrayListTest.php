@@ -135,7 +135,6 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function flatMap(): void
     {
-        $getEmptyList = fn(int $_i): array => /** @var list<int> */ [];
         $getSiblings = fn(int $i): array => [$i - 1, $i, $i + 1];
 
         pipe(
@@ -154,8 +153,8 @@ final class ArrayListTest extends TestCase
 
         pipe(
             L\from([1, 2, 3]),
-            L\flatMap($getEmptyList),
-            Type\isSameAs('list<int>'),
+            L\flatMap(fn() => []),
+            Type\isSameAs('list<never>'),
             Assert\equals([]),
         );
     }
@@ -163,7 +162,6 @@ final class ArrayListTest extends TestCase
     #[Test]
     public static function flatMapKV(): void
     {
-        $getEmptyList = fn(int $_position, int $_i): array => /** @var list<string> */ [];
         $getSiblingsAtPosition = fn(int $position, int $i): array => [
             Str\from(sprintf('%s:[%s]', $position, $i - 1)),
             Str\from(sprintf('%s:[%s]', $position, $i)),
@@ -186,8 +184,8 @@ final class ArrayListTest extends TestCase
 
         pipe(
             L\from([1, 2, 3]),
-            L\flatMapKV($getEmptyList),
-            Type\isSameAs('list<string>'),
+            L\flatMapKV(fn() => []),
+            Type\isSameAs('list<never>'),
             Assert\equals([]),
         );
     }
@@ -494,7 +492,7 @@ final class ArrayListTest extends TestCase
     {
         pipe(
             L\from([]),
-            L\partition(fn($_) => true),
+            L\partition(fn() => true),
             Type\isSameAs('array{list<never>, list<never>}'),
             Assert\equals([[], []]),
         );
@@ -613,8 +611,8 @@ final class ArrayListTest extends TestCase
                 b: fn() => L\from(['b1', 'b2']),
             ),
             L\let(
-                c: fn($_) => Str\from('c1'),
-                d: fn($_) => Str\from('d1'),
+                c: fn() => Str\from('c1'),
+                d: fn() => Str\from('d1'),
             ),
             L\map(fn($i) => T\from([$i->a, $i->b, $i->c, $i->d])),
             Type\isSameAs('list<array{string, string, string, string}>'),

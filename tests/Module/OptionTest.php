@@ -487,7 +487,7 @@ final class OptionTest extends TestCase
                 a: fn() => O\some(31),
                 b: fn() => O\none,
             ),
-            O\bind(c: fn($_) => O\some(32)),
+            O\bind(c: fn() => O\some(32)),
             Type\isSameAs('Option<Bindable<object{a: int, b: never, c: int}>>'),
             Assert\equals(O\none),
         );
@@ -527,7 +527,7 @@ final class OptionTest extends TestCase
                 a: fn() => O\some(31),
                 b: fn() => O\none,
             ),
-            O\let(c: fn($_) => 42),
+            O\let(c: fn() => 42),
             Type\isAssignableTo('Option<Bindable<object{a: int, b: never, c: int}>>'),
             Assert\equals(O\none),
         );

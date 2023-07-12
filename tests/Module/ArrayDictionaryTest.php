@@ -108,7 +108,7 @@ final class ArrayDictionaryTest extends TestCase
     {
         pipe(
             D\from([]),
-            D\flatMap(fn($_) => D\from([])),
+            D\flatMap(fn() => D\from([])),
             Type\isSameAs('array<never, never>'),
             Assert\same([]),
         );
@@ -135,7 +135,7 @@ final class ArrayDictionaryTest extends TestCase
     {
         pipe(
             D\from([]),
-            D\flatMapKV(fn($_k, $_v) => D\from([])),
+            D\flatMapKV(fn() => D\from([])),
             Type\isSameAs('array<never, never>'),
             Assert\same([]),
         );
@@ -162,7 +162,7 @@ final class ArrayDictionaryTest extends TestCase
     {
         pipe(
             D\from([]),
-            D\filter(fn($_) => true),
+            D\filter(fn() => true),
             Type\isSameAs('array<never, never>'),
             Assert\same([]),
         );
@@ -188,14 +188,14 @@ final class ArrayDictionaryTest extends TestCase
     {
         pipe(
             D\from([]),
-            D\filterKV(fn($_k, $_v) => true),
+            D\filterKV(fn() => true),
             Type\isSameAs('array<never, never>'),
             Assert\same([]),
         );
 
         pipe(
             D\from([1, 2, 3, 4, 5, 6, 7, 8]),
-            D\filterKV(fn($key, $_) => 0 === $key % 2),
+            D\filterKV(fn($key) => 0 === $key % 2),
             Type\isSameAs('array<int, int>'),
             Assert\same([0 => 1, 2 => 3, 4 => 5, 6 => 7]),
         );
@@ -203,7 +203,7 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from([1 => 1, 'snd' => 2, 3 => 3]),
             Type\isSameAs('array<int|string, int>'),
-            D\filterKV(fn($key, $_val) => is_int($key)),
+            D\filterKV(fn($key, $_) => is_int($key)),
             Type\isSameAs('array<int, int>'),
             Assert\same([1 => 1, 3 => 3]),
         );

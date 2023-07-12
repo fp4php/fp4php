@@ -369,12 +369,6 @@ final class EitherTest extends TestCase
     #[Test]
     public static function orElse(): void
     {
-        /**
-         * @psalm-suppress CheckType
-         * todo: The type Either<mixed, int> is not exactly the same as the type Either<never, int>
-         *   Putting any variable to closure fix inference: E\orElse(fn($_) => E\right(422))
-         *   But inference should work without it.
-         */
         pipe(
             E\right(42),
             E\orElse(fn() => E\right(422)),
@@ -382,10 +376,6 @@ final class EitherTest extends TestCase
             Assert\equals(E\right(42)),
         );
 
-        /**
-         * @psalm-suppress CheckType
-         * todo: The same
-         */
         pipe(
             E\left(442),
             E\orElse(fn() => E\right(42)),
@@ -447,10 +437,10 @@ final class EitherTest extends TestCase
         pipe(
             E\bindable(),
             E\bind(
-                b: fn($_) => E\left('not-a-number'),
+                b: fn() => E\left('not-a-number'),
             ),
             E\bind(
-                a: fn($_) => E\right(41),
+                a: fn() => E\right(41),
             ),
             E\map(fn($i) => $i->a + $i->b),
             Type\isSameAs('Either<string, int>'),
@@ -474,12 +464,10 @@ final class EitherTest extends TestCase
 
         pipe(
             E\bindable(),
-            E\bind(
-                c: fn($_) => E\left('shor-circuit'),
-            ),
+            E\bind(c: fn() => E\left('shor-circuit')),
             E\let(
-                a: fn($_) => 1,
-                b: fn($_) => 41,
+                a: fn() => 1,
+                b: fn() => 41,
             ),
             E\map(fn($i) => $i->a + $i->b),
             Type\isSameAs('Either<string, 42>'),
