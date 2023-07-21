@@ -113,6 +113,25 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function tapKV(): void
+    {
+        $expected = (object) ['key-0' => 1, 'key-1' => 2, 'key-2' => 3];
+        $toMutate = new stdClass();
+
+        pipe(
+            L\from([1, 2, 3]),
+            L\tapKV(fn($key, $num) => $toMutate->{"key-{$key}"} = $num),
+            Type\isSameAs('list<int>'),
+            Assert\equals([1, 2, 3]),
+        );
+
+        pipe(
+            $expected,
+            Assert\equals($toMutate),
+        );
+    }
+
+    #[Test]
     public static function mapKV(): void
     {
         $joinWithIndex = fn(int $index, string $offset): string => Str\from("{$index}-{$offset}");

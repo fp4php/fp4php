@@ -102,6 +102,32 @@ function map(callable $callback): Closure
  * @template B
  * @template TIn of list<A>
  *
+ * @param callable(int, A): B $callback
+ * @return Closure(list<A>): list<B>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? non-empty-list<B>
+ *         : list<B>
+ * ))
+ */
+function mapKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $out = [];
+
+        foreach ($list as $key => $a) {
+            $out[] = $callback($key, $a);
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template A
+ * @template B
+ * @template TIn of list<A>
+ *
  * @param callable(A): void $callback
  * @return Closure(list<A>): list<A>
  * @psalm-return (Closure(TIn): (
@@ -126,24 +152,22 @@ function tap(callable $callback): Closure
  * @template B
  * @template TIn of list<A>
  *
- * @param callable(int, A): B $callback
- * @return Closure(list<A>): list<B>
+ * @param callable(int, A): void $callback
+ * @return Closure(list<A>): list<A>
  * @psalm-return (Closure(TIn): (
  *     TIn is non-empty-array<A>
- *         ? non-empty-list<B>
- *         : list<B>
+ *         ? non-empty-list<A>
+ *         : list<A>
  * ))
  */
-function mapKV(callable $callback): Closure
+function tapKV(callable $callback): Closure
 {
     return function(array $list) use ($callback) {
-        $out = [];
-
         foreach ($list as $key => $a) {
-            $out[] = $callback($key, $a);
+            $callback($key, $a);
         }
 
-        return $out;
+        return $list;
     };
 }
 
