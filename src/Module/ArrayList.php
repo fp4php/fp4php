@@ -316,6 +316,18 @@ function append(mixed $value): Closure
 // region: terminal ops
 
 /**
+ * @template A
+ *
+ * @return Closure(list<A>): Option<A>
+ */
+function get(int $key): Closure
+{
+    return fn(array $list) => array_key_exists($key, $list)
+        ? O\some($list[$key])
+        : O\none;
+}
+
+/**
  * @return Closure(list<mixed>): bool
  */
 function contains(mixed $value): Closure

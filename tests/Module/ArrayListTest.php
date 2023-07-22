@@ -314,6 +314,38 @@ final class ArrayListTest extends TestCase
     // region: terminal ops
 
     #[Test]
+    public static function get(): void
+    {
+        pipe(
+            L\from([]),
+            L\get(0),
+            Type\isSameAs('Option<never>'),
+            Assert\same(O\none),
+        );
+
+        pipe(
+            L\from([1, 2]),
+            L\get(0),
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(1)),
+        );
+
+        pipe(
+            L\from([1, 2]),
+            L\get(1),
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(2)),
+        );
+
+        pipe(
+            L\from([1, 2]),
+            L\get(2),
+            Type\isSameAs('Option<int>'),
+            Assert\same(O\none),
+        );
+    }
+
+    #[Test]
     public static function contains(): void
     {
         pipe(
