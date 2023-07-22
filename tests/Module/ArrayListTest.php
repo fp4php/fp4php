@@ -242,6 +242,38 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function filterKV(): void
+    {
+        pipe(
+            L\from([]),
+            L\filterKV(fn($_key, $_value) => true),
+            Type\isSameAs('list<never>'),
+            Assert\equals([]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filterKV(fn($key, $num) => (0 === $num % 2) && (1 !== $key)),
+            Type\isSameAs('list<int>'),
+            Assert\equals([4, 6, 8]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filterKV(fn($key, $num) => (0 !== $num % 2) && (0 !== $key)),
+            Type\isSameAs('list<int>'),
+            Assert\equals([3, 5, 7]),
+        );
+
+        pipe(
+            L\from([1, 'fst', 2, 'snd', 3, 'thr']),
+            L\filterKV(fn($key, $value) => is_int($value) && 0 !== $key),
+            Type\isSameAs('list<int>'),
+            Assert\equals([2, 3]),
+        );
+    }
+
+    #[Test]
     public static function prepend(): void
     {
         pipe(

@@ -250,6 +250,27 @@ function filter(callable $callback): Closure
 
 /**
  * @template A
+ *
+ * @param callable(int, A): bool $callback
+ * @return Closure(list<A>): list<A>
+ */
+function filterKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $out = [];
+
+        foreach ($list as $key => $item) {
+            if ($callback($key, $item)) {
+                $out[] = $item;
+            }
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template A
  * @template B
  *
  * @param B $value
