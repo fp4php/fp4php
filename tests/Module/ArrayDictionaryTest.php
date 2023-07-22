@@ -210,31 +210,6 @@ final class ArrayDictionaryTest extends TestCase
     }
 
     #[Test]
-    public function get(): void
-    {
-        pipe(
-            D\from([]),
-            D\get('by-key'),
-            Type\isSameAs('Option<never>'),
-            Assert\same(O\none),
-        );
-
-        pipe(
-            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
-            D\get('fst'),
-            Type\isSameAs('Option<int>'),
-            Assert\equals(O\some(1)),
-        );
-
-        pipe(
-            D\from(['fst' => 1, 'snd' => '2', 'thr' => 3]),
-            D\get('fst'),
-            Type\isSameAs('Option<int|string>'),
-            Assert\equals(O\some(1)),
-        );
-    }
-
-    #[Test]
     public function prepend(): void
     {
         pipe(
@@ -273,6 +248,31 @@ final class ArrayDictionaryTest extends TestCase
     // endregion: ops
 
     // region: terminal ops
+
+    #[Test]
+    public function get(): void
+    {
+        pipe(
+            D\from([]),
+            D\get('by-key'),
+            Type\isSameAs('Option<never>'),
+            Assert\same(O\none),
+        );
+
+        pipe(
+            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+            D\get('fst'),
+            Type\isSameAs('Option<int>'),
+            Assert\equals(O\some(1)),
+        );
+
+        pipe(
+            D\from(['fst' => 1, 'snd' => '2', 'thr' => 3]),
+            D\get('fst'),
+            Type\isSameAs('Option<int|string>'),
+            Assert\equals(O\some(1)),
+        );
+    }
 
     #[Test]
     public function keys(): void

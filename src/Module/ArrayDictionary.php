@@ -218,17 +218,6 @@ function filterKV(callable $callback): Closure
 }
 
 /**
- * @template K of array-key
- * @template A
- *
- * @return Closure(array<K, A>): Option<A>
- */
-function get(int|string $key): Closure
-{
-    return fn(array $dictionary) => O\fromNullable($dictionary[$key] ?? null);
-}
-
-/**
  * @template K1 of array-key
  * @template K2 of array-key
  * @template A
@@ -261,6 +250,17 @@ function append(mixed $key, mixed $value): Closure
 // endregion: ops
 
 // region: terminal ops
+
+/**
+ * @template K of array-key
+ * @template A
+ *
+ * @return Closure(array<K, A>): Option<A>
+ */
+function get(int|string $key): Closure
+{
+    return fn(array $dictionary) => O\fromNullable($dictionary[$key] ?? null);
+}
 
 /**
  * @template K of array-key
