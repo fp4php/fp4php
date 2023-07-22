@@ -114,6 +114,56 @@ function mapKV(callable $callback): Closure
 }
 
 /**
+ * @template K of array-key
+ * @template A
+ * @template B
+ * @template TIn of array<K, A>
+ *
+ * @param callable(A): B $callback
+ * @return Closure(array<K, A>): array<K, A>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<K, A>
+ *         ? non-empty-array<K, A>
+ *         : array<K, A>
+ * ))
+ */
+function tap(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        foreach ($dictionary as $v) {
+            $callback($v);
+        }
+
+        return $dictionary;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template A
+ * @template B
+ * @template TIn of array<K, A>
+ *
+ * @param callable(K, A): B $callback
+ * @return Closure(array<K, A>): array<K, A>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<K, A>
+ *         ? non-empty-array<K, A>
+ *         : array<K, A>
+ * ))
+ */
+function tapKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        foreach ($dictionary as $k => $v) {
+            $callback($k, $v);
+        }
+
+        return $dictionary;
+    };
+}
+
+/**
  * @template KA of array-key
  * @template A
  * @template KB of array-key

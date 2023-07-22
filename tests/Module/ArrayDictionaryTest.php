@@ -14,6 +14,7 @@ use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+use stdClass;
 use function Fp4\PHP\Module\Functions\pipe;
 use function is_int;
 
@@ -100,6 +101,44 @@ final class ArrayDictionaryTest extends TestCase
                 'snd' => ['num' => 2, 'key' => 'k-snd'],
                 'thr' => ['num' => 3, 'key' => 'k-thr'],
             ]),
+        );
+    }
+
+    #[Test]
+    public static function tap(): void
+    {
+        $expected = (object) ['key-1' => 1, 'key-2' => 2, 'key-3' => 3];
+        $toMutate = new stdClass();
+
+        pipe(
+            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+            D\tap(fn($num) => $toMutate->{"key-{$num}"} = $num),
+            Type\isSameAs('array<string, int>'),
+            Assert\equals(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+        );
+
+        pipe(
+            $expected,
+            Assert\equals($toMutate),
+        );
+    }
+
+    #[Test]
+    public static function tapKV(): void
+    {
+        $expected = (object) ['key-fst' => 1, 'key-snd' => 2, 'key-thr' => 3];
+        $toMutate = new stdClass();
+
+        pipe(
+            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+            D\tapKV(fn($key, $num) => $toMutate->{"key-{$key}"} = $num),
+            Type\isSameAs('array<string, int>'),
+            Assert\equals(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+        );
+
+        pipe(
+            $expected,
+            Assert\equals($toMutate),
         );
     }
 
