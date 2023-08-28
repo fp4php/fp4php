@@ -12,6 +12,7 @@ final class ArrayDictionaryModule implements RegisterPsalmHooks
     {
         $register([
             FilterCallRefinement::class,
+            PartitionCallRefinement::class,
             FromCallInference::class,
         ]);
     }

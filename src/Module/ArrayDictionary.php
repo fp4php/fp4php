@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Fp4\PHP\Module\ArrayDictionary;
 
 use Closure;
+use Fp4\PHP\Module\Either as E;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Type\Either;
 use Fp4\PHP\Type\Option;
 
 use function array_key_exists;
@@ -268,6 +270,58 @@ function filterKV(callable $callback): Closure
 }
 
 /**
+ * @template K of array-key
+ * @template V
+ * @template TIn of array<K, V>
+ * @template TIndex of array-key
+ *
+ * @param callable(V): TIndex $callback
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<K, V>
+ *         ? non-empty-array<TIndex, V>
+ *         : array<TIndex, V>
+ * ))
+ */
+function reindex(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $v) {
+            $out[$callback($v)] = $v;
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template V
+ * @template TIn of array<K, V>
+ * @template TIndex of array-key
+ *
+ * @param callable(K, V): TIndex $callback
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<K, V>
+ *         ? non-empty-array<TIndex, V>
+ *         : array<TIndex, V>
+ * ))
+ */
+function reindexKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $k => $v) {
+            $out[$callback($k, $v)] = $v;
+        }
+
+        return $out;
+    };
+}
+
+/**
  * @template K1 of array-key
  * @template K2 of array-key
  * @template A
@@ -376,6 +430,140 @@ function traverseOption(callable $callback): Closure
         }
 
         return O\some($out);
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template V
+ *
+ * @param callable(V): bool $callback
+ * @return Closure(array<K, V>): bool
+ */
+function any(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        foreach ($dictionary as $v) {
+            if ($callback($v)) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template V
+ *
+ * @param callable(K, V): bool $callback
+ * @return Closure(array<K, V>): bool
+ */
+function anyKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        foreach ($dictionary as $k => $v) {
+            if ($callback($k, $v)) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template V
+ *
+ * @param callable(V): bool $callback
+ * @return Closure(array<K, V>): bool
+ */
+function all(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        foreach ($dictionary as $v) {
+            if (!$callback($v)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template V
+ *
+ * @param callable(K, V): bool $callback
+ * @return Closure(array<K, V>): bool
+ */
+function allKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        foreach ($dictionary as $k => $v) {
+            if (!$callback($k, $v)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template V
+ *
+ * @param callable(V): bool $callback
+ * @return Closure(array<K, V>): list{array<K, V>, array<K, V>}
+ */
+function partition(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $outLeft = [];
+        $outRight = [];
+
+        foreach ($dictionary as $k => $v) {
+            if (!$callback($v)) {
+                $outLeft[$k] = $v;
+            } else {
+                $outRight[$k] = $v;
+            }
+        }
+
+        return [$outLeft, $outRight];
+    };
+}
+
+/**
+ * @template L
+ * @template R
+ * @template K of array-key
+ * @template V
+ *
+ * @param callable(V): Either<L, R> $callback
+ * @return Closure(array<K, V>): list{array<K, L>, array<K, R>}
+ */
+function partitionMap(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $outLeft = [];
+        $outRight = [];
+
+        foreach ($dictionary as $k => $v) {
+            $either = $callback($v);
+
+            if (E\isLeft($either)) {
+                $outLeft[$k] = $either->value;
+            } else {
+                $outRight[$k] = $either->value;
+            }
+        }
+
+        return [$outLeft, $outRight];
     };
 }
 
