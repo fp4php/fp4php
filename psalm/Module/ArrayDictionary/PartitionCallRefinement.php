@@ -8,9 +8,9 @@ use Closure;
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
-use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefinementType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefineTypeParams;
 use Fp4\PHP\Type\Option;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
@@ -52,7 +52,7 @@ final class PartitionCallRefinement implements AfterExpressionAnalysisInterface
                         $refined->value,
                     ),
                 ]),
-                type: RefinementType::KeyValue,
+                type: FunctionType::KeyValue,
             ),
             constNull(...),
         );

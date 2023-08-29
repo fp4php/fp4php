@@ -10,6 +10,7 @@ use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\Str as S;
 use Fp4\PHP\Module\Tuple as T;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
@@ -25,7 +26,6 @@ use Psalm\Internal\Analyzer\StatementsAnalyzer;
 use Psalm\Storage\Assertion;
 use Psalm\Type\Reconciler;
 use Psalm\Type\Union;
-
 use function count;
 use function Fp4\PHP\Module\Evidence\proveNonEmptyArray;
 use function Fp4\PHP\Module\Functions\pipe;
@@ -36,11 +36,11 @@ use function Fp4\PHP\Module\Functions\pipe;
 final class Refinement
 {
     public function __construct(
-        public readonly RefinementType $type,
-        public readonly RefineTypeParams $typeParams,
-        public readonly FunctionLike $predicate,
+        public readonly FunctionType       $type,
+        public readonly RefineTypeParams   $typeParams,
+        public readonly FunctionLike       $predicate,
         public readonly StatementsAnalyzer $source,
-        public readonly Context $context,
+        public readonly Context            $context,
     ) {
     }
 
@@ -100,7 +100,7 @@ final class Refinement
     private static function getKeyArgumentFromPredicate(self $refinement): Option
     {
         return pipe(
-            O\when(RefinementType::KeyValue === $refinement->type, fn() => pipe(
+            O\when(FunctionType::KeyValue === $refinement->type, fn() => pipe(
                 $refinement->predicate->getParams(),
                 L\fromIterable(...),
             )),

@@ -7,6 +7,7 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 use Closure;
 use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
 use Psalm\Internal\Analyzer\StatementsAnalyzer;
@@ -14,7 +15,6 @@ use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\Type;
 use Psalm\Type\Atomic\TClosure;
 use Psalm\Type\Union;
-
 use function Fp4\PHP\Module\Functions\pipe;
 
 final class FilterRefinement
@@ -27,11 +27,11 @@ final class FilterRefinement
      * @return Closure(AfterExpressionAnalysisEvent): Option
      */
     public static function refine(
-        string $function,
-        Option $getKeyType,
-        callable $getValType,
-        callable $toReturnType,
-        RefinementType $type,
+        string       $function,
+        Option       $getKeyType,
+        callable     $getValType,
+        callable     $toReturnType,
+        FunctionType $type,
     ): Closure {
         return fn(AfterExpressionAnalysisEvent $event) => pipe(
             O\bindable(),

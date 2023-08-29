@@ -11,6 +11,7 @@ use Psalm\Storage\FunctionLikeParameter;
 use Psalm\Type;
 use Psalm\Type\Atomic;
 use Psalm\Type\Atomic\TArray;
+use Psalm\Type\Atomic\TNonEmptyArray;
 use Psalm\Type\Atomic\TCallable;
 use Psalm\Type\Atomic\TCallableObject;
 use Psalm\Type\Atomic\TClosure;
@@ -131,6 +132,22 @@ final class CreateType
         );
     }
 
+    public function nonEmptyListAtomic(Union|Atomic $type): TKeyedArray
+    {
+        return pipe(
+            self::union($type),
+            Type::getNonEmptyListAtomic(...),
+        );
+    }
+
+    public function nonEmptyList(Union|Atomic $type): Union
+    {
+        return pipe(
+            self::nonEmptyListAtomic($type),
+            self::union(...),
+        );
+    }
+
     public function arrayAtomic(Union|Atomic $key = new TMixed(), Union|Atomic $value = new TMixed()): TArray
     {
         return new TArray([
@@ -143,6 +160,22 @@ final class CreateType
     {
         return pipe(
             self::arrayAtomic($key, $value),
+            self::union(...),
+        );
+    }
+
+    public function nonEmptyArrayAtomic(Union|Atomic $key = new TMixed(), Union|Atomic $value = new TMixed()): TArray
+    {
+        return new TNonEmptyArray([
+            self::union($key),
+            self::union($value),
+        ]);
+    }
+
+    public function nonEmptyArray(Union|Atomic $key = new TMixed(), Union|Atomic $value = new TMixed()): Union
+    {
+        return pipe(
+            self::nonEmptyArrayAtomic($key, $value),
             self::union(...),
         );
     }

@@ -6,9 +6,9 @@ namespace Fp4\PHP\PsalmIntegration\Module\Either;
 
 use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
-use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefinementType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\RefineTypeParams;
 use Fp4\PHP\Type\Either;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
@@ -42,7 +42,7 @@ final class FilterOrElseCallRefinement implements AfterExpressionAnalysisInterfa
                     L\append($refined->value),
                     PsalmApi::$create->genericObject(Either::class),
                 ),
-                type: RefinementType::Value,
+                type: FunctionType::Value,
             ),
             constNull(...),
         );

@@ -6,8 +6,12 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\ArrayList as L;
+use Fp4\PHP\Module\ArrayDictionary as D;
+use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
+use Psalm\Internal\Type\TypeCombiner;
 use Psalm\NodeTypeProvider;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
@@ -52,6 +56,23 @@ final class Types
             $expr,
             self::getNodeTypeProvider($fromScope)->getType(...),
             O\fromNullable(...),
+        );
+    }
+
+    /**
+     * @no-named-arguments
+     */
+    public function combine(Union $type1, Union $type2, Union ...$rest): Union
+    {
+        return TypeCombiner::combine(
+            types: pipe(
+                [$type1, $type2, ...$rest],
+                L\flatMap(fn (Union $type) => pipe(
+                    $type->getAtomicTypes(),
+                    D\values(...),
+                )),
+            ),
+            codebase: PsalmApi::$codebase,
         );
     }
 
