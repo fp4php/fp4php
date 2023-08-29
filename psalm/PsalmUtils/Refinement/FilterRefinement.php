@@ -15,6 +15,7 @@ use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\Type;
 use Psalm\Type\Atomic\TClosure;
 use Psalm\Type\Union;
+
 use function Fp4\PHP\Module\Functions\pipe;
 
 final class FilterRefinement
@@ -27,10 +28,10 @@ final class FilterRefinement
      * @return Closure(AfterExpressionAnalysisEvent): Option
      */
     public static function refine(
-        string       $function,
-        Option       $getKeyType,
-        callable     $getValType,
-        callable     $toReturnType,
+        string $function,
+        Option $getKeyType,
+        callable $getValType,
+        callable $toReturnType,
         FunctionType $type,
     ): Closure {
         return fn(AfterExpressionAnalysisEvent $event) => pipe(

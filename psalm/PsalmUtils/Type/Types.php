@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
-use Fp4\PHP\Module\Option as O;
-use Fp4\PHP\Module\ArrayList as L;
 use Fp4\PHP\Module\ArrayDictionary as D;
+use Fp4\PHP\Module\ArrayList as L;
+use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
@@ -67,7 +67,7 @@ final class Types
         return TypeCombiner::combine(
             types: pipe(
                 [$type1, $type2, ...$rest],
-                L\flatMap(fn (Union $type) => pipe(
+                L\flatMap(fn(Union $type) => pipe(
                     $type->getAtomicTypes(),
                     D\values(...),
                 )),

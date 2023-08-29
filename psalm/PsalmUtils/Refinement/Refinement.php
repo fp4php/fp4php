@@ -26,6 +26,7 @@ use Psalm\Internal\Analyzer\StatementsAnalyzer;
 use Psalm\Storage\Assertion;
 use Psalm\Type\Reconciler;
 use Psalm\Type\Union;
+
 use function count;
 use function Fp4\PHP\Module\Evidence\proveNonEmptyArray;
 use function Fp4\PHP\Module\Functions\pipe;
@@ -36,11 +37,11 @@ use function Fp4\PHP\Module\Functions\pipe;
 final class Refinement
 {
     public function __construct(
-        public readonly FunctionType       $type,
-        public readonly RefineTypeParams   $typeParams,
-        public readonly FunctionLike       $predicate,
+        public readonly FunctionType $type,
+        public readonly RefineTypeParams $typeParams,
+        public readonly FunctionLike $predicate,
         public readonly StatementsAnalyzer $source,
-        public readonly Context            $context,
+        public readonly Context $context,
     ) {
     }
 
