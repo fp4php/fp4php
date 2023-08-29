@@ -54,6 +54,8 @@ final class Plugin implements PluginEntryPointInterface
             ]),
             L\tap(fn(RegisterPsalmHooks $hooks) => $hooks($register)),
         );
+
+        $registration->addStubFile(__DIR__.'/Stub/NodeAbstract.phpstub');
     }
 
     /**

@@ -61,6 +61,24 @@ function proveBool(mixed $value): Option
 }
 
 /**
+ * @return Option<true>
+ */
+function proveTrue(mixed $value): Option
+{
+    /** @var Option<true> */
+    return O\fromNullable($value === true ? $value : null);
+}
+
+/**
+ * @return Option<false>
+ */
+function proveFalse(mixed $value): Option
+{
+    /** @var Option<false> */
+    return O\fromNullable($value === false ? $value : null);
+}
+
+/**
  * @return Option<null>
  */
 function proveNull(mixed $value): Option

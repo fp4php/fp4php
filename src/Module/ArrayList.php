@@ -311,6 +311,17 @@ function append(mixed $value): Closure
     };
 }
 
+/**
+ * @template A
+ *
+ * @param list<A> $list
+ * @return list<A>
+ */
+function tail(array $list): array
+{
+    return array_slice($list, offset: 1);
+}
+
 // endregion: ops
 
 // region: terminal ops
@@ -534,6 +545,48 @@ function partitionMap(callable $callback): Closure
         }
 
         return [$outLeft, $outRight];
+    };
+}
+
+/**
+ * @template TAcc
+ * @template A
+ *
+ * @param TAcc $initial
+ * @param callable(TAcc, A): TAcc $callback
+ * @return Closure(list<A>): TAcc
+ */
+function reduce(mixed $initial, callable $callback): Closure
+{
+    return function (array $list) use ($initial, $callback) {
+        $acc = $initial;
+
+        foreach ($list as $a) {
+            $acc = $callback($acc, $a);
+        }
+
+        return $acc;
+    };
+}
+
+/**
+ * @template TAcc
+ * @template A
+ *
+ * @param TAcc $initial
+ * @param callable(TAcc, int, A): TAcc $callback
+ * @return Closure(list<A>): TAcc
+ */
+function reduceKV(mixed $initial, callable $callback): Closure
+{
+    return function (array $list) use ($initial, $callback) {
+        $acc = $initial;
+
+        foreach ($list as $index => $a) {
+            $acc = $callback($acc, $index, $a);
+        }
+
+        return $acc;
     };
 }
 
