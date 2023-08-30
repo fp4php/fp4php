@@ -402,6 +402,28 @@ final class ArrayDictionaryTest extends TestCase
     }
 
     #[Test]
+    public static function traverseOptionKV(): void
+    {
+        $proveEvenOrFst = fn(string $k, int $v): Option => 0 === $v % 2 || $k === 'fst'
+            ? O\some($v)
+            : O\none;
+
+        pipe(
+            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+            D\traverseOptionKV($proveEvenOrFst),
+            Type\isSameAs('Option<array<string, int>>'),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            D\from(['fst' => 1, 'snd' => 4, 'thr' => 6]),
+            D\traverseOptionKV($proveEvenOrFst),
+            Type\isSameAs('Option<array<string, int>>'),
+            Assert\equals(O\some(['fst' => 1, 'snd' => 4, 'thr' => 6])),
+        );
+    }
+
+    #[Test]
     public static function any_(): void
     {
         pipe(

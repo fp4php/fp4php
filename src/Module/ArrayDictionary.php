@@ -435,6 +435,39 @@ function traverseOption(callable $callback): Closure
 
 /**
  * @template K of array-key
+ * @template A
+ * @template B
+ * @template TIn of array<K, A>
+ *
+ * @param callable(K, A): Option<B> $callback
+ * @return Closure(array<K, A>): Option<array<K, B>>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<K, A>
+ *         ? Option<non-empty-array<K, B>>
+ *         : Option<array<K, B>>
+ * ))
+ */
+function traverseOptionKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $k => $v) {
+            $option = $callback($k, $v);
+
+            if (O\isNone($option)) {
+                return O\none;
+            }
+
+            $out[$k] = $option->value;
+        }
+
+        return O\some($out);
+    };
+}
+
+/**
+ * @template K of array-key
  * @template V
  *
  * @param callable(V): bool $callback
