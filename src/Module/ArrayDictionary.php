@@ -539,6 +539,31 @@ function partition(callable $callback): Closure
 }
 
 /**
+ * @template K of array-key
+ * @template V
+ *
+ * @param callable(K, V): bool $callback
+ * @return Closure(array<K, V>): list{array<K, V>, array<K, V>}
+ */
+function partitionKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $outLeft = [];
+        $outRight = [];
+
+        foreach ($dictionary as $k => $v) {
+            if (!$callback($k, $v)) {
+                $outLeft[$k] = $v;
+            } else {
+                $outRight[$k] = $v;
+            }
+        }
+
+        return [$outLeft, $outRight];
+    };
+}
+
+/**
  * @template L
  * @template R
  * @template K of array-key
@@ -555,6 +580,35 @@ function partitionMap(callable $callback): Closure
 
         foreach ($dictionary as $k => $v) {
             $either = $callback($v);
+
+            if (E\isLeft($either)) {
+                $outLeft[$k] = $either->value;
+            } else {
+                $outRight[$k] = $either->value;
+            }
+        }
+
+        return [$outLeft, $outRight];
+    };
+}
+
+/**
+ * @template L
+ * @template R
+ * @template K of array-key
+ * @template V
+ *
+ * @param callable(K, V): Either<L, R> $callback
+ * @return Closure(array<K, V>): list{array<K, L>, array<K, R>}
+ */
+function partitionMapKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $outLeft = [];
+        $outRight = [];
+
+        foreach ($dictionary as $k => $v) {
+            $either = $callback($k, $v);
 
             if (E\isLeft($either)) {
                 $outLeft[$k] = $either->value;

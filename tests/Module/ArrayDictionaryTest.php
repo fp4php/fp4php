@@ -258,7 +258,7 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from(['k1' => 1, 'k2' => 2, 'k3' => 3]),
             D\reindex(fn(int $num) => "key-{$num}"),
-            Type\isSameAs('array<string, int>'),
+            Type\isSameAs('array<non-empty-string, int>'),
             Assert\equals(['key-1' => 1, 'key-2' => 2, 'key-3' => 3]),
         );
     }
@@ -269,7 +269,7 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from(['a' => 1, 'b' => 2, 'c' => 3]),
             D\reindexKV(fn(string $key, int $num) => "key-{$key}-{$num}"),
-            Type\isSameAs('array<string, int>'),
+            Type\isSameAs('array<non-empty-string, int>'),
             Assert\equals(['key-a-1' => 1, 'key-b-2' => 2, 'key-c-3' => 3]),
         );
     }
@@ -654,6 +654,48 @@ final class ArrayDictionaryTest extends TestCase
     }
 
     #[Test]
+    public static function partitionKV(): void
+    {
+        pipe(
+            D\from([]),
+            D\partitionKV(fn() => true),
+            Type\isSameAs('list{array<never, never>, array<never, never>}'),
+            Assert\equals([[], []]),
+        );
+
+        pipe(
+            D\from([
+                1 => 'k1',
+                2 => 'k2',
+                3 => 'k3',
+                4 => 'k4',
+                5 => 'k5',
+                6 => 'k6',
+                7 => 'k7',
+                8 => 'k8',
+                9 => 'k9',
+            ]),
+            D\partitionKV(fn($k, $v) => 0 === $k % 2 || $v === 'k1'),
+            Type\isSameAs('list{array<int, string>, array<int, string>}'),
+            Assert\equals([
+                [
+                    3 => 'k3',
+                    5 => 'k5',
+                    7 => 'k7',
+                    9 => 'k9',
+                ],
+                [
+                    1 => 'k1',
+                    2 => 'k2',
+                    4 => 'k4',
+                    6 => 'k6',
+                    8 => 'k8',
+                ],
+            ]),
+        );
+    }
+
+    #[Test]
     public static function partitionMap(): void
     {
         pipe(
@@ -757,6 +799,48 @@ final class ArrayDictionaryTest extends TestCase
                     'k1' => 'fst',
                     'k3' => 'snd',
                     'k5' => 'thr',
+                ],
+            ]),
+        );
+    }
+
+    #[Test]
+    public static function partitionMapKV(): void
+    {
+        pipe(
+            D\from([]),
+            D\partitionMapKV(fn($i) => E\right($i)),
+            Type\isSameAs('list{array<never, never>, array<never, never>}'),
+            Assert\equals([[], []]),
+        );
+
+        pipe(
+            D\from([
+                1 => 'k1',
+                2 => 'k2',
+                3 => 'k3',
+                4 => 'k4',
+                5 => 'k5',
+                6 => 'k6',
+                7 => 'k7',
+                8 => 'k8',
+                9 => 'k9',
+            ]),
+            D\partitionMapKV(fn($k, $v) => 0 !== $k % 2 && $v !== 'k1' ? E\left($v) : E\right($v)),
+            Type\isSameAs('list{array<int, string>, array<int, string>}'),
+            Assert\equals([
+                [
+                    3 => 'k3',
+                    5 => 'k5',
+                    7 => 'k7',
+                    9 => 'k9',
+                ],
+                [
+                    1 => 'k1',
+                    2 => 'k2',
+                    4 => 'k4',
+                    6 => 'k6',
+                    8 => 'k8',
                 ],
             ]),
         );
