@@ -466,6 +466,72 @@ function traverseOptionKV(callable $callback): Closure
 
 /**
  * @template A
+ * @template B
+ * @template E
+ * @template TIn of list<A>
+ *
+ * @param callable(A): Either<E, B> $callback
+ * @return Closure(list<A>): Either<E, list<B>>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? Either<E, non-empty-list<B>>
+ *         : Either<E, list<B>>
+ * ))
+ */
+function traverseEither(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $out = [];
+
+        foreach ($list as $a) {
+            $b = $callback($a);
+
+            if (E\isLeft($b)) {
+                return $b;
+            }
+
+            $out[] = $b->value;
+        }
+
+        return E\right($out);
+    };
+}
+
+/**
+ * @template A
+ * @template B
+ * @template E
+ * @template TIn of list<A>
+ *
+ * @param callable(int, A): Either<E, B> $callback
+ * @return Closure(list<A>): Either<E, list<B>>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? Either<E, non-empty-list<B>>
+ *         : Either<E, list<B>>
+ * ))
+ */
+function traverseEitherKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $out = [];
+
+        foreach ($list as $index => $a) {
+            $b = $callback($index, $a);
+
+            if (E\isLeft($b)) {
+                return $b;
+            }
+
+            $out[] = $b->value;
+        }
+
+        return E\right($out);
+    };
+}
+
+/**
+ * @template A
  *
  * @param callable(A): bool $callback
  * @return Closure(list<A>): bool

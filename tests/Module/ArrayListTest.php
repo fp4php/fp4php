@@ -12,6 +12,7 @@ use Fp4\PHP\Module\PHPUnit as Assert;
 use Fp4\PHP\Module\Psalm as Type;
 use Fp4\PHP\Module\Str;
 use Fp4\PHP\Module\Tuple as T;
+use Fp4\PHP\Type\Either;
 use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -560,6 +561,64 @@ final class ArrayListTest extends TestCase
             L\traverseOptionKV($proveEvenOrLiteral),
             Type\isSameAs('Option<list<int>>'),
             Assert\equals(O\some([1, 2, 4, 6])),
+        );
+    }
+
+    #[Test]
+    public static function traverseEither(): void
+    {
+        $proveEven = fn(int $i): Either => 0 !== $i % 2
+            ? E\left(Str\from("{$i} is not even"))
+            : E\right($i);
+
+        pipe(
+            L\from([]),
+            L\traverseEitherKV($proveEven),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\right([])),
+        );
+
+        pipe(
+            L\from([1, 2, 3]),
+            L\traverseEitherKV($proveEven),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\left('1 is not even')),
+        );
+
+        pipe(
+            L\from([2, 4, 6]),
+            L\traverseEither($proveEven),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\right([2, 4, 6])),
+        );
+    }
+
+    #[Test]
+    public static function traverseEitherKV(): void
+    {
+        $proveEvenOrLiteral = fn(int $k, int $v): Either => 0 !== $v % 2 && 0 !== $k
+            ? E\left(Str\from("{$v} is not even and key is not 0"))
+            : E\right($v);
+
+        pipe(
+            L\from([]),
+            L\traverseEitherKV($proveEvenOrLiteral),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\right([])),
+        );
+
+        pipe(
+            L\from([1, 2, 3]),
+            L\traverseEitherKV($proveEvenOrLiteral),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\left('3 is not even and key is not 0')),
+        );
+
+        pipe(
+            L\from([1, 2, 4, 6]),
+            L\traverseEitherKV($proveEvenOrLiteral),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\right([1, 2, 4, 6])),
         );
     }
 
