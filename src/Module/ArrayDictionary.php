@@ -468,6 +468,74 @@ function traverseOptionKV(callable $callback): Closure
 
 /**
  * @template K of array-key
+ * @template A
+ * @template B
+ * @template E
+ * @template TIn of array<K, A>
+ *
+ * @param callable(A): Either<E, B> $callback
+ * @return Closure(array<K, A>): Either<E, array<K, B>>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? Either<E, non-empty-array<K, B>>
+ *         : Either<E, array<K, B>>
+ * ))
+ */
+function traverseEither(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $k => $a) {
+            $fb = $callback($a);
+
+            if (E\isLeft($fb)) {
+                return $fb;
+            }
+
+            $out[$k] = $fb->value;
+        }
+
+        return E\right($out);
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template A
+ * @template B
+ * @template E
+ * @template TIn of array<K, A>
+ *
+ * @param callable(K, A): Either<E, B> $callback
+ * @return Closure(array<K, A>): Either<E, array<K, B>>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<K, A>
+ *         ? Either<E, non-empty-array<K, B>>
+ *         : Either<E, array<K, B>>
+ * ))
+ */
+function traverseEitherKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $k => $a) {
+            $fb = $callback($k, $a);
+
+            if (E\isLeft($fb)) {
+                return $fb;
+            }
+
+            $out[$k] = $fb->value;
+        }
+
+        return E\right($out);
+    };
+}
+
+/**
+ * @template K of array-key
  * @template V
  *
  * @param callable(V): bool $callback

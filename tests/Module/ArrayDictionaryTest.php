@@ -11,6 +11,8 @@ use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Module\PHPUnit as Assert;
 use Fp4\PHP\Module\Psalm as Type;
 use Fp4\PHP\Module\Shape as S;
+use Fp4\PHP\Type\Either;
+use Fp4\PHP\Module\Str;
 use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -420,6 +422,64 @@ final class ArrayDictionaryTest extends TestCase
             D\traverseOptionKV($proveEvenOrFst),
             Type\isSameAs('Option<array<string, int>>'),
             Assert\equals(O\some(['fst' => 1, 'snd' => 4, 'thr' => 6])),
+        );
+    }
+
+    #[Test]
+    public static function traverseEither(): void
+    {
+        $proveEven = fn(int $i): Either => 0 !== $i % 2
+            ? E\left(Str\from("{$i} is not even"))
+            : E\right($i);
+
+        pipe(
+            D\from([]),
+            D\traverseEither($proveEven),
+            Type\isSameAs('Either<string, int>'),
+            Assert\equals(E\right([])),
+        );
+
+        pipe(
+            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+            D\traverseEither($proveEven),
+            Type\isSameAs('Either<string, int>'),
+            Assert\equals(E\left('1 is not even')),
+        );
+
+        pipe(
+            D\from(['fst' => 2, 'snd' => 4, 'thr' => 6]),
+            D\traverseEither($proveEven),
+            Type\isSameAs('Option<list<int>>'),
+            Assert\equals(E\right(['fst' => 2, 'snd' => 4, 'thr' => 6])),
+        );
+    }
+
+    #[Test]
+    public static function traverseEitherKV(): void
+    {
+        $proveEvenOrLiteral = fn(string $k, int $v): Either => 0 !== $v % 2 && 'init' !== $k
+            ? E\left(Str\from("{$v} is not even and key is not 0"))
+            : E\right($v);
+
+        pipe(
+            D\from([]),
+            D\traverseEitherKV($proveEvenOrLiteral),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\right([])),
+        );
+
+        pipe(
+            D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
+            D\traverseEitherKV($proveEvenOrLiteral),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\left('1 is not even and key is not 0')),
+        );
+
+        pipe(
+            D\from(['init' => 1, 'fst' => 2, 'snd' => 4, 'thr' => 6]),
+            D\traverseEitherKV($proveEvenOrLiteral),
+            Type\isSameAs('Either<string, list<int>>'),
+            Assert\equals(E\right(['init' => 1, 'fst' => 2, 'snd' => 4, 'thr' => 6])),
         );
     }
 
