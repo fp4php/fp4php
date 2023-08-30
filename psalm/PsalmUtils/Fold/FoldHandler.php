@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Reduce;
+namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Fold;
 
 use Fp4\PHP\Module\ArrayDictionary as D;
 use Fp4\PHP\Module\ArrayList as L;
@@ -32,7 +32,7 @@ use Psalm\Type\Union;
 use function Fp4\PHP\Module\Functions\constNull;
 use function Fp4\PHP\Module\Functions\pipe;
 
-final class ReduceHandler
+final class FoldHandler
 {
     /**
      * @param non-empty-list<string> $functions
@@ -44,7 +44,7 @@ final class ReduceHandler
             pipe(
                 O\bindable(),
                 O\bind(
-                    reduceCall: fn() => pipe(
+                    foldCall: fn() => pipe(
                         O\some($event->getExpr()),
                         O\filterOf(FuncCall::class),
                         O\filter(fn(FuncCall $call) => pipe(
@@ -53,22 +53,22 @@ final class ReduceHandler
                         )),
                     ),
                     functionType: fn($i) => pipe(
-                        Ev\proveString($i->reduceCall->name->getAttribute('resolvedName')),
+                        Ev\proveString($i->foldCall->name->getAttribute('resolvedName')),
                         O\map(fn(string $function) => str_ends_with($function, 'KV')
                             ? FunctionType::KeyValue
                             : FunctionType::Value),
                     ),
-                    reduceArgs: fn($i) => O\some($i->reduceCall->getArgs()),
+                    foldArgs: fn($i) => O\some($i->foldCall->getArgs()),
                     initialArg: fn($i) => pipe(
-                        $i->reduceArgs,
+                        $i->foldArgs,
                         D\get(0),
                         O\tap(fn(Arg $initial) => $initial->value->setAttribute('widenTypeAfterAnalysis', true)),
                     ),
-                    reducerArg: fn($i) => pipe(
-                        $i->reduceArgs,
+                    foldFnArg: fn($i) => pipe(
+                        $i->foldArgs,
                         D\get(1),
-                        O\tap(fn(Arg $reducer) => $reducer->value->setAttribute('returnTypeIsAssignableTo', $i->initialArg->value)),
-                        O\tap(fn(Arg $reducer) => $reducer->value->setAttribute('functionType', $i->functionType)),
+                        O\tap(fn(Arg $foldFn) => $foldFn->value->setAttribute('returnTypeIsAssignableTo', $i->initialArg->value)),
+                        O\tap(fn(Arg $foldFn) => $foldFn->value->setAttribute('functionType', $i->functionType)),
                     ),
                 ),
             ),
@@ -94,10 +94,10 @@ final class ReduceHandler
             O\tap(fn($expr) => $expr->setAttribute('widenTypeAfterAnalysis', null)),
         );
 
-        $widenReducer = fn(): Option => pipe(
+        $widenfoldFn = fn(): Option => pipe(
             O\bindable(),
             O\bind(
-                reducerExpr: fn() => pipe(
+                foldFnExpr: fn() => pipe(
                     $event->getExpr(),
                     Ev\proveOf([
                         Expr\Closure::class,
@@ -105,91 +105,91 @@ final class ReduceHandler
                     ]),
                 ),
                 functionType: fn($i) => pipe(
-                    $i->reducerExpr->getAttribute('functionType'),
+                    $i->foldFnExpr->getAttribute('functionType'),
                     Ev\proveOf(FunctionType::class),
                 ),
                 initialExpr: fn($i) => pipe(
-                    $i->reducerExpr->getAttribute('returnTypeIsAssignableTo'),
+                    $i->foldFnExpr->getAttribute('returnTypeIsAssignableTo'),
                     Ev\proveOf(Expr::class),
                 ),
                 initialType: fn($i) => pipe(
                     $i->initialExpr,
                     PsalmApi::$type->get($event),
                 ),
-                reducerType: fn($i) => pipe(
-                    O\some($i->reducerExpr),
+                foldFnType: fn($i) => pipe(
+                    O\some($i->foldFnExpr),
                     O\flatMap(PsalmApi::$type->get($event)),
                     O\flatMap(PsalmApi::$cast->toSingleAtomicOf([
                         TCallable::class,
                         TClosure::class,
                     ])),
                 ),
-                reducerParams: fn($i) => O\fromNullable($i->reducerType->params),
-                accamulator: fn($i) => L\first($i->reducerParams),
-                reducerReturn: fn($i) => O\fromNullable($i->reducerType->return_type),
+                foldFnParams: fn($i) => O\fromNullable($i->foldFnType->params),
+                accamulator: fn($i) => L\first($i->foldFnParams),
+                foldFnReturn: fn($i) => O\fromNullable($i->foldFnType->return_type),
             ),
             O\let(
-                nonLiteralReducerReturn: fn($i) => PsalmApi::$cast->toNonLiteralType($i->reducerReturn),
+                nonLiteralfoldFnReturn: fn($i) => PsalmApi::$cast->toNonLiteralType($i->foldFnReturn),
                 combinedAccumulatorWithInitial: fn($i) => PsalmApi::$type->combine(
                     $i->accamulator->type ?? Type::getMixed(),
-                    $i->nonLiteralReducerReturn,
+                    $i->nonLiteralfoldFnReturn,
                 ),
-                replacedReducer: fn($i) => $i->reducerType->replace(
+                replacedfoldFn: fn($i) => $i->foldFnType->replace(
                     params: [
                         $i->accamulator->setType($i->combinedAccumulatorWithInitial),
-                        ...L\tail($i->reducerType->params ?? []),
+                        ...L\tail($i->foldFnType->params ?? []),
                     ],
-                    return_type: $i->nonLiteralReducerReturn,
+                    return_type: $i->nonLiteralfoldFnReturn,
                 ),
             ),
             O\tap(fn($i) => pipe(
-                $i->replacedReducer,
-                PsalmApi::$type->set($i->reducerExpr, $event),
+                $i->replacedfoldFn,
+                PsalmApi::$type->set($i->foldFnExpr, $event),
             )),
             O\tap(fn($i) => O\first(
-                fn() => self::handleEmptyArrayInitial($i->initialExpr, $i->initialType, $i->nonLiteralReducerReturn, $event),
-                fn() => self::checkReducerReturnType($i->initialType, $i->nonLiteralReducerReturn, $event),
+                fn() => self::handleEmptyArrayInitial($i->initialExpr, $i->initialType, $i->nonLiteralfoldFnReturn, $event),
+                fn() => self::checkFoldFnReturnType($i->initialType, $i->nonLiteralfoldFnReturn, $event),
             )),
             O\tap(function($i): void {
-                $i->reducerExpr->setAttribute('returnTypeIsAssignableTo', null);
+                $i->foldFnExpr->setAttribute('returnTypeIsAssignableTo', null);
             }),
         );
 
-        return pipe($widenInitial(), O\orElse($widenReducer), constNull(...));
+        return pipe($widenInitial(), O\orElse($widenfoldFn), constNull(...));
     }
 
     private static function handleEmptyArrayInitial(
         Expr $initialExpr,
         Union $initialType,
-        Union $reducerReturn,
+        Union $foldFnReturn,
         AfterExpressionAnalysisEvent $event,
     ): Option {
         return pipe(
             Ev\proveTrue($initialType->isEmptyArray()),
             O\flatMap(fn() => pipe(
-                L\fromIterable($reducerReturn->getAtomicTypes()),
+                L\fromIterable($foldFnReturn->getAtomicTypes()),
                 L\all(fn(Type\Atomic $a) => $a instanceof TArray || $a instanceof TKeyedArray),
                 Ev\proveTrue(...),
             )),
             O\tap(fn() => pipe(
-                $reducerReturn,
+                $foldFnReturn,
                 PsalmApi::$type->set($initialExpr, $event),
             )),
         );
     }
 
-    private static function checkReducerReturnType(
+    private static function checkFoldFnReturnType(
         Union $initialType,
-        Union $reducerReturnType,
+        Union $foldFnReturnType,
         AfterExpressionAnalysisEvent $event,
     ): Option {
         $codebase = $event->getCodebase();
         $source = $event->getStatementsSource();
 
         return pipe(
-            Ev\proveFalse($codebase->isTypeContainedByType($reducerReturnType, $initialType)),
+            Ev\proveFalse($codebase->isTypeContainedByType($foldFnReturnType, $initialType)),
             O\map(fn() => new InvalidArgument(
-                message: "Type {$reducerReturnType->getId()} is not assignable to {$initialType->getId()}",
+                message: "Type {$foldFnReturnType->getId()} is not assignable to {$initialType->getId()}",
                 code_location: new CodeLocation($source, $event->getExpr()),
             )),
             O\tap(fn($e) => IssueBuffer::maybeAdd($e, $source->getSuppressedIssues())),

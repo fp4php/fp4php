@@ -556,7 +556,7 @@ function partitionMap(callable $callback): Closure
  * @param callable(TAcc, A): TAcc $callback
  * @return Closure(list<A>): TAcc
  */
-function reduce(mixed $initial, callable $callback): Closure
+function fold(mixed $initial, callable $callback): Closure
 {
     return function (array $list) use ($initial, $callback) {
         $acc = $initial;
@@ -577,7 +577,7 @@ function reduce(mixed $initial, callable $callback): Closure
  * @param callable(TAcc, int, A): TAcc $callback
  * @return Closure(list<A>): TAcc
  */
-function reduceKV(mixed $initial, callable $callback): Closure
+function foldKV(mixed $initial, callable $callback): Closure
 {
     return function (array $list) use ($initial, $callback) {
         $acc = $initial;

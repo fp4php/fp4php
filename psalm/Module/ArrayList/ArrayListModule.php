@@ -17,7 +17,7 @@ final class ArrayListModule implements RegisterPsalmHooks
             LetFunctionStorageProvider::class,
             BindFunctionStorageProvider::class,
             BindableCompressor::class,
-            ReduceInference::class,
+            FoldInference::class,
         ]);
     }
 }
