@@ -762,5 +762,41 @@ final class ArrayDictionaryTest extends TestCase
         );
     }
 
+    #[Test]
+    public static function fold(): void
+    {
+        pipe(
+            D\from([1, 2, 3]),
+            D\fold(0, fn($sum, $current) => $sum + $current),
+            Type\isSameAs('int'),
+            Assert\same(6),
+        );
+
+        pipe(
+            D\from([1, 2, 3]),
+            D\fold([], fn($mapped, $current) => [...$mapped, "value-{$current}"]),
+            Type\isSameAs('list<non-empty-string>'),
+            Assert\same(['value-1', 'value-2', 'value-3']),
+        );
+    }
+
+    #[Test]
+    public static function foldKV(): void
+    {
+        pipe(
+            D\from([1 => 100, 2 => 200, 3 => 300, 4 => 400, 5 => 500, 6 => 600]),
+            D\foldKV(0, fn($sum, $key, $current) => $sum + (0 === $key % 2 ? $current : 0)),
+            Type\isSameAs('int'),
+            Assert\same(200 + 400 + 600),
+        );
+
+        pipe(
+            D\from([1 => 100, 2 => 200, 3 => 300, 4 => 400, 5 => 500, 6 => 600]),
+            D\foldKV([], fn($mapped, $key, $current) => 0 === $key % 2 ? [...$mapped, "value-{$current}"] : $mapped),
+            Type\isSameAs('list<non-empty-string>'),
+            Assert\same(['value-200', 'value-400', 'value-600']),
+        );
+    }
+
     // endregion: terminal ops
 }

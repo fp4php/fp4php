@@ -567,4 +567,48 @@ function partitionMap(callable $callback): Closure
     };
 }
 
+/**
+ * @template TAcc
+ * @template K of array-key
+ * @template V
+ *
+ * @param TAcc $initial
+ * @param callable(TAcc, V): TAcc $callback
+ * @return Closure(array<K, V>): TAcc
+ */
+function fold(mixed $initial, callable $callback): Closure
+{
+    return function (array $dictionary) use ($initial, $callback) {
+        $acc = $initial;
+
+        foreach ($dictionary as $_k => $v) {
+            $acc = $callback($acc, $v);
+        }
+
+        return $acc;
+    };
+}
+
+/**
+ * @template TAcc
+ * @template K of array-key
+ * @template V
+ *
+ * @param TAcc $initial
+ * @param callable(TAcc, K, V): TAcc $callback
+ * @return Closure(array<K, V>): TAcc
+ */
+function foldKV(mixed $initial, callable $callback): Closure
+{
+    return function (array $dictionary) use ($initial, $callback) {
+        $acc = $initial;
+
+        foreach ($dictionary as $k => $v) {
+            $acc = $callback($acc, $k, $v);
+        }
+
+        return $acc;
+    };
+}
+
 // endregion: terminal ops
