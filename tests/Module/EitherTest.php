@@ -122,24 +122,6 @@ final class EitherTest extends TestCase
         );
     }
 
-    #[Test]
-    public static function fold(): void
-    {
-        pipe(
-            E\right(41),
-            E\fold(fn() => 'never-left', fn($right) => $right + 1),
-            Type\isSameAs('"never-left"|int'),
-            Assert\equals(42),
-        );
-
-        pipe(
-            E\left(41),
-            E\fold(fn($left) => $left + 1, fn() => 'never-right'),
-            Type\isSameAs('int|"never-right"'),
-            Assert\equals(42),
-        );
-    }
-
     // endregion: destructor
 
     // region: refinements

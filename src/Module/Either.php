@@ -91,23 +91,6 @@ function getRight(Either $e): Option
     return isLeft($e) ? O\none : O\some($e->value);
 }
 
-/**
- * @template E
- * @template EOut
- * @template A
- * @template AOut
- *
- * @param callable(E): EOut $ifLeft
- * @param callable(A): AOut $ifRight
- * @return Closure(Either<E, A>): (EOut|AOut)
- */
-function fold(callable $ifLeft, callable $ifRight): Closure
-{
-    return fn(Either $e) => isLeft($e)
-        ? $ifLeft($e->value)
-        : $ifRight($e->value);
-}
-
 // endregion: destructors
 
 // region: refinements
