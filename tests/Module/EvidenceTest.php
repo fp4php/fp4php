@@ -7,6 +7,8 @@ namespace Fp4\PHP\Test\Module;
 use ArrayObject;
 use Fp4\PHP\Module\Evidence as Ev;
 use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Module\PHPUnit as Assert;
+use Fp4\PHP\Module\Psalm as Type;
 use Fp4\PHP\Type\Option;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -377,5 +379,41 @@ final class EvidenceTest extends TestCase
         );
         assertEquals(O\none, pipe([100 => 1, 200 => 2, 300 => 3], $numMap));
         assertEquals(O\none, pipe(3, $numMap));
+    }
+
+    #[Test]
+    public static function proveTrue(): void
+    {
+        pipe(
+            false,
+            Ev\proveTrue(...),
+            Type\isSameAs('Option<true>'),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            true,
+            Ev\proveTrue(...),
+            Type\isSameAs('Option<true>'),
+            Assert\equals(O\some(true)),
+        );
+    }
+
+    #[Test]
+    public static function proveFalse(): void
+    {
+        pipe(
+            true,
+            Ev\proveFalse(...),
+            Type\isSameAs('Option<false>'),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            false,
+            Ev\proveFalse(...),
+            Type\isSameAs('Option<false>'),
+            Assert\equals(O\some(false)),
+        );
     }
 }
