@@ -133,22 +133,6 @@ function getOrCall(callable $call): Closure
         : $call();
 }
 
-/**
- * @template A
- * @template TNone
- * @template TSome
- *
- * @param callable(): TNone $ifNone
- * @param callable(A): TSome $ifSome
- * @return Closure(Option<A>): (TNone|TSome)
- */
-function fold(callable $ifNone, callable $ifSome): Closure
-{
-    return fn(Option $option) => isSome($option)
-        ? $ifSome($option->value)
-        : $ifNone();
-}
-
 // endregion: destructors
 
 // region: refinements

@@ -188,24 +188,6 @@ final class OptionTest extends TestCase
         );
     }
 
-    #[Test]
-    public static function fold(): void
-    {
-        pipe(
-            O\none,
-            O\fold(fn() => 'none', fn() => 'some'),
-            Type\isSameAs('"none"|"some"'),
-            Assert\equals('none'),
-        );
-
-        pipe(
-            O\some(42),
-            O\fold(fn() => 'none', fn($value) => "some: {$value}"),
-            Type\isSameAs('non-empty-string'),
-            Assert\equals('some: 42'),
-        );
-    }
-
     // endregion: destructors
 
     // region: refinements
