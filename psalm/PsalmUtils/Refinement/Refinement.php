@@ -101,10 +101,11 @@ final class Refinement
     private static function getKeyArgumentFromPredicate(self $refinement): Option
     {
         return pipe(
-            O\when(FunctionType::KeyValue === $refinement->type, fn() => pipe(
-                $refinement->predicate->getParams(),
-                L\fromIterable(...),
-            )),
+            O\fromNullable(
+                FunctionType::KeyValue === $refinement->type
+                    ? L\fromIterable($refinement->predicate->getParams())
+                    : null,
+            ),
             O\flatMap(L\first(...)),
             O\map(fn(Param $param) => $param->var),
             O\filterOf(Variable::class),

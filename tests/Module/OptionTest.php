@@ -114,22 +114,6 @@ final class OptionTest extends TestCase
         );
     }
 
-    #[Test]
-    public static function when(): void
-    {
-        pipe(
-            O\when(false, fn() => 42),
-            Type\isSameAs('Option<int>'),
-            Assert\equals(O\none),
-        );
-
-        pipe(
-            O\when(true, fn() => 42),
-            Type\isSameAs('Option<int>'),
-            Assert\equals(O\some(42)),
-        );
-    }
-
     // endregion: constructor
 
     // region: destructors

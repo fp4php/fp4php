@@ -183,13 +183,15 @@ final class FirstClassCallablePredicate
             O\bind(
                 analyzer: fn() => pipe($source, Ev\proveOf(StatementsAnalyzer::class)),
                 storage: fn($i) => O\first(
-                    fn() => O\when(
-                        PsalmApi::$codebase->functions->functionExists($i->analyzer, strtolower($functionId)),
-                        fn() => PsalmApi::$codebase->functions->getStorage($i->analyzer, strtolower($functionId)),
+                    fn() => O\fromNullable(
+                        PsalmApi::$codebase->functions->functionExists($i->analyzer, strtolower($functionId))
+                            ? PsalmApi::$codebase->functions->getStorage($i->analyzer, strtolower($functionId))
+                            : null,
                     ),
-                    fn() => O\when(
-                        PsalmApi::$codebase->methods->hasStorage(MethodIdentifier::wrap($functionId)),
-                        fn() => PsalmApi::$codebase->methods->getStorage(MethodIdentifier::wrap($functionId)),
+                    fn() => O\fromNullable(
+                        PsalmApi::$codebase->methods->hasStorage(MethodIdentifier::wrap($functionId))
+                            ? PsalmApi::$codebase->methods->getStorage(MethodIdentifier::wrap($functionId))
+                            : null,
                     ),
                 ),
             ),

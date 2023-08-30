@@ -75,19 +75,6 @@ function first(Closure $head, Closure ...$tail): Option
     return none;
 }
 
-/**
- * @template A
- *
- * @param callable(): A $some
- * @return Option<A>
- */
-function when(bool $cond, callable $some): Option
-{
-    return $cond
-        ? some($some())
-        : none;
-}
-
 // endregion: constructor
 
 // region: destructors
