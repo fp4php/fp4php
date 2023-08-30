@@ -435,21 +435,21 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from([]),
             D\traverseEither($proveEven),
-            Type\isSameAs('Either<string, int>'),
+            Type\isSameAs('Either<string, array<never, int>>'),
             Assert\equals(E\right([])),
         );
 
         pipe(
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
             D\traverseEither($proveEven),
-            Type\isSameAs('Either<string, int>'),
+            Type\isSameAs('Either<string, array<string, int>>'),
             Assert\equals(E\left('1 is not even')),
         );
 
         pipe(
             D\from(['fst' => 2, 'snd' => 4, 'thr' => 6]),
             D\traverseEither($proveEven),
-            Type\isSameAs('Option<list<int>>'),
+            Type\isSameAs('Either<string, array<string, int>>'),
             Assert\equals(E\right(['fst' => 2, 'snd' => 4, 'thr' => 6])),
         );
     }
@@ -464,21 +464,21 @@ final class ArrayDictionaryTest extends TestCase
         pipe(
             D\from([]),
             D\traverseEitherKV($proveEvenOrLiteral),
-            Type\isSameAs('Either<string, list<int>>'),
+            Type\isSameAs('Either<string, array<never, int>>'),
             Assert\equals(E\right([])),
         );
 
         pipe(
             D\from(['fst' => 1, 'snd' => 2, 'thr' => 3]),
             D\traverseEitherKV($proveEvenOrLiteral),
-            Type\isSameAs('Either<string, list<int>>'),
+            Type\isSameAs('Either<string, array<string, int>>'),
             Assert\equals(E\left('1 is not even and key is not 0')),
         );
 
         pipe(
             D\from(['init' => 1, 'fst' => 2, 'snd' => 4, 'thr' => 6]),
             D\traverseEitherKV($proveEvenOrLiteral),
-            Type\isSameAs('Either<string, list<int>>'),
+            Type\isSameAs('Either<string, array<string, int>>'),
             Assert\equals(E\right(['init' => 1, 'fst' => 2, 'snd' => 4, 'thr' => 6])),
         );
     }

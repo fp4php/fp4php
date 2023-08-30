@@ -19,8 +19,7 @@ use function array_key_exists;
  * @template A
  *
  * @param iterable<K, A> $iterable
- * @return array<K, A>
- * @psalm-return ($iterable is non-empty-array<K, A> ? non-empty-array<K, A> : array<K, A>)
+ * @return ($iterable is non-empty-array<K, A> ? non-empty-array<K, A> : array<K, A>)
  */
 function fromIterable(iterable $iterable): array
 {
@@ -68,8 +67,7 @@ function fromNonEmpty(array $dictionary): array
  * @template TIn of array<K, A>
  *
  * @param callable(A): B $callback
- * @return Closure(array<K, A>): array<K, B>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
  *         ? non-empty-array<K, B>
  *         : array<K, B>
@@ -95,8 +93,7 @@ function map(callable $callback): Closure
  * @template TIn of array<K, A>
  *
  * @param callable(K, A): B $callback
- * @return Closure(array<K, A>): array<K, B>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
  *         ? non-empty-array<K, B>
  *         : array<K, B>
@@ -122,8 +119,7 @@ function mapKV(callable $callback): Closure
  * @template TIn of array<K, A>
  *
  * @param callable(A): B $callback
- * @return Closure(array<K, A>): array<K, A>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
  *         ? non-empty-array<K, A>
  *         : array<K, A>
@@ -147,8 +143,7 @@ function tap(callable $callback): Closure
  * @template TIn of array<K, A>
  *
  * @param callable(K, A): B $callback
- * @return Closure(array<K, A>): array<K, A>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
  *         ? non-empty-array<K, A>
  *         : array<K, A>
@@ -174,7 +169,7 @@ function tapKV(callable $callback): Closure
  * @template TFlatten of array<KB, B>
  *
  * @param callable(A): TFlatten $callback
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *    TIn is non-empty-array<KA, A>
  *        ? (TFlatten is non-empty-array<KB, B> ? non-empty-array<KB, B> : array<KB, B>)
  *        : (array<KB, B>)
@@ -204,7 +199,7 @@ function flatMap(callable $callback): Closure
  * @template TFlatten of array<KB, B>
  *
  * @param callable(KA, A): TFlatten $callback
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *    TIn is non-empty-array<KA, A>
  *        ? (TFlatten is non-empty-array<KB, B> ? non-empty-array<KB, B> : array<KB, B>)
  *        : (array<KB, B>)
@@ -276,7 +271,7 @@ function filterKV(callable $callback): Closure
  * @template TIndex of array-key
  *
  * @param callable(V): TIndex $callback
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, V>
  *         ? non-empty-array<TIndex, V>
  *         : array<TIndex, V>
@@ -302,7 +297,7 @@ function reindex(callable $callback): Closure
  * @template TIndex of array-key
  *
  * @param callable(K, V): TIndex $callback
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, V>
  *         ? non-empty-array<TIndex, V>
  *         : array<TIndex, V>
@@ -371,8 +366,7 @@ function get(int|string $key): Closure
  * @template V
  *
  * @param array<K, V> $dictionary
- * @return list<K>
- * @psalm-return ($dictionary is non-empty-array<K, V> ? non-empty-list<K> : list<K>)
+ * @return ($dictionary is non-empty-array<K, V> ? non-empty-list<K> : list<K>)
  */
 function keys(array $dictionary): array
 {
@@ -384,8 +378,7 @@ function keys(array $dictionary): array
  * @template V
  *
  * @param array<K, V> $dictionary
- * @return list<V>
- * @psalm-return ($dictionary is non-empty-array<K, V> ? non-empty-list<V> : list<V>)
+ * @return ($dictionary is non-empty-array<K, V> ? non-empty-list<V> : list<V>)
  */
 function values(array $dictionary): array
 {
@@ -407,8 +400,7 @@ function keyExists(string|int $key): Closure
  * @template TIn of array<K, A>
  *
  * @param callable(A): Option<B> $callback
- * @return Closure(array<K, A>): Option<array<K, B>>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
  *         ? Option<non-empty-array<K, B>>
  *         : Option<array<K, B>>
@@ -440,8 +432,7 @@ function traverseOption(callable $callback): Closure
  * @template TIn of array<K, A>
  *
  * @param callable(K, A): Option<B> $callback
- * @return Closure(array<K, A>): Option<array<K, B>>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
  *         ? Option<non-empty-array<K, B>>
  *         : Option<array<K, B>>
@@ -474,8 +465,7 @@ function traverseOptionKV(callable $callback): Closure
  * @template TIn of array<K, A>
  *
  * @param callable(A): Either<E, B> $callback
- * @return Closure(array<K, A>): Either<E, array<K, B>>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? Either<E, non-empty-array<K, B>>
  *         : Either<E, array<K, B>>
@@ -508,8 +498,7 @@ function traverseEither(callable $callback): Closure
  * @template TIn of array<K, A>
  *
  * @param callable(K, A): Either<E, B> $callback
- * @return Closure(array<K, A>): Either<E, array<K, B>>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
  *         ? Either<E, non-empty-array<K, B>>
  *         : Either<E, array<K, B>>

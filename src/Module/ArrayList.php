@@ -20,8 +20,7 @@ use function in_array;
  * @template A
  *
  * @param iterable<A> $iter
- * @return list<A>
- * @psalm-return ($iter is non-empty-array<A> ? non-empty-list<A> : list<A>)
+ * @return ($iter is non-empty-array<A> ? non-empty-list<A> : list<A>)
  */
 function fromIterable(iterable $iter): array
 {
@@ -77,8 +76,7 @@ function singleton(mixed $value): array
  * @template TIn of list<A>
  *
  * @param callable(A): B $callback
- * @return Closure(list<A>): list<B>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<B>
  *         : list<B>
@@ -103,8 +101,7 @@ function map(callable $callback): Closure
  * @template TIn of list<A>
  *
  * @param callable(int, A): B $callback
- * @return Closure(list<A>): list<B>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<B>
  *         : list<B>
@@ -129,8 +126,7 @@ function mapKV(callable $callback): Closure
  * @template TIn of list<A>
  *
  * @param callable(A): void $callback
- * @return Closure(list<A>): list<A>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<A>
  *         : list<A>
@@ -153,8 +149,7 @@ function tap(callable $callback): Closure
  * @template TIn of list<A>
  *
  * @param callable(int, A): void $callback
- * @return Closure(list<A>): list<A>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? non-empty-list<A>
  *         : list<A>
@@ -406,8 +401,7 @@ function last(array $list): Option
  * @template TIn of list<A>
  *
  * @param callable(A): Option<B> $callback
- * @return Closure(list<A>): Option<list<B>>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? Option<non-empty-list<B>>
  *         : Option<list<B>>
@@ -438,8 +432,7 @@ function traverseOption(callable $callback): Closure
  * @template TIn of list<A>
  *
  * @param callable(int, A): Option<B> $callback
- * @return Closure(list<A>): Option<list<B>>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? Option<non-empty-list<B>>
  *         : Option<list<B>>
@@ -471,8 +464,7 @@ function traverseOptionKV(callable $callback): Closure
  * @template TIn of list<A>
  *
  * @param callable(A): Either<E, B> $callback
- * @return Closure(list<A>): Either<E, list<B>>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? Either<E, non-empty-list<B>>
  *         : Either<E, list<B>>
@@ -504,8 +496,7 @@ function traverseEither(callable $callback): Closure
  * @template TIn of list<A>
  *
  * @param callable(int, A): Either<E, B> $callback
- * @return Closure(list<A>): Either<E, list<B>>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
  *         ? Either<E, non-empty-list<B>>
  *         : Either<E, list<B>>
@@ -612,8 +603,7 @@ function allKV(callable $callback): Closure
  * @template TIn of list<A>
  *
  * @param callable(A): K $callback
- * @return Closure(list<A>): array<K, A>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-list<A>
  *         ? non-empty-array<K, A>
  *         : array<K, A>
@@ -638,8 +628,7 @@ function reindex(callable $callback): Closure
  * @template TIn of list<A>
  *
  * @param callable(int, A): K $callback
- * @return Closure(list<A>): array<K, A>
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-list<A>
  *         ? non-empty-array<K, A>
  *         : array<K, A>

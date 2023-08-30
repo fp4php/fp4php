@@ -27,7 +27,7 @@ function fromNonEmpty(string $string): string
  * @template TSuffix of string
  *
  * @param TSuffix $suffix
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-string ? non-empty-string :
  *     TSuffix is non-empty-string ? non-empty-string :
  *     string
@@ -43,7 +43,7 @@ function append(string $suffix): Closure
  * @template TPrefix of string
  *
  * @param TPrefix $prefix
- * @psalm-return (Closure(TIn): (
+ * @return (Closure(TIn): (
  *     TIn is non-empty-string ? non-empty-string :
  *     TPrefix is non-empty-string ? non-empty-string :
  *     string
