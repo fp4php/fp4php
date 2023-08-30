@@ -309,6 +309,24 @@ final class ArrayListTest extends TestCase
         );
     }
 
+    #[Test]
+    public static function tail(): void
+    {
+        pipe(
+            L\from([]),
+            L\tail(...),
+            Type\isSameAs('list<never>'),
+            Assert\equals([]),
+        );
+
+        pipe(
+            L\from([1, 2, 3]),
+            L\tail(...),
+            Type\isSameAs('list<int>'),
+            Assert\equals([2, 3]),
+        );
+    }
+
     // endregion: ops
 
     // region: terminal ops
@@ -645,6 +663,42 @@ final class ArrayListTest extends TestCase
             L\partitionMap(fn($i) => is_int($i) ? E\left($i) : E\right($i)),
             Type\isSameAs('array{list<int>, list<string>}'),
             Assert\equals([[1, 2, 3], ['fst', 'snd', 'thr']]),
+        );
+    }
+
+    #[Test]
+    public static function fold(): void
+    {
+        pipe(
+            L\from([1, 2, 3]),
+            L\fold(0, fn($sum, $current) => $sum + $current),
+            Type\isSameAs('int'),
+            Assert\same(6),
+        );
+
+        pipe(
+            L\from([1, 2, 3]),
+            L\fold([], fn($mapped, $current) => [...$mapped, "value-{$current}"]),
+            Type\isSameAs('list<non-empty-string>'),
+            Assert\same(['value-1', 'value-2', 'value-3']),
+        );
+    }
+
+    #[Test]
+    public static function foldKV(): void
+    {
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6]),
+            L\foldKV(0, fn($sum, $key, $current) => $sum + (0 === $key % 2 ? $current : 0)),
+            Type\isSameAs('int'),
+            Assert\same(1 + 3 + 5),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6]),
+            L\foldKV([], fn($mapped, $key, $current) => 0 === $key % 2 ? [...$mapped, "value-{$current}"] : $mapped),
+            Type\isSameAs('list<non-empty-string>'),
+            Assert\same(['value-1', 'value-3', 'value-5']),
         );
     }
 
