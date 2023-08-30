@@ -434,6 +434,38 @@ function traverseOption(callable $callback): Closure
 
 /**
  * @template A
+ * @template B
+ * @template TIn of list<A>
+ *
+ * @param callable(int, A): Option<B> $callback
+ * @return Closure(list<A>): Option<list<B>>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-array<A>
+ *         ? Option<non-empty-list<B>>
+ *         : Option<list<B>>
+ * ))
+ */
+function traverseOptionKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $out = [];
+
+        foreach ($list as $index => $a) {
+            $fb = $callback($index, $a);
+
+            if (O\isNone($fb)) {
+                return O\none;
+            }
+
+            $out[] = $fb->value;
+        }
+
+        return O\some($out);
+    };
+}
+
+/**
+ * @template A
  *
  * @param callable(A): bool $callback
  * @return Closure(list<A>): bool
@@ -454,6 +486,25 @@ function any(callable $callback): Closure
 /**
  * @template A
  *
+ * @param callable(int, A): bool $callback
+ * @return Closure(list<A>): bool
+ */
+function anyKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        foreach ($list as $index => $a) {
+            if ($callback($index, $a)) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+}
+
+/**
+ * @template A
+ *
  * @param callable(A): bool $callback
  * @return Closure(list<A>): bool
  */
@@ -462,6 +513,25 @@ function all(callable $callback): Closure
     return function(array $list) use ($callback) {
         foreach ($list as $a) {
             if (!$callback($a)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+}
+
+/**
+ * @template A
+ *
+ * @param callable(int, A): bool $callback
+ * @return Closure(list<A>): bool
+ */
+function allKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        foreach ($list as $index => $a) {
+            if (!$callback($index, $a)) {
                 return false;
             }
         }
@@ -497,6 +567,32 @@ function reindex(callable $callback): Closure
 }
 
 /**
+ * @template K of array-key
+ * @template A
+ * @template TIn of list<A>
+ *
+ * @param callable(int, A): K $callback
+ * @return Closure(list<A>): array<K, A>
+ * @psalm-return (Closure(TIn): (
+ *     TIn is non-empty-list<A>
+ *         ? non-empty-array<K, A>
+ *         : array<K, A>
+ * ))
+ */
+function reindexKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $dictionary = [];
+
+        foreach ($list as $index => $a) {
+            $dictionary[$callback($index, $a)] = $a;
+        }
+
+        return $dictionary;
+    };
+}
+
+/**
  * @template A
  *
  * @param callable(A): bool $callback
@@ -513,6 +609,30 @@ function partition(callable $callback): Closure
                 $outLeft[] = $item;
             } else {
                 $outRight[] = $item;
+            }
+        }
+
+        return [$outLeft, $outRight];
+    };
+}
+
+/**
+ * @template A
+ *
+ * @param callable(int, A): bool $callback
+ * @return Closure(list<A>): array{list<A>, list<A>}
+ */
+function partitionKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $outLeft = [];
+        $outRight = [];
+
+        foreach ($list as $index => $a) {
+            if (!$callback($index, $a)) {
+                $outLeft[] = $a;
+            } else {
+                $outRight[] = $a;
             }
         }
 
@@ -541,6 +661,34 @@ function partitionMap(callable $callback): Closure
                 $outLeft[] = $either->value;
             } else {
                 $outRight[] = $either->value;
+            }
+        }
+
+        return [$outLeft, $outRight];
+    };
+}
+
+/**
+ * @template L
+ * @template R
+ * @template A
+ *
+ * @param callable(int, A): Either<L, R> $callback
+ * @return Closure(list<A>): array{list<L>, list<R>}
+ */
+function partitionMapKV(callable $callback): Closure
+{
+    return function(array $list) use ($callback) {
+        $outLeft = [];
+        $outRight = [];
+
+        foreach ($list as $index => $a) {
+            $fa = $callback($index, $a);
+
+            if (E\isLeft($fa)) {
+                $outLeft[] = $fa->value;
+            } else {
+                $outRight[] = $fa->value;
             }
         }
 

@@ -513,6 +513,13 @@ final class ArrayListTest extends TestCase
             : O\none;
 
         pipe(
+            L\from([]),
+            L\traverseOptionKV($proveEven),
+            Type\isSameAs('Option<list<int>>'),
+            Assert\equals(O\some([])),
+        );
+
+        pipe(
             L\from([1, 2, 3]),
             L\traverseOption($proveEven),
             Type\isSameAs('Option<list<int>>'),
@@ -524,6 +531,35 @@ final class ArrayListTest extends TestCase
             L\traverseOption($proveEven),
             Type\isSameAs('Option<list<int>>'),
             Assert\equals(O\some([2, 4, 6])),
+        );
+    }
+
+    #[Test]
+    public static function traverseOptionKV(): void
+    {
+        $proveEvenOrLiteral = fn(int $k, int $v): Option => 0 === $v % 2 || 0 === $k
+            ? O\some($v)
+            : O\none;
+
+        pipe(
+            L\from([]),
+            L\traverseOptionKV($proveEvenOrLiteral),
+            Type\isSameAs('Option<list<int>>'),
+            Assert\equals(O\some([])),
+        );
+
+        pipe(
+            L\from([1, 2, 3]),
+            L\traverseOptionKV($proveEvenOrLiteral),
+            Type\isSameAs('Option<list<int>>'),
+            Assert\equals(O\none),
+        );
+
+        pipe(
+            L\from([1, 2, 4, 6]),
+            L\traverseOptionKV($proveEvenOrLiteral),
+            Type\isSameAs('Option<list<int>>'),
+            Assert\equals(O\some([1, 2, 4, 6])),
         );
     }
 
@@ -547,6 +583,31 @@ final class ArrayListTest extends TestCase
         pipe(
             L\from([1, 3, 5, 7]),
             L\any(fn($num) => 0 === $num % 2),
+            Type\isSameAs('bool'),
+            Assert\equals(false),
+        );
+    }
+
+    #[Test]
+    public static function anyKV(): void
+    {
+        pipe(
+            L\from([]),
+            L\anyKV(constTrue(...)),
+            Type\isSameAs('bool'),
+            Assert\equals(false),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4]),
+            L\anyKV(fn($key, $value) => 0 === $key % 2 || 0 === $value % 2),
+            Type\isSameAs('bool'),
+            Assert\equals(true),
+        );
+
+        pipe(
+            L\from([1, 3, 5, 7]),
+            L\anyKV(fn($key, $value) => 0 === $key % 2 && 0 === $value % 2),
             Type\isSameAs('bool'),
             Assert\equals(false),
         );
@@ -578,13 +639,63 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function allKV(): void
+    {
+        pipe(
+            L\from([]),
+            L\allKV(constTrue(...)),
+            Type\isSameAs('bool'),
+            Assert\equals(true),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\allKV(fn($key, $value) => 0 === $key % 2 || 0 === $value % 2),
+            Type\isSameAs('bool'),
+            Assert\equals(true),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\allKV(fn($key, $value) => 0 === $key % 2 && 0 === $value % 2),
+            Type\isSameAs('bool'),
+            Assert\equals(false),
+        );
+    }
+
+    #[Test]
     public static function reindex(): void
     {
+        pipe(
+            L\from([]),
+            L\reindex(fn(int $num) => Str\from('key'.$num)),
+            Type\isSameAs('array<string, never>'),
+            Assert\equals([]),
+        );
+
         pipe(
             L\from([1, 2, 3]),
             L\reindex(fn(int $num) => Str\from("key-{$num}")),
             Type\isSameAs('array<string, int>'),
             Assert\equals(['key-1' => 1, 'key-2' => 2, 'key-3' => 3]),
+        );
+    }
+
+    #[Test]
+    public static function reindexKV(): void
+    {
+        pipe(
+            L\from([]),
+            L\reindexKV(fn(int $key, int $value) => Str\from('key-'.($key + $value))),
+            Type\isSameAs('array<string, never>'),
+            Assert\equals([]),
+        );
+
+        pipe(
+            L\from([1, 2, 3]),
+            L\reindexKV(fn(int $key, int $value) => Str\from('key-'.($key + $value))),
+            Type\isSameAs('array<string, int>'),
+            Assert\equals(['key-1' => 1, 'key-3' => 2, 'key-5' => 3]),
         );
     }
 
@@ -628,6 +739,24 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function partitionKV(): void
+    {
+        pipe(
+            L\from([]),
+            L\partitionKV(fn() => true),
+            Type\isSameAs('array{list<never>, list<never>}'),
+            Assert\equals([[], []]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            L\partitionKV(fn($k, $v) => 0 === $v % 2 || $k === 0),
+            Type\isSameAs('array{list<int>, list<int>}'),
+            Assert\equals([[3, 5, 7, 9], [1, 2, 4, 6, 8]]),
+        );
+    }
+
+    #[Test]
     public static function partitionMap(): void
     {
         pipe(
@@ -663,6 +792,24 @@ final class ArrayListTest extends TestCase
             L\partitionMap(fn($i) => is_int($i) ? E\left($i) : E\right($i)),
             Type\isSameAs('array{list<int>, list<string>}'),
             Assert\equals([[1, 2, 3], ['fst', 'snd', 'thr']]),
+        );
+    }
+
+    #[Test]
+    public static function partitionMapKV(): void
+    {
+        pipe(
+            L\from([]),
+            L\partitionMapKV(fn($_, $v) => E\right($v)),
+            Type\isSameAs('array{list<never>, list<never>}'),
+            Assert\equals([[], []]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            L\partitionMapKV(fn($k, $v) => 0 !== $v % 2 && $k !== 0 ? E\left($v) : E\right($v)),
+            Type\isSameAs('array{list<int>, list<int>}'),
+            Assert\equals([[3, 5, 7, 9], [1, 2, 4, 6, 8]]),
         );
     }
 
