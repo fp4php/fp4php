@@ -16,7 +16,7 @@ use Psalm\Type;
 use Psalm\Type\Atomic\TTemplateParam;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class SingleTypeParameterBindableBuilder implements BindableBuilder
 {

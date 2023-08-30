@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 /**
  * @api

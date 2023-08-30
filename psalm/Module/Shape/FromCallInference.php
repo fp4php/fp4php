@@ -11,8 +11,8 @@ use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Widening;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 
-use function Fp4\PHP\Module\Functions\constNull;
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\constNull;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class FromCallInference implements AfterExpressionAnalysisInterface
 {

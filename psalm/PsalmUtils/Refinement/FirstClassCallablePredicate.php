@@ -30,7 +30,7 @@ use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\StatementsSource;
 use Psalm\Type\Atomic\TNamedObject;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class FirstClassCallablePredicate
 {

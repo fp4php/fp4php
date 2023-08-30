@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\PsalmIntegration\Module\Functions;
+namespace Fp4\PHP\PsalmIntegration\Module\Combinator;
 
 use Fp4\PHP\Module\ArrayDictionary as D;
 use Fp4\PHP\Module\ArrayList as L;
@@ -16,13 +16,13 @@ use Psalm\Storage\MethodStorage;
 use Psalm\Type\Atomic\TLiteralClassString;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class CtorFunctionReturnTypeProvider implements FunctionReturnTypeProviderInterface
 {
     public static function getFunctionIds(): array
     {
-        return [strtolower('Fp4\PHP\Module\Functions\ctor')];
+        return [strtolower('Fp4\PHP\Module\Combinator\ctor')];
     }
 
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Union

@@ -12,8 +12,8 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 
-use function Fp4\PHP\Module\Functions\constVoid;
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\constVoid;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class Widening
 {

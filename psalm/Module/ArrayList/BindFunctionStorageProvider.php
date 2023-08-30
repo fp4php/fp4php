@@ -14,7 +14,7 @@ use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
 use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class BindFunctionStorageProvider implements DynamicFunctionStorageProviderInterface
 {

@@ -18,8 +18,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-use function Fp4\PHP\Module\Functions\constTrue;
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\constTrue;
+use function Fp4\PHP\Module\Combinator\pipe;
 use function Fp4\PHP\Module\Str\startsWith;
 use function is_int;
 use function is_string;

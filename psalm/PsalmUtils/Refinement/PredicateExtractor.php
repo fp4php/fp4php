@@ -13,7 +13,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\FunctionLike;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class PredicateExtractor
 {

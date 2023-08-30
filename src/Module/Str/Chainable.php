@@ -8,20 +8,6 @@ use Closure;
 
 use function trim as nativeTrim;
 
-function from(string $string): string
-{
-    return $string;
-}
-
-/**
- * @param non-empty-string $string
- * @return non-empty-string
- */
-function fromNonEmpty(string $string): string
-{
-    return $string;
-}
-
 /**
  * @template TIn of string
  * @template TSuffix of string
@@ -55,40 +41,6 @@ function prepend(string $prefix): Closure
 }
 
 /**
- * @return Closure(string): bool
- */
-function startsWith(string $needle): Closure
-{
-    return fn(string $haystack) => str_starts_with($haystack, $needle);
-}
-
-/**
- * @return Closure(string): bool
- */
-function endsWith(string $needle): Closure
-{
-    return fn(string $haystack) => str_ends_with($haystack, $needle);
-}
-
-/**
- * @return Closure(string): bool
- */
-function contains(string $needle): Closure
-{
-    return fn(string $haystack) => str_contains($haystack, $needle);
-}
-
-function isEmpty(string $value): bool
-{
-    return '' === $value;
-}
-
-function length(string $value): int
-{
-    return mb_strlen($value);
-}
-
-/**
  * @return Closure(string): string
  */
 function replace(string $search, string $replace): Closure
@@ -102,15 +54,6 @@ function replace(string $search, string $replace): Closure
 function substring(int $start, int $length): Closure
 {
     return fn(string $subject) => mb_substr($subject, $start, $length);
-}
-
-/**
- * @param non-empty-string $separator
- * @return Closure(string): non-empty-list<string>
- */
-function split(string $separator): Closure
-{
-    return fn(string $subject) => explode($separator, $subject);
 }
 
 function toLowerCase(string $subject): string

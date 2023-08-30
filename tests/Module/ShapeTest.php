@@ -10,7 +10,7 @@ use Fp4\PHP\Module\Shape as S;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class ShapeTest extends TestCase
 {

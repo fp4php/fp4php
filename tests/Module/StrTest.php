@@ -10,7 +10,7 @@ use Fp4\PHP\Module\Str;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class StrTest extends TestCase
 {

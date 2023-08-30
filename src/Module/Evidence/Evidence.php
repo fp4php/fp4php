@@ -8,7 +8,7 @@ use Closure;
 use Fp4\PHP\Module\Option as O;
 use Fp4\PHP\Type\Option;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 use function is_array;
 use function is_bool;
 use function is_float;
@@ -66,7 +66,7 @@ function proveBool(mixed $value): Option
 function proveTrue(mixed $value): Option
 {
     /** @var Option<true> */
-    return O\fromNullable($value === true ? $value : null);
+    return O\fromNullable(true === $value ? $value : null);
 }
 
 /**
@@ -75,7 +75,7 @@ function proveTrue(mixed $value): Option
 function proveFalse(mixed $value): Option
 {
     /** @var Option<false> */
-    return O\fromNullable($value === false ? $value : null);
+    return O\fromNullable(false === $value ? $value : null);
 }
 
 /**

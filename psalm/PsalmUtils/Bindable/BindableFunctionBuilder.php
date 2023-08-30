@@ -13,7 +13,7 @@ use PhpParser\Node\Identifier;
 use Psalm\Plugin\DynamicFunctionStorage;
 use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class BindableFunctionBuilder
 {

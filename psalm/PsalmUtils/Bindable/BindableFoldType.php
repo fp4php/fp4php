@@ -13,7 +13,7 @@ use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Atomic\TObjectWithProperties;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class BindableFoldType
 {

@@ -29,7 +29,7 @@ use Psalm\Type\Union;
 
 use function count;
 use function Fp4\PHP\Module\Evidence\proveNonEmptyArray;
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 /**
  * @psalm-type PsalmAssertions = array<string, list<list<Assertion>>>

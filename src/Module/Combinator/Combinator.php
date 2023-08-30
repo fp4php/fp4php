@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\Module\Functions;
+namespace Fp4\PHP\Module\Combinator;
 
 use Closure;
 

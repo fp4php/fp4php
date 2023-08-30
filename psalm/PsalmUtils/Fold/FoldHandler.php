@@ -29,8 +29,8 @@ use Psalm\Type\Atomic\TClosure;
 use Psalm\Type\Atomic\TKeyedArray;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Functions\constNull;
-use function Fp4\PHP\Module\Functions\pipe;
+use function Fp4\PHP\Module\Combinator\constNull;
+use function Fp4\PHP\Module\Combinator\pipe;
 
 final class FoldHandler
 {
