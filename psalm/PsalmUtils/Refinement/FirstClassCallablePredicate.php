@@ -188,10 +188,13 @@ final class FirstClassCallablePredicate
                             ? PsalmApi::$codebase->functions->getStorage($i->analyzer, strtolower($functionId))
                             : null,
                     ),
-                    fn() => O\fromNullable(
-                        PsalmApi::$codebase->methods->hasStorage(MethodIdentifier::wrap($functionId))
-                            ? PsalmApi::$codebase->methods->getStorage(MethodIdentifier::wrap($functionId))
-                            : null,
+                    fn() => pipe(
+                        O\tryCatch(fn() => MethodIdentifier::wrap($functionId)),
+                        O\flatMap(fn($methodId) => O\fromNullable(
+                            PsalmApi::$codebase->methods->hasStorage($methodId)
+                                ? PsalmApi::$codebase->methods->getStorage($methodId)
+                                : null,
+                        )),
                     ),
                 ),
             ),
