@@ -9,7 +9,7 @@ use Fp4\PHP\ArrayDictionary as D;
 use Fp4\PHP\Either as E;
 use Fp4\PHP\Option as O;
 use Fp4\PHP\PHPUnit as Assert;
-use Fp4\PHP\Psalm as Type;
+use Fp4\PHP\PsalmIntegration as Type;
 use Fp4\PHP\Shape as S;
 use Fp4\PHP\Str;
 use PHPUnit\Framework\Attributes\Test;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\Test;
 
 use Fp4\PHP\PHPUnit as Assert;
-use Fp4\PHP\Psalm as Type;
+use Fp4\PHP\PsalmIntegration as Type;
 use Fp4\PHP\Shape as S;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -6,7 +6,7 @@ namespace Fp4\PHP\Test;
 
 use DateTimeImmutable;
 use Fp4\PHP\PHPUnit as Assert;
-use Fp4\PHP\Psalm as Type;
+use Fp4\PHP\PsalmIntegration as Type;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

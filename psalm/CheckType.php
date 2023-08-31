@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\Psalm;
+namespace Fp4\PHP\PsalmIntegration;
 
 use Closure;
 

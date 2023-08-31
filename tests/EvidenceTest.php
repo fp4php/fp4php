@@ -8,7 +8,7 @@ use ArrayObject;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
 use Fp4\PHP\PHPUnit as Assert;
-use Fp4\PHP\Psalm as Type;
+use Fp4\PHP\PsalmIntegration as Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -1,5 +1,5 @@
 {
-  "name": "fp4php/fp-php",
+  "name": "fp4php/fp4php",
   "description": "PHP Functional Programming library",
   "type": "library",
   "minimum-stability": "dev",
@@ -21,7 +21,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Fp4\\PHP\\": "src/"
+      "Fp4\\PHP\\": "src/",
+      "Fp4\\PHP\\PsalmIntegration\\": "psalm/"
     },
     "files": [
       "src/Option/Constructor.php",
@@ -46,12 +47,11 @@
       "src/ArrayDictionary/Constructor.php",
       "src/ArrayDictionary/Chainable.php",
       "src/ArrayDictionary/Terminal.php",
-      "src/Psalm/CheckType.php"
+      "psalm/CheckType.php"
     ]
   },
   "autoload-dev": {
     "psr-4": {
-      "Fp4\\PHP\\PsalmIntegration\\": "psalm/",
       "Fp4\\PHP\\Test\\": "tests/"
     },
     "files": [
@@ -59,7 +59,7 @@
     ]
   },
   "require-dev": {
-    "vimeo/psalm": "dev-master",
+    "vimeo/psalm": "^5.15",
     "phpunit/phpunit": "^10.0",
     "friendsofphp/php-cs-fixer": "^3.15"
   }

@@ -28,8 +28,8 @@ use function Fp4\PHP\Combinator\pipe;
 
 final class TypeCheckerHandler implements AfterExpressionAnalysisInterface
 {
-    public const IS_ASSIGNABLE_TO = 'Fp4\PHP\Psalm\isAssignableTo';
-    public const IS_SAME_AS = 'Fp4\PHP\Psalm\isSameAs';
+    public const IS_ASSIGNABLE_TO = 'Fp4\PHP\PsalmIntegration\isAssignableTo';
+    public const IS_SAME_AS = 'Fp4\PHP\PsalmIntegration\isSameAs';
 
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {

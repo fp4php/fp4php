@@ -25,6 +25,7 @@ return (new PhpCsFixer\Config())
         '@PHPUnit84Migration:risky' => true,
         '@PSR12' => true,
         '@PSR12:risky' => true,
+        'static_lambda' => false,
         'blank_line_before_statement' => ['statements' => [
             'continue',
             'declare',

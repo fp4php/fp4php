@@ -7,7 +7,7 @@ namespace Fp4\PHP\Test;
 use Fp4\PHP\Bindable;
 use Fp4\PHP\Option as O;
 use Fp4\PHP\PHPUnit as Assert;
-use Fp4\PHP\Psalm as Type;
+use Fp4\PHP\PsalmIntegration as Type;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
