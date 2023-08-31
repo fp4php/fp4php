@@ -46,8 +46,7 @@ function proveString(mixed $value): Option
 function proveNonEmptyString(mixed $value): Option
 {
     return pipe(
-        $value,
-        proveString(...),
+        proveString($value),
         O\flatMap(fn(string $v) => '' !== $v ? O\some($v) : O\none),
     );
 }
