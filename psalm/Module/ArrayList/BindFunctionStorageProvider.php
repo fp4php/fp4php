@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\Module\ArrayList;
 
-use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindableFunctionBuilder;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindLetType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\SingleTypeParameterBindableBuilder;
@@ -14,14 +14,14 @@ use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
 use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 final class BindFunctionStorageProvider implements DynamicFunctionStorageProviderInterface
 {
     public static function getFunctionIds(): array
     {
         return [
-            strtolower('Fp4\PHP\Module\ArrayList\bind'),
+            strtolower('Fp4\PHP\ArrayList\bind'),
         ];
     }
 

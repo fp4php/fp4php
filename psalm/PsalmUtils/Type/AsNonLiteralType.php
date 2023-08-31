@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
-use Fp4\PHP\Module\ArrayDictionary as D;
-use Fp4\PHP\Module\ArrayList as L;
+use Fp4\PHP\ArrayDictionary as D;
+use Fp4\PHP\ArrayList as L;
 use Psalm\Type;
 use Psalm\Type\Atomic\TArray;
 use Psalm\Type\Atomic\TBool;
@@ -23,7 +23,7 @@ use Psalm\Type\Atomic\TString;
 use Psalm\Type\Atomic\TTrue;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 final class AsNonLiteralType
 {

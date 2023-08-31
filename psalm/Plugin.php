@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration;
 
 use Closure;
-use Fp4\PHP\Module\ArrayList as L;
+use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\ArrayDictionaryModule;
 use Fp4\PHP\PsalmIntegration\Module\ArrayList\ArrayListModule;
 use Fp4\PHP\PsalmIntegration\Module\Bindable\BindableModule;
-use Fp4\PHP\PsalmIntegration\Module\Either\EitherModule;
 use Fp4\PHP\PsalmIntegration\Module\Combinator\CombinatorModule;
+use Fp4\PHP\PsalmIntegration\Module\Either\EitherModule;
 use Fp4\PHP\PsalmIntegration\Module\Option\OptionModule;
 use Fp4\PHP\PsalmIntegration\Module\Psalm\PsalmModule;
 use Fp4\PHP\PsalmIntegration\Module\Shape\ShapeModule;
@@ -24,7 +24,7 @@ use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;
 use SimpleXMLElement;
 
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 /**
  * @api

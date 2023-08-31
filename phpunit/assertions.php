@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fp4\PHP\Module\PHPUnit;
+namespace Fp4\PHP\PHPUnit;
 
 use Closure;
 

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\Module\Bindable;
 
 use Closure;
-use Fp4\PHP\Module\ArrayDictionary as D;
-use Fp4\PHP\Module\Option as O;
-use Fp4\PHP\Type\Option;
+use Fp4\PHP\ArrayDictionary as D;
+use Fp4\PHP\Option as O;
+use Fp4\PHP\Option\Option;
 use Psalm\Issue\CodeIssue;
 use Psalm\IssueBuffer;
 use Psalm\Plugin\EventHandler\Event\MethodReturnTypeProviderEvent;
 
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 final class PropertyIsNotDefinedInScope extends CodeIssue
 {

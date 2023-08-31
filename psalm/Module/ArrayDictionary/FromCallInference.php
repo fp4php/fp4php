@@ -8,14 +8,14 @@ use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Widening;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 
-use function Fp4\PHP\Module\Combinator\constNull;
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\constNull;
+use function Fp4\PHP\Combinator\pipe;
 
 final class FromCallInference implements AfterExpressionAnalysisInterface
 {
-    private const FROM = 'Fp4\PHP\Module\ArrayDictionary\from';
-    private const FROM_NON_EMPTY = 'Fp4\PHP\Module\ArrayDictionary\fromNonEmpty';
-    private const FROM_ITERABLE = 'Fp4\PHP\Module\ArrayDictionary\fromIterable';
+    private const FROM = 'Fp4\PHP\ArrayDictionary\from';
+    private const FROM_NON_EMPTY = 'Fp4\PHP\ArrayDictionary\fromNonEmpty';
+    private const FROM_ITERABLE = 'Fp4\PHP\ArrayDictionary\fromIterable';
 
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {

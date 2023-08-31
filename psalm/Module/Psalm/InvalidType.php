@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\Module\Psalm;
 
-use Fp4\PHP\Module\Option as O;
-use Fp4\PHP\Type\Option;
+use Fp4\PHP\Option as O;
+use Fp4\PHP\Option\Option;
 use Psalm\CodeLocation;
 use Psalm\Issue\CodeIssue;
 use Psalm\IssueBuffer;

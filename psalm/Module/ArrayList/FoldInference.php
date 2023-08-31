@@ -15,8 +15,8 @@ final class FoldInference implements BeforeExpressionAnalysisInterface, AfterExp
     public static function beforeExpressionAnalysis(BeforeExpressionAnalysisEvent $event): ?bool
     {
         return FoldHandler::beforeExpressionAnalysis($event, [
-            'Fp4\PHP\Module\ArrayList\fold',
-            'Fp4\PHP\Module\ArrayList\foldKV',
+            'Fp4\PHP\ArrayList\fold',
+            'Fp4\PHP\ArrayList\foldKV',
         ]);
     }
 

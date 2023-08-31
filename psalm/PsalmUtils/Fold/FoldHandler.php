@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Fold;
 
-use Fp4\PHP\Module\ArrayDictionary as D;
-use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Evidence as Ev;
-use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\ArrayDictionary as D;
+use Fp4\PHP\ArrayList as L;
+use Fp4\PHP\Evidence as Ev;
+use Fp4\PHP\Option as O;
+use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
-use Fp4\PHP\Type\Option;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use Psalm\CodeLocation;
-use Psalm\Internal\Analyzer\ClosureAnalyzer;
-use Psalm\Internal\Analyzer\Statements\ExpressionAnalyzer;
-use Psalm\Internal\Analyzer\StatementsAnalyzer;
 use Psalm\Issue\InvalidArgument;
 use Psalm\IssueBuffer;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
@@ -29,8 +26,8 @@ use Psalm\Type\Atomic\TClosure;
 use Psalm\Type\Atomic\TKeyedArray;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Combinator\constNull;
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\constNull;
+use function Fp4\PHP\Combinator\pipe;
 
 final class FoldHandler
 {

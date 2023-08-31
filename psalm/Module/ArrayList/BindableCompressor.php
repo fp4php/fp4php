@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\Module\ArrayList;
 
-use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\Bindable;
+use Fp4\PHP\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindablePropertiesCompressor;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
-use Fp4\PHP\Type\Bindable;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\Type\Atomic\TKeyedArray;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Combinator\constNull;
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\constNull;
+use function Fp4\PHP\Combinator\pipe;
 
 final class BindableCompressor implements AfterExpressionAnalysisInterface
 {
@@ -24,8 +24,8 @@ final class BindableCompressor implements AfterExpressionAnalysisInterface
             $event,
             BindablePropertiesCompressor::compress(
                 functions: [
-                    'Fp4\PHP\Module\ArrayList\bind',
-                    'Fp4\PHP\Module\ArrayList\let',
+                    'Fp4\PHP\ArrayList\bind',
+                    'Fp4\PHP\ArrayList\let',
                 ],
                 unpack: fn(Union $original) => pipe(
                     O\some($original),

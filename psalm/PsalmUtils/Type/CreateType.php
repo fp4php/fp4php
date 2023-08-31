@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
-use Fp4\PHP\Module\ArrayDictionary as D;
-use Fp4\PHP\Module\ArrayList as L;
+use Fp4\PHP\ArrayDictionary as D;
+use Fp4\PHP\ArrayList as L;
 use Psalm\Storage\FunctionLikeParameter;
 use Psalm\Type;
 use Psalm\Type\Atomic;
@@ -25,10 +25,11 @@ use Psalm\Type\Atomic\TObjectWithProperties;
 use Psalm\Type\Atomic\TTemplateParam;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 use function is_array;
 
 /**
+ * @api
  * @psalm-type IntersectionType = TNamedObject|TTemplateParam|TIterable|TObjectWithProperties|TCallableObject
  */
 final class CreateType

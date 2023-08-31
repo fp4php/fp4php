@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 
 use Closure;
-use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Option as O;
-use Fp4\PHP\Type\Option;
+use Fp4\PHP\ArrayList as L;
+use Fp4\PHP\Option as O;
+use Fp4\PHP\Option\Option;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\FunctionLike;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 final class PredicateExtractor
 {

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 
-use Fp4\PHP\Module\ArrayDictionary as D;
-use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Evidence as Ev;
-use Fp4\PHP\Module\Option as O;
-use Fp4\PHP\Module\Str as S;
-use Fp4\PHP\Module\Tuple as T;
+use Fp4\PHP\ArrayDictionary as D;
+use Fp4\PHP\ArrayList as L;
+use Fp4\PHP\Evidence as Ev;
+use Fp4\PHP\Option as O;
+use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
-use Fp4\PHP\Type\Option;
+use Fp4\PHP\Str as S;
+use Fp4\PHP\Tuple as T;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
@@ -28,8 +28,8 @@ use Psalm\Type\Reconciler;
 use Psalm\Type\Union;
 
 use function count;
-use function Fp4\PHP\Module\Evidence\proveNonEmptyArray;
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
+use function Fp4\PHP\Evidence\proveNonEmptyArray;
 
 /**
  * @psalm-type PsalmAssertions = array<string, list<list<Assertion>>>

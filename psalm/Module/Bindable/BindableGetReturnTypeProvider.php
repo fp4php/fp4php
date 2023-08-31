@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\Module\Bindable;
 
 use Closure;
-use Fp4\PHP\Module\ArrayDictionary as D;
-use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\ArrayDictionary as D;
+use Fp4\PHP\ArrayList as L;
+use Fp4\PHP\Bindable;
+use Fp4\PHP\Option as O;
+use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindableFoldType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
-use Fp4\PHP\Type\Bindable;
-use Fp4\PHP\Type\Option;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use Psalm\Node\Scalar\VirtualString;
@@ -19,7 +19,7 @@ use Psalm\Plugin\EventHandler\Event\MethodReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\MethodReturnTypeProviderInterface;
 use Psalm\Type\Union;
 
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInterface
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\Module\Combinator;
 
-use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\ArrayList as L;
+use Fp4\PHP\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Psalm\Plugin\DynamicFunctionStorage;
 use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
@@ -13,14 +13,14 @@ use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
 use Psalm\Type\Atomic\TCallable;
 
 use function count;
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 final class PipeFunctionStorageProvider implements DynamicFunctionStorageProviderInterface
 {
     public static function getFunctionIds(): array
     {
         return [
-            strtolower('Fp4\PHP\Module\Combinator\pipe'),
+            strtolower('Fp4\PHP\Combinator\pipe'),
         ];
     }
 

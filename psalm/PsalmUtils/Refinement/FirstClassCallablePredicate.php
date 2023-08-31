@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 
-use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Evidence as Ev;
-use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\ArrayList as L;
+use Fp4\PHP\Evidence as Ev;
+use Fp4\PHP\Option as O;
+use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
-use Fp4\PHP\Type\Option;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
@@ -30,7 +30,7 @@ use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\StatementsSource;
 use Psalm\Type\Atomic\TNamedObject;
 
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 final class FirstClassCallablePredicate
 {

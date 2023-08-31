@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Closure;
-use Fp4\PHP\Module\ArrayDictionary as D;
-use Fp4\PHP\Module\ArrayList as L;
-use Fp4\PHP\Module\Option as O;
+use Fp4\PHP\ArrayDictionary as D;
+use Fp4\PHP\ArrayList as L;
+use Fp4\PHP\Option as O;
+use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
-use Fp4\PHP\Type\Option;
 use PhpParser\Node\Expr;
 use Psalm\Internal\Type\TypeCombiner;
 use Psalm\NodeTypeProvider;
@@ -21,7 +21,7 @@ use Psalm\Type\Atomic;
 use Psalm\Type\Union;
 
 use function count;
-use function Fp4\PHP\Module\Combinator\pipe;
+use function Fp4\PHP\Combinator\pipe;
 
 /**
  * @psalm-type Score
