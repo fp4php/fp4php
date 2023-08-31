@@ -1,24 +1,29 @@
 {
   "name": "fp4php/fp4php",
-  "description": "PHP Functional Programming library",
+  "description": "PHP functional programming library",
+  "license": "MIT",
   "type": "library",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "authors": [
     {
       "name": "Klimenko Andrew (klimick)",
       "email": "klimichkartorgnusov@gmail.com"
     }
   ],
-  "license": "MIT",
-  "scripts": {
-    "test": "vendor/bin/phpunit"
-  },
   "require": {
     "php": "^8.1",
-    "ext-simplexml": "*",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "ext-simplexml": "*"
   },
+  "require-dev": {
+    "ergebnis/composer-normalize": "^2.35",
+    "friendsofphp/php-cs-fixer": "^3.15",
+    "php-coveralls/php-coveralls": "^0.1.0",
+    "phpunit/phpunit": "^10.0",
+    "rregeer/phpunit-coverage-check": "^0.3.1",
+    "vimeo/psalm": "^5.15"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "Fp4\\PHP\\": "src/",
@@ -58,11 +63,14 @@
       "phpunit/assertions.php"
     ]
   },
-  "require-dev": {
-    "vimeo/psalm": "^5.15",
-    "phpunit/phpunit": "^10.0",
-    "friendsofphp/php-cs-fixer": "^3.15",
-    "php-coveralls/php-coveralls": "^0.1.0",
-    "rregeer/phpunit-coverage-check": "^0.3.1"
+  "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true
+    }
+  },
+  "scripts": {
+    "fixcs": "vendor/bin/php-cs-fixer fix -v",
+    "psalm": "vendor/bin/psalm --show-info=true --no-diff",
+    "test": "vendor/bin/phpunit"
   }
 }
