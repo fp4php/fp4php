@@ -571,14 +571,14 @@ final class ArrayListTest extends TestCase
 
         pipe(
             L\from([]),
-            L\traverseEitherKV($proveEven),
+            L\traverseEither($proveEven),
             Type\isSameAs('E\Either<string, list<int>>'),
             Assert\equals(E\right([])),
         );
 
         pipe(
             L\from([1, 2, 3]),
-            L\traverseEitherKV($proveEven),
+            L\traverseEither($proveEven),
             Type\isSameAs('E\Either<string, list<int>>'),
             Assert\equals(E\left('1 is not even')),
         );
