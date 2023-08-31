@@ -61,9 +61,9 @@ jobs:
         run: php vendor/bin/phpunit
 
       - name: Check PhpUnit coverage percentage
-        run: php vendor/bin/coverage-check build/logs/clover.xml 85
+        run: php vendor/bin/coverage-check build/logs/clover.xml 100
 
       - name: Upload coverage results to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: php vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
+        run: php vendor/bin/coveralls --coverage_clover=build/logs/clover.xml -v
