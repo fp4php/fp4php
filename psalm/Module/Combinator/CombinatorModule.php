@@ -11,6 +11,7 @@ final class CombinatorModule implements RegisterPsalmHooks
     public function __invoke(callable $register): void
     {
         $register([
+            PipeErrorLocator::class,
             PipeFunctionStorageProvider::class,
             CtorFunctionReturnTypeProvider::class,
         ]);
