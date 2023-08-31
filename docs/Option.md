@@ -41,9 +41,9 @@ function takeFirstInverseNumber(array $numbers): string
     return 'No result';
 }
 
-var_dump(imperativeApp([10, 20, 30])); // Inverse number: 0.1
-var_dump(imperativeApp([0, 20, 30]));  // No result
-var_dump(imperativeApp([]));           // No result
+var_dump(takeFirstInverseNumber([10, 20, 30])); // Inverse number: 0.1
+var_dump(takeFirstInverseNumber([0, 20, 30]));  // No result
+var_dump(takeFirstInverseNumber([]));           // No result
 ```
 
 Simple example, but we already have two checks for null and nesting of branches.
@@ -84,9 +84,9 @@ function takeFirstInverseNumber(array $numbers): string
     );
 }
 
-var_dump(functionalApp([10, 20, 30])); // Inverse number: 0.1
-var_dump(functionalApp([0, 20, 30]));  // No result
-var_dump(functionalApp([]));           // No result
+var_dump(takeFirstInverseNumber([10, 20, 30])); // Inverse number: 0.1
+var_dump(takeFirstInverseNumber([0, 20, 30]));  // No result
+var_dump(takeFirstInverseNumber([]));           // No result
 ```
 
 Looks like a list of instructions, isn't it?
