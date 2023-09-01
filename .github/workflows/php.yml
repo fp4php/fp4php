@@ -69,7 +69,7 @@ jobs:
       - uses: ramsey/composer-install@v2
         with:
           composer-options: --optimize-autoloader
-      - run: composer psalm -- --php-version=${{ matrix.php }} --stats --output-format=github
+      - run: composer psalm -- --php-version=${{ matrix.php }} --stats --output-format=github --shepherd
 
   test:
     runs-on: ubuntu-latest
