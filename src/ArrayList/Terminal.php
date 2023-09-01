@@ -484,3 +484,94 @@ function foldKV(mixed $initial, callable $callback): Closure
         return $acc;
     };
 }
+
+/**
+ * @template K of array-key
+ * @template A
+ * @template TIn of list<A>
+ *
+ * @param callable(A): K $callback
+ * @return (Closure(TIn): (
+ *     TIn is non-empty-list<A>
+ *         ? non-empty-array<K, non-empty-list<A>>
+ *         : array<K, non-empty-list<A>>
+ * ))
+ */
+function group(callable $callback): Closure
+{
+    return function(array $fa) use ($callback) {
+        $fb = [];
+
+        foreach ($fa as $a) {
+            $kb = $callback($a);
+
+            if (!isset($fb[$kb])) {
+                $fb[$kb] = [];
+            }
+
+            $fb[$kb][] = $a;
+        }
+
+        return $fb;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template A
+ * @template B
+ * @template TIn of list<A>
+ *
+ * @param callable(A): K $group
+ * @param callable(A): B $map
+ * @return (Closure(TIn): (
+ *     TIn is non-empty-list<A>
+ *         ? non-empty-array<K, non-empty-list<B>>
+ *         : array<K, non-empty-list<B>>
+ * ))
+ */
+function groupMap(callable $group, callable $map): Closure
+{
+    return function(array $fa) use ($group, $map) {
+        $fb = [];
+
+        foreach ($fa as $a) {
+            $kb = $group($a);
+
+            if (!isset($fb[$kb])) {
+                $fb[$kb] = [];
+            }
+
+            $fb[$kb][] = $map($a);
+        }
+
+        return $fb;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template A
+ * @template B
+ * @template TIn of list<A>
+ *
+ * @param callable(A): K $group
+ * @param callable(A): B $map
+ * @param callable(B, B): B $reduce
+ * @return (Closure(TIn): (TIn is non-empty-list<A> ? non-empty-array<K, B> : array<K, B>))
+ */
+function groupMapReduce(callable $group, callable $map, callable $reduce): Closure
+{
+    return function(array $fa) use ($group, $map, $reduce) {
+        $fb = [];
+
+        foreach ($fa as $a) {
+            $kb = $group($a);
+            $b = $map($a);
+
+            $fb[$kb] = isset($fb[$kb]) ? $reduce($b, $fb[$kb]) : $b;
+        }
+
+        return $fb;
+    };
+}

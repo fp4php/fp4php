@@ -10,6 +10,7 @@ use Fp4\PHP\Either as E;
 use Fp4\PHP\Option as O;
 use Fp4\PHP\PHPUnit as Assert;
 use Fp4\PHP\PsalmIntegration as Type;
+use Fp4\PHP\Shape as S;
 use Fp4\PHP\Str;
 use Fp4\PHP\Tuple as T;
 use PHPUnit\Framework\Attributes\Test;
@@ -903,6 +904,110 @@ final class ArrayListTest extends TestCase
             L\foldKV([], fn($mapped, $key, $current) => 0 === $key % 2 ? [...$mapped, "value-{$current}"] : $mapped),
             Type\isSameAs('list<non-empty-string>'),
             Assert\same(['value-1', 'value-3', 'value-5']),
+        );
+    }
+
+    #[Test]
+    public static function group(): void
+    {
+        pipe(
+            L\from([
+                S\from(['id' => 1, 'project_id' => 1]),
+                S\from(['id' => 2, 'project_id' => 1]),
+                S\from(['id' => 3, 'project_id' => 2]),
+            ]),
+            L\group(fn($obj) => $obj['project_id']),
+            Type\isSameAs('array<int, non-empty-list<array{id: int, project_id: int}>>'),
+            Assert\equals([
+                1 => [['id' => 1, 'project_id' => 1], ['id' => 2, 'project_id' => 1]],
+                2 => [['id' => 3, 'project_id' => 2]],
+            ]),
+        );
+
+        pipe(
+            L\fromNonEmpty([
+                S\from(['id' => 1, 'project_id' => 1]),
+                S\from(['id' => 2, 'project_id' => 1]),
+                S\from(['id' => 3, 'project_id' => 2]),
+            ]),
+            L\group(fn($obj) => $obj['project_id']),
+            Type\isSameAs('non-empty-array<int, non-empty-list<array{id: int, project_id: int}>>'),
+            Assert\equals([
+                1 => [['id' => 1, 'project_id' => 1], ['id' => 2, 'project_id' => 1]],
+                2 => [['id' => 3, 'project_id' => 2]],
+            ]),
+        );
+    }
+
+    #[Test]
+    public static function groupMap(): void
+    {
+        pipe(
+            L\from([
+                S\from(['id' => 1, 'project_id' => 1]),
+                S\from(['id' => 2, 'project_id' => 1]),
+                S\from(['id' => 3, 'project_id' => 2]),
+            ]),
+            L\groupMap(fn($obj) => $obj['project_id'], fn($obj) => ['id' => $obj['id']]),
+            Type\isSameAs('array<int, non-empty-list<array{id: int}>>'),
+            Assert\equals([
+                1 => [['id' => 1], ['id' => 2]],
+                2 => [['id' => 3]],
+            ]),
+        );
+
+        pipe(
+            L\fromNonEmpty([
+                S\from(['id' => 1, 'project_id' => 1]),
+                S\from(['id' => 2, 'project_id' => 1]),
+                S\from(['id' => 3, 'project_id' => 2]),
+            ]),
+            L\groupMap(fn($obj) => $obj['project_id'], fn($obj) => ['id' => $obj['id']]),
+            Type\isSameAs('non-empty-array<int, non-empty-list<array{id: int}>>'),
+            Assert\equals([
+                1 => [['id' => 1], ['id' => 2]],
+                2 => [['id' => 3]],
+            ]),
+        );
+    }
+
+    #[Test]
+    public static function groupMapReduce(): void
+    {
+        pipe(
+            L\from([
+                S\from(['id' => 1, 'project_id' => 1, 'score' => 2]),
+                S\from(['id' => 2, 'project_id' => 1, 'score' => 3]),
+                S\from(['id' => 3, 'project_id' => 2, 'score' => 3]),
+            ]),
+            L\groupMapReduce(
+                fn($obj) => "project-{$obj['project_id']}",
+                fn($obj) => $obj['score'],
+                fn($lhs, $rhs) => $lhs + $rhs,
+            ),
+            Type\isSameAs('array<non-empty-string, int>'),
+            Assert\equals([
+                'project-1' => 5,
+                'project-2' => 3,
+            ]),
+        );
+
+        pipe(
+            L\fromNonEmpty([
+                S\from(['id' => 1, 'project_id' => 1, 'score' => 2]),
+                S\from(['id' => 2, 'project_id' => 1, 'score' => 3]),
+                S\from(['id' => 3, 'project_id' => 2, 'score' => 3]),
+            ]),
+            L\groupMapReduce(
+                fn($obj) => "project-{$obj['project_id']}",
+                fn($obj) => $obj['score'],
+                fn($lhs, $rhs) => $lhs + $rhs,
+            ),
+            Type\isSameAs('non-empty-array<non-empty-string, int>'),
+            Assert\equals([
+                'project-1' => 5,
+                'project-2' => 3,
+            ]),
         );
     }
 
