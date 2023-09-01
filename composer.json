@@ -71,6 +71,7 @@
   "scripts": {
     "fixcs": "vendor/bin/php-cs-fixer fix -v",
     "psalm": "vendor/bin/psalm --show-info=true --no-diff",
-    "test": "vendor/bin/phpunit"
+    "test": "vendor/bin/phpunit",
+    "coveralls": "vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v"
   }
 }
