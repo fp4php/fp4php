@@ -69,7 +69,7 @@
     }
   },
   "scripts": {
-    "coveralls": "vendor/bin/coveralls --coverage_clover=build/logs/clover.xml -v",
+    "coveralls": "vendor/bin/coveralls.php --coverage_clover=build/logs/clover.xml -v",
     "fixcs": "vendor/bin/php-cs-fixer fix -v",
     "psalm": "vendor/bin/psalm --show-info=true --no-diff",
     "test": "vendor/bin/phpunit"
