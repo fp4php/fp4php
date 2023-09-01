@@ -73,9 +73,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs:
-      - build
-    #      - psalm
     steps:
       - uses: actions/checkout@v3.3.0
       - uses: shivammathur/setup-php@v2
