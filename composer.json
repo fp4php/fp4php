@@ -19,7 +19,6 @@
     "friendsofphp/php-cs-fixer": "^3.15",
     "php-coveralls/php-coveralls": "^0.1.0",
     "phpunit/phpunit": "^10.0",
-    "rregeer/phpunit-coverage-check": "^0.3.1",
     "vimeo/psalm": "^5.15"
   },
   "minimum-stability": "dev",
@@ -69,7 +68,7 @@
     }
   },
   "scripts": {
-    "coveralls": "vendor/bin/coveralls.php --coverage_clover=build/logs/clover.xml -v",
+    "coveralls": "vendor/bin/coveralls.php --coverage_clover=build/logs/clover.xml --service-name=fp4php -v",
     "fixcs": "vendor/bin/php-cs-fixer fix -v",
     "psalm": "vendor/bin/psalm --show-info=true --no-diff",
     "test": "vendor/bin/phpunit"

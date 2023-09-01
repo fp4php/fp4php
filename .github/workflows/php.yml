@@ -73,20 +73,27 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php: [ 8.1, 8.2 ]
+    needs:
+      - build
+    #      - psalm
     steps:
       - uses: actions/checkout@v3.3.0
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          tools: composer:v2
+          php-version: '8.2'
           coverage: xdebug
-      - uses: ramsey/composer-install@v2
+
+      - name: Restore cached composer dependencies
+        id: composer-cache
+        uses: actions/cache@v2
         with:
-          composer-options: --optimize-autoloader
+          path: vendor
+          key: ${{ runner.os }}-php-${{ github.sha }}
+
+      - name: Run test suite
+        run: php vendor/bin/phpunit
+
+      - name: Upload coverage results to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: composer test -- --colors=always
-      - run: composer coveralls
+        run: php vendor/bin/coveralls.php --coverage_clover=build/logs/clover.xml -v
