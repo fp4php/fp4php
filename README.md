@@ -75,3 +75,4 @@ To learn more about this library, read the following:
 - [Pipe](./docs/Pipe.md)
 - [Option](./docs/Option.md)
 - [Either](./docs/Either.md)
+- [Psalm](./docs/Psalm.md)
