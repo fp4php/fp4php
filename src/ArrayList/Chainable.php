@@ -6,6 +6,7 @@ namespace Fp4\PHP\ArrayList;
 
 use Closure;
 
+use Fp4\PHP\Option as O;
 use function array_slice;
 
 /**
@@ -195,6 +196,54 @@ function filterKV(callable $callback): Closure
         foreach ($list as $key => $item) {
             if ($callback($key, $item)) {
                 $out[] = $item;
+            }
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template A
+ * @template B
+ *
+ * @param callable(A): O\Option<B> $callback
+ * @return Closure(list<A>): list<B>
+ */
+function filterMap(callable $callback): Closure
+{
+    return function (array $list) use ($callback) {
+        $out = [];
+
+        foreach ($list as $a) {
+            $option = $callback($a);
+
+            if (O\isSome($option)) {
+                $out[] = $option->value;
+            }
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template A
+ * @template B
+ *
+ * @param callable(int, A): O\Option<B> $callback
+ * @return Closure(list<A>): list<B>
+ */
+function filterMapKV(callable $callback): Closure
+{
+    return function (array $list) use ($callback) {
+        $out = [];
+
+        foreach ($list as $index => $a) {
+            $option = $callback($index, $a);
+
+            if (O\isSome($option)) {
+                $out[] = $option->value;
             }
         }
 

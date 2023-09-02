@@ -274,6 +274,56 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function filterMap(): void
+    {
+        pipe(
+            L\from([]),
+            L\filterMap(fn(int $num) => 0 !== $num % 2 ? O\some($num) : O\none),
+            Type\isSameAs('list<never>'),
+            Assert\equals([]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filterMap(fn($num) => 0 === $num % 2 ? O\some($num) : O\none),
+            Type\isSameAs('list<int>'),
+            Assert\equals([2, 4, 6, 8]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filterMap(fn($num) => 0 !== $num % 2 ? O\some($num) : O\none),
+            Type\isSameAs('list<int>'),
+            Assert\equals([1, 3, 5, 7]),
+        );
+    }
+
+    #[Test]
+    public static function filterMapKV(): void
+    {
+        pipe(
+            L\from([]),
+            L\filterMapKV(fn($_key, $value) => O\some($value)),
+            Type\isSameAs('list<never>'),
+            Assert\equals([]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filterMapKV(fn($key, $num) => (0 === $num % 2) && (1 !== $key) ? O\some($num) : O\none),
+            Type\isSameAs('list<int>'),
+            Assert\equals([4, 6, 8]),
+        );
+
+        pipe(
+            L\from([1, 2, 3, 4, 5, 6, 7, 8]),
+            L\filterMapKV(fn($key, $num) => (0 !== $num % 2) && (0 !== $key) ? O\some($num) : O\none),
+            Type\isSameAs('list<int>'),
+            Assert\equals([3, 5, 7]),
+        );
+    }
+
+    #[Test]
     public static function prepend(): void
     {
         pipe(
