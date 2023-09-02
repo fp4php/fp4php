@@ -138,8 +138,6 @@ Convention dictates that `Left` is used for failure and `Right` is used for succ
 
 declare(strict_types=1);
 
-namespace App;
-
 use Fp4\PHP\Either as E;
 
 use function Fp4\PHP\Combinator\pipe;

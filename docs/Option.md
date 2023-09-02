@@ -16,8 +16,6 @@ Imperative:
 
 declare(strict_types=1);
 
-namespace App;
-
 function inverse(int|float $n): ?float
 {
     return 0 !== $n ? 1 / $n : null;
@@ -55,8 +53,6 @@ Let's try the functional approach:
 <?php
 
 declare(strict_types=1);
-
-namespace App;
 
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
@@ -101,8 +97,6 @@ This may be a problem that leads us back to nesting:
 <?php
 
 declare(strict_types=1);
-
-namespace App;
 
 use Fp4\PHP\Option as O;
 
@@ -180,8 +174,6 @@ Actually, this library has alternative syntax for `flatMap` operation:
 
 declare(strict_types=1);
 
-namespace App;
-
 use Fp4\PHP\Option as O;
 
 use function Fp4\PHP\Combinator\pipe;
@@ -214,8 +206,6 @@ Look at example:
 <?php
 
 declare(strict_types=1);
-
-namespace App;
 
 use Fp4\PHP\Option as O;
 
@@ -254,8 +244,6 @@ So by this reason before `bind` we call `bindable` operation.
 
 declare(strict_types=1);
 
-namespace App;
-
 use Fp4\PHP\Option as O;
 
 use function Fp4\PHP\Combinator\pipe;
@@ -283,8 +271,6 @@ If you need to declare just a pure value inside `Bindable` context, you can use 
 <?php
 
 declare(strict_types=1);
-
-namespace App;
 
 use Fp4\PHP\Option as O;
 
@@ -319,8 +305,6 @@ You can use interop operations:
 <?php
 
 declare(strict_types=1);
-
-namespace App;
 
 use Fp4\PHP\Option as O;
 
