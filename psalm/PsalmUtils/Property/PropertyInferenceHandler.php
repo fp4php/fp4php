@@ -10,7 +10,6 @@ use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use Psalm\CodeLocation;
 use Psalm\Internal\Analyzer\StatementsAnalyzer;
@@ -18,6 +17,7 @@ use Psalm\Internal\Provider\ReturnTypeProvider\GetObjectVarsReturnTypeProvider;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\Storage\FunctionLikeParameter;
 use Psalm\Type\Atomic;
+use Psalm\Type\Atomic\TArray;
 use Psalm\Type\Atomic\TClosure;
 use Psalm\Type\Atomic\TKeyedArray;
 use Psalm\Type\Atomic\TLiteralString;
@@ -75,29 +75,48 @@ final class PropertyInferenceHandler
                             context: $event->getContext(),
                             location: new CodeLocation($i->source, $call),
                         )),
-                        O\filterOf(TKeyedArray::class),
-                        O\map(fn(TKeyedArray $shape) => $shape->properties),
+                        O\map(fn(TKeyedArray|TArray $shape) => $shape instanceof TKeyedArray
+                            ? $shape->properties
+                            : []),
                     ),
-                    getProperty: fn() => pipe(
+                    propertyNode: fn() => pipe(
                         L\fromIterable($call->getArgs()),
                         L\first(...),
-                        O\map(fn(Arg $arg) => $arg->value),
+                    ),
+                    propertyName: fn($i) => pipe(
+                        O\some($i->propertyNode->value),
                         O\flatMap(PsalmApi::$type->get($event)),
                         O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TLiteralString::class)),
                         O\flatMap(fn(TLiteralString $l) => Ev\proveNonEmptyString($l->value)),
                     ),
                 ),
-                O\flatMap(fn($i) => pipe(
+                O\tap(fn($i) => pipe(
+                    Ev\proveTrue($i->kindTypeParam->isNever()),
+                    O\orElse(fn() => pipe(
+                        PsalmApi::$codebase->properties->propertyExists(
+                            property_id: "{$i->kindTypeParam->getId()}::\${$i->propertyName}",
+                            read_mode: true,
+                            source: $i->source,
+                            code_location: new CodeLocation($i->source, $i->propertyNode),
+                        ),
+                        Ev\proveTrue(...),
+                    )),
+                    O\orElse(fn() => pipe(
+                        $event,
+                        PropertyUndefined::raise($i->propertyName, $i->kindTypeParam),
+                    )),
+                )),
+                O\map(fn($i) => pipe(
                     $i->definedProperties,
-                    D\get($i->getProperty),
+                    D\get($i->propertyName),
                     O\map(fn($property) => $mapKindParam($i->kindAtomic, $property)),
                     O\map(fn($inferred) => $i->hof->replace(
                         params: $i->hof->params,
                         return_type: $inferred,
                     )),
-                    O\orElse(fn() => pipe(
-                        $event,
-                        PropertyUndefined::raise($i->getProperty, $i->kindTypeParam),
+                    O\getOrCall(fn() => $i->hof->replace(
+                        params: $i->hof->params,
+                        return_type: $mapKindParam($i->kindAtomic, PsalmApi::$create->never()),
                     )),
                 )),
                 O\tap(PsalmApi::$type->set($event->getExpr(), $event)),

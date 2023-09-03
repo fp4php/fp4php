@@ -257,7 +257,7 @@ function filterMapKV(callable $callback): Closure
  *
  * @template T of object
  * @param non-empty-string $property
- * @return Closure(list<T>): list<never>
+ * @return Closure(list<T>): list<mixed>
  */
 function property(string $property): Closure
 {
