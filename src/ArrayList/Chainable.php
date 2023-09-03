@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Fp4\PHP\ArrayList;
 
 use Closure;
-
 use Fp4\PHP\Option as O;
+use Fp4\PHP\PsalmIntegration\Module\ArrayList\PropertyInference;
+
 use function array_slice;
 
 /**
@@ -212,7 +213,7 @@ function filterKV(callable $callback): Closure
  */
 function filterMap(callable $callback): Closure
 {
-    return function (array $list) use ($callback) {
+    return function(array $list) use ($callback) {
         $out = [];
 
         foreach ($list as $a) {
@@ -236,7 +237,7 @@ function filterMap(callable $callback): Closure
  */
 function filterMapKV(callable $callback): Closure
 {
-    return function (array $list) use ($callback) {
+    return function(array $list) use ($callback) {
         $out = [];
 
         foreach ($list as $index => $a) {
@@ -245,6 +246,26 @@ function filterMapKV(callable $callback): Closure
             if (O\isSome($option)) {
                 $out[] = $option->value;
             }
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * Type will be inferred by {@see PropertyInference} plugin hook.
+ *
+ * @template T of object
+ * @param non-empty-string $property
+ * @return Closure(list<T>): list<never>
+ */
+function property(string $property): Closure
+{
+    return function(array $list) use ($property) {
+        $out = [];
+
+        foreach ($list as $a) {
+            $out[] = $a->{$property};
         }
 
         return $out;

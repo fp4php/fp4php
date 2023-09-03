@@ -12,6 +12,7 @@ use Fp4\PHP\PHPUnit as Assert;
 use Fp4\PHP\PsalmIntegration as Type;
 use Fp4\PHP\Shape as S;
 use Fp4\PHP\Str;
+use Fp4\PHP\Test\Fixture\InheritedObj;
 use Fp4\PHP\Tuple as T;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -374,6 +375,39 @@ final class ArrayListTest extends TestCase
             L\tail(...),
             Type\isSameAs('list<int>'),
             Assert\equals([2, 3]),
+        );
+    }
+
+    #[Test]
+    public static function property(): void
+    {
+        pipe(
+            L\from([]),
+            L\property('test'),
+            Type\isSameAs('list<never>'),
+            Assert\same([]),
+        );
+
+        pipe(
+            L\from([
+                new InheritedObj(prop1: 'val1', prop2: 0),
+                new InheritedObj(prop1: 'val2', prop2: 1),
+                new InheritedObj(prop1: 'val3', prop2: 2),
+            ]),
+            L\property('prop1'),
+            Type\isSameAs('list<string>'),
+            Assert\same(['val1', 'val2', 'val3']),
+        );
+
+        pipe(
+            L\from([
+                new InheritedObj(prop1: 'val1', prop2: 0),
+                new InheritedObj(prop1: 'val2', prop2: 1),
+                new InheritedObj(prop1: 'val3', prop2: 2),
+            ]),
+            L\property('prop2'),
+            Type\isSameAs('list<int>'),
+            Assert\same([0, 1, 2]),
         );
     }
 
