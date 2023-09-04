@@ -257,8 +257,13 @@ function filterMapKV(callable $callback): Closure
  * Type will be inferred by {@see PropertyInference} plugin hook.
  *
  * @template T of object
+ * @template TIn of list<T>
  * @param non-empty-string $property
- * @return Closure(list<T>): list<mixed>
+ * @return (Closure(TIn): (
+ *     TIn is non-empty-list<T>
+ *         ? non-empty-list<mixed>
+ *         : list<mixed>
+ * ))
  */
 function property(string $property): Closure
 {

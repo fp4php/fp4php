@@ -427,6 +427,15 @@ final class ArrayListTest extends TestCase
             Type\isSameAs('list<int>'),
             Assert\same([0, 1, 2]),
         );
+
+        pipe(
+            L\fromNonEmpty([
+                new InheritedObj(prop1: 'val1', prop2: 0),
+            ]),
+            L\property('prop2'),
+            Type\isSameAs('non-empty-list<int>'),
+            Assert\same(['k1' => 0]),
+        );
     }
 
     // endregion: ops

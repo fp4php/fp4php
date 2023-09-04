@@ -23,9 +23,11 @@ final class PropertyInference implements AfterExpressionAnalysisInterface
             $event,
             PropertyInferenceHandler::handle(
                 function: 'Fp4\PHP\ArrayList\property',
-                getKind: fn(Union $kind) => pipe($kind, PsalmApi::$cast->toSingleAtomicOf(TKeyedArray::class)),
-                getKindParam: fn(TKeyedArray $list) => O\some($list->getGenericValueType()),
-                mapKindParam: fn(TKeyedArray $_, Union $property) => PsalmApi::$create->list($property),
+                getKind: fn(Union $type) => pipe($type, PsalmApi::$cast->toSingleAtomicOf(TKeyedArray::class)),
+                getKindParam: fn(TKeyedArray $kind) => O\some($kind->getGenericValueType()),
+                mapKindParam: fn(TKeyedArray $kind, Union $property) => $kind->isNonEmpty()
+                    ? PsalmApi::$create->nonEmptyList($property)
+                    : PsalmApi::$create->list($property),
             ),
             constNull(...),
         );
