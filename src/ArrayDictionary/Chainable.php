@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\ArrayDictionary;
 
 use Closure;
+use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\PropertyInference;
 
 /**
  * @template K of array-key
@@ -256,6 +257,33 @@ function reindexKV(callable $callback): Closure
 
         foreach ($dictionary as $k => $v) {
             $out[$callback($k, $v)] = $v;
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * Type will be inferred by {@see PropertyInference} plugin hook.
+ *
+ * @template K of array-key
+ * @template V of object
+ * @template TIn of array<K, V>
+ *
+ * @param non-empty-string $property
+ * @return (Closure(TIn): (
+ *     TIn is non-empty-array<K, V>
+ *         ? non-empty-array<K, mixed>
+ *         : array<K, mixed>
+ * ))
+ */
+function property(string $property): Closure
+{
+    return function(array $dictionary) use ($property) {
+        $out = [];
+
+        foreach ($dictionary as $k => $v) {
+            $out[$k] = $v->{$property};
         }
 
         return $out;

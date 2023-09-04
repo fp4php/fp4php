@@ -15,6 +15,7 @@ final class ArrayDictionaryModule implements RegisterPsalmHooks
             PartitionCallRefinement::class,
             FromCallInference::class,
             FoldInference::class,
+            PropertyInference::class,
         ]);
     }
 }

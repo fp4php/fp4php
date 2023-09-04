@@ -12,6 +12,7 @@ use Fp4\PHP\PHPUnit as Assert;
 use Fp4\PHP\PsalmIntegration as Type;
 use Fp4\PHP\Shape as S;
 use Fp4\PHP\Str;
+use Fp4\PHP\Test\Fixture\InheritedObj;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -269,6 +270,48 @@ final class ArrayDictionaryTest extends TestCase
             D\reindexKV(fn(string $key, int $num) => "key-{$key}-{$num}"),
             Type\isSameAs('array<non-empty-string, int>'),
             Assert\equals(['key-a-1' => 1, 'key-b-2' => 2, 'key-c-3' => 3]),
+        );
+    }
+
+    #[Test]
+    public static function property(): void
+    {
+        pipe(
+            D\from([]),
+            D\property('test'),
+            Type\isSameAs('array<never, never>'),
+            Assert\same([]),
+        );
+
+        pipe(
+            D\from([
+                'k1' => new InheritedObj(prop1: 'val1', prop2: 0),
+                'k2' => new InheritedObj(prop1: 'val2', prop2: 1),
+                'k3' => new InheritedObj(prop1: 'val3', prop2: 2),
+            ]),
+            D\property('prop1'),
+            Type\isSameAs('array<string, string>'),
+            Assert\same(['k1' => 'val1', 'k2' => 'val2', 'k3' => 'val3']),
+        );
+
+        pipe(
+            D\from([
+                'k1' => new InheritedObj(prop1: 'val1', prop2: 0),
+                'k2' => new InheritedObj(prop1: 'val2', prop2: 1),
+                'k3' => new InheritedObj(prop1: 'val3', prop2: 2),
+            ]),
+            D\property('prop2'),
+            Type\isSameAs('array<string, int>'),
+            Assert\same(['k1' => 0, 'k2' => 1, 'k3' => 2]),
+        );
+
+        pipe(
+            D\fromNonEmpty([
+                'k1' => new InheritedObj(prop1: 'val1', prop2: 0),
+            ]),
+            D\property('prop2'),
+            Type\isSameAs('non-empty-array<string, int>'),
+            Assert\same(['k1' => 0]),
         );
     }
 
