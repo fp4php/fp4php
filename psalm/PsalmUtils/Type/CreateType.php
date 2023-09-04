@@ -117,6 +117,19 @@ final class CreateType
         );
     }
 
+    public function mixedAtomic(): TMixed
+    {
+        return new TMixed();
+    }
+
+    public function mixed(): Union
+    {
+        return pipe(
+            self::mixedAtomic(),
+            self::union(...),
+        );
+    }
+
     public function listAtomic(Union|Atomic $type): TKeyedArray
     {
         return pipe(
@@ -254,15 +267,21 @@ final class CreateType
     }
 
     /**
-     * @param non-empty-array<int|string, Union> $properties
+     * @param non-empty-array<int|string, Union|Atomic> $properties
      */
     public function keyedArrayListAtomic(array $properties): TKeyedArray
     {
-        return new TKeyedArray($properties, is_list: true);
+        return new TKeyedArray(
+            properties: pipe(
+                $properties,
+                D\map(fn($i) => self::union($i)),
+            ),
+            is_list: true,
+        );
     }
 
     /**
-     * @param non-empty-array<int|string, Union> $properties
+     * @param non-empty-array<int|string, Union|Atomic> $properties
      */
     public function keyedArrayList(array $properties): Union
     {
