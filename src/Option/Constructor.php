@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Fp4\PHP\Option;
 
 use Closure;
+use Fp4\PHP\PsalmIntegration\Module\Option\NoneConstInference;
+use Fp4\PHP\PsalmIntegration\Module\Option\SomeCallInference;
 use Throwable;
 
 /**
+ * Return type will be widen by {@see SomeCallInference} plugin hook.
+ *
  * @template A
  *
  * @param A $value
@@ -19,6 +23,7 @@ function some(mixed $value): Option
 }
 
 /**
+ * @internal
  * @return Option<never>
  * @psalm-suppress MixedInferredReturnType, MixedReturnStatement
  */
@@ -27,9 +32,14 @@ function none(): Option
     return none;
 }
 
+/**
+ * Return type will be widen by {@see NoneConstInference} plugin hook.
+ */
 const none = new None();
 
 /**
+ * Return type will be widen by {@see SomeCallInference} plugin hook.
+ *
  * @template A
  *
  * @param A|null $value
@@ -41,6 +51,8 @@ function fromNullable(mixed $value): Option
 }
 
 /**
+ * Return type will be widen by {@see SomeCallInference} plugin hook.
+ *
  * @template A
  *
  * @param callable(): A $callback

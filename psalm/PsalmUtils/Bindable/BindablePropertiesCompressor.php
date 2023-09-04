@@ -8,7 +8,6 @@ use Closure;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Expr\FuncCall;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
@@ -22,9 +21,9 @@ final class BindablePropertiesCompressor
 {
     /**
      * @param non-empty-list<string> $functions
-     * @param callable(Union): Option<Union> $unpack
-     * @param callable(non-empty-array<Union>, Union): Option<Union> $pack
-     * @return Closure(AfterExpressionAnalysisEvent): Option<void>
+     * @param callable(Union): O\Option<Union> $unpack
+     * @param callable(non-empty-array<Union>, Union): O\Option<Union> $pack
+     * @return Closure(AfterExpressionAnalysisEvent): O\Option<void>
      */
     public static function compress(array $functions, callable $unpack, callable $pack): Closure
     {
@@ -45,13 +44,13 @@ final class BindablePropertiesCompressor
     }
 
     /**
-     * @param callable(Union): Option<Union> $unpack
-     * @param callable(non-empty-array<Union>, Union): Option<Union> $pack
-     * @return Closure(TClosure): Option<TClosure>
+     * @param callable(Union): O\Option<Union> $unpack
+     * @param callable(non-empty-array<Union>, Union): O\Option<Union> $pack
+     * @return Closure(TClosure): O\Option<TClosure>
      */
     private static function inferClosure(callable $unpack, callable $pack): Closure
     {
-        return fn(TClosure $returnType): Option => pipe(
+        return fn(TClosure $returnType): O\Option => pipe(
             O\bindable(),
             O\bind(
                 original: fn() => O\fromNullable($returnType->return_type),

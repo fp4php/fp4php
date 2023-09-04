@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\Module\Option;
 
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindableFunctionBuilder;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindLetType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\SingleTypeParameterBindableBuilder;
@@ -31,7 +30,7 @@ final class LetFunctionStorageProvider implements DynamicFunctionStorageProvider
         $builderForOption = new SingleTypeParameterBindableBuilder(
             templates: $event->getTemplateProvider(),
             type: BindLetType::LET,
-            liftF: fn(Union $bindable) => pipe($bindable, PsalmApi::$create->genericObject(Option::class)),
+            liftF: fn(Union $bindable) => pipe($bindable, PsalmApi::$create->genericObject(O\Option::class)),
         );
 
         return pipe(

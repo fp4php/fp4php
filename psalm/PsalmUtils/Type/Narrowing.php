@@ -6,7 +6,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -24,9 +23,9 @@ final class Narrowing
 {
     /**
      * @param non-empty-list<non-empty-string> $names
-     * @return Option<void>
+     * @return O\Option<void>
      */
-    public static function assertNarrowed(AfterExpressionAnalysisEvent $event, array $names): Option
+    public static function assertNarrowed(AfterExpressionAnalysisEvent $event, array $names): O\Option
     {
         return pipe(
             O\some($event->getExpr()),
@@ -50,13 +49,13 @@ final class Narrowing
 
     private static function isLiteral(Union $type): bool
     {
-        $isLiteralOrNull = fn(): Option => pipe(
+        $isLiteralOrNull = fn(): O\Option => pipe(
             O\some($type),
             O\filter(fn($t) => $t->containsAnyLiteral() || $t->isNull()),
             O\map(fn() => true),
         );
 
-        $isNonGenericKeyedArray = fn(): Option => pipe(
+        $isNonGenericKeyedArray = fn(): O\Option => pipe(
             O\some($type),
             O\flatMap(PsalmApi::$cast->toSingleAtomicOf(TKeyedArray::class)),
             O\filter(fn(TKeyedArray $keyed) => !$keyed->isGenericList()),

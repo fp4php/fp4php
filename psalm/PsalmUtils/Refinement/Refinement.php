@@ -8,7 +8,6 @@ use Fp4\PHP\ArrayDictionary as D;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\Str as S;
@@ -55,9 +54,9 @@ final class Refinement
 
     /**
      * @param 'key'|'value' $for
-     * @return Option<Union>
+     * @return O\Option<Union>
      */
-    private function refineArgumentType(string $for): Option
+    private function refineArgumentType(string $for): O\Option
     {
         // reconcileKeyedTypes takes it by ref
         $changed_var_ids = [];
@@ -96,9 +95,9 @@ final class Refinement
     }
 
     /**
-     * @return Option<non-empty-string>
+     * @return O\Option<non-empty-string>
      */
-    private static function getKeyArgumentFromPredicate(self $refinement): Option
+    private static function getKeyArgumentFromPredicate(self $refinement): O\Option
     {
         return pipe(
             O\fromNullable(
@@ -116,9 +115,9 @@ final class Refinement
     }
 
     /**
-     * @return Option<non-empty-string>
+     * @return O\Option<non-empty-string>
      */
-    private static function getValueArgumentFromPredicate(self $refinement): Option
+    private static function getValueArgumentFromPredicate(self $refinement): O\Option
     {
         return pipe(
             $refinement->predicate->getParams(),
@@ -133,9 +132,9 @@ final class Refinement
     }
 
     /**
-     * @return Option<Expr>
+     * @return O\Option<Expr>
      */
-    private static function getPredicateSingleReturn(self $refinement): Option
+    private static function getPredicateSingleReturn(self $refinement): O\Option
     {
         return pipe(
             O\fromNullable($refinement->predicate->getStmts()),
@@ -150,9 +149,9 @@ final class Refinement
     }
 
     /**
-     * @psalm-return Option<PsalmAssertions>
+     * @psalm-return O\Option<PsalmAssertions>
      */
-    private static function collectAssertions(self $refinement, Expr $return): Option
+    private static function collectAssertions(self $refinement, Expr $return): O\Option
     {
         $cond_object_id = spl_object_id($return);
 

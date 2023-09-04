@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\Either;
 
+use Fp4\PHP\PsalmIntegration\Module\Either\LeftRightCallInference;
 use Throwable;
 
 /**
+ * Return type will be widen by {@see LeftRightCallInference} plugin hook.
+ *
  * @template E
  *
  * @param E $value
@@ -18,6 +21,8 @@ function left(mixed $value): Either
 }
 
 /**
+ * Return type will be widen by {@see LeftRightCallInference} plugin hook.
+ *
  * @template A
  *
  * @param A $value
@@ -29,6 +34,8 @@ function right(mixed $value): Either
 }
 
 /**
+ * Return type will be widen by {@see LeftRightCallInference} plugin hook.
+ *
  * @template A
  *
  * @param callable(): A $callback

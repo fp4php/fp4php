@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 use Closure;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Psalm\Type\Atomic;
 use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Union;
@@ -23,9 +22,9 @@ final class Casts
     }
 
     /**
-     * @return Option<Atomic>
+     * @return O\Option<Atomic>
      */
-    public function toSingleAtomic(Union $type): Option
+    public function toSingleAtomic(Union $type): O\Option
     {
         return pipe(
             O\some($type),
@@ -38,7 +37,7 @@ final class Casts
      * @template TAtomic of Atomic
      *
      * @param class-string<TAtomic>|non-empty-list<class-string<TAtomic>> $class
-     * @return Closure(Union): Option<TAtomic>
+     * @return Closure(Union): O\Option<TAtomic>
      */
     public function toSingleAtomicOf(string|array $class): Closure
     {
@@ -51,7 +50,7 @@ final class Casts
 
     /**
      * @param class-string|non-empty-list<class-string> $class
-     * @return Closure(Union): Option<TGenericObject>
+     * @return Closure(Union): O\Option<TGenericObject>
      */
     public function toSingleGenericObjectOf(string|array $class): Closure
     {

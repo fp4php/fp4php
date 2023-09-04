@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Fp4\PHP\Option;
 
 use Closure;
-use Fp4\PHP\Evidence as E;
+use Fp4\PHP\Evidence as Ev;
+use Fp4\PHP\PsalmIntegration\Module\Option\FilterCallRefinement;
 
 use function Fp4\PHP\Combinator\pipe;
 
@@ -114,6 +115,8 @@ function orElse(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred {@see FilterCallRefinement} plugin hook.
+ *
  * @template A
  *
  * @param callable(A): bool $callback
@@ -137,7 +140,7 @@ function filterOf(string|array $fqcn, bool $invariant = false): Closure
 {
     return fn(Option $a) => pipe(
         $a,
-        flatMap(E\proveOf($fqcn, $invariant)),
+        flatMap(Ev\proveOf($fqcn, $invariant)),
     );
 }
 

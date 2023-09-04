@@ -7,6 +7,7 @@ namespace Fp4\PHP\ArrayList;
 use Closure;
 use Fp4\PHP\Option as O;
 use Fp4\PHP\PsalmIntegration\Module\ArrayList\PropertyInference;
+use Fp4\PHP\PsalmIntegration\Module\Option\FilterCallRefinement;
 
 use function array_slice;
 use function count;
@@ -164,6 +165,8 @@ function flatMapKV(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see FilterCallRefinement}.
+ *
  * @template A
  *
  * @param callable(A): bool $callback
@@ -185,6 +188,8 @@ function filter(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see FilterCallRefinement}.
+ *
  * @template A
  *
  * @param callable(int, A): bool $callback
@@ -258,6 +263,7 @@ function filterMapKV(callable $callback): Closure
  *
  * @template T of object
  * @template TIn of list<T>
+ *
  * @param non-empty-string $property
  * @return (Closure(TIn): (
  *     TIn is non-empty-list<T>

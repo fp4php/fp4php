@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\CallLike;
@@ -35,9 +34,9 @@ use function Fp4\PHP\Combinator\pipe;
 final class FirstClassCallablePredicate
 {
     /**
-     * @return Option<VirtualArrowFunction>
+     * @return O\Option<VirtualArrowFunction>
      */
-    public static function mock(AfterExpressionAnalysisEvent $e): Option
+    public static function mock(AfterExpressionAnalysisEvent $e): O\Option
     {
         return pipe(
             O\bindable(),
@@ -84,14 +83,14 @@ final class FirstClassCallablePredicate
     /**
      * @param FuncCall|MethodCall|StaticCall $originalCall
      * @param list<VirtualVariable> $fakeVariables
-     * @return Option<CallLike>
+     * @return O\Option<CallLike>
      */
     private static function createVirtualCall(
         StatementsSource $source,
         Context $context,
         CallLike $originalCall,
         array $fakeVariables,
-    ): Option {
+    ): O\Option {
         $functionId = O\first(
             // from FuncCall
             fn() => pipe(
@@ -174,9 +173,9 @@ final class FirstClassCallablePredicate
     /**
      * @param non-empty-string $functionId
      * @param VirtualStaticCall|VirtualMethodCall|VirtualFuncCall $expr
-     * @return Option<CallLike>
+     * @return O\Option<CallLike>
      */
-    private static function withCustomAssertions(string $functionId, StatementsSource $source, CallLike $expr): Option
+    private static function withCustomAssertions(string $functionId, StatementsSource $source, CallLike $expr): O\Option
     {
         return pipe(
             O\bindable(),

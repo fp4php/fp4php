@@ -9,7 +9,6 @@ use Fp4\PHP\ArrayDictionary as D;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Bindable;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable\BindableFoldType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Arg;
@@ -45,7 +44,7 @@ final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInt
     }
 
     /**
-     * @return Closure(MethodCall): Option<Union>
+     * @return Closure(MethodCall): O\Option<Union>
      */
     private static function getReturnType(MethodReturnTypeProviderEvent $event): Closure
     {
@@ -64,7 +63,7 @@ final class BindableGetReturnTypeProvider implements MethodReturnTypeProviderInt
     }
 
     /**
-     * @return Closure(Union[]): Option<Union>
+     * @return Closure(Union[]): O\Option<Union>
      */
     private static function getPropertyFromBindableScope(string $property, MethodReturnTypeProviderEvent $event): Closure
     {

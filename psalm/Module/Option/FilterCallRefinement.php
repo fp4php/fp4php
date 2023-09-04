@@ -6,7 +6,6 @@ namespace Fp4\PHP\PsalmIntegration\Module\Option;
 
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
@@ -30,12 +29,12 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
                 getKeyType: O\none,
                 getValType: fn(Union $inferred) => pipe(
                     O\some($inferred),
-                    O\flatMap(PsalmApi::$cast->toSingleGenericObjectOf(Option::class)),
+                    O\flatMap(PsalmApi::$cast->toSingleGenericObjectOf(O\Option::class)),
                     O\flatMap(fn(TGenericObject $option) => L\first($option->type_params)),
                 ),
                 toReturnType: fn(RefineTypeParams $refined) => pipe(
                     $refined->value,
-                    PsalmApi::$create->genericObjectAtomic(Option::class),
+                    PsalmApi::$create->genericObjectAtomic(O\Option::class),
                     PsalmApi::$create->union(...),
                 ),
                 type: FunctionType::Value,

@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\ArrayList;
 
+use Fp4\PHP\PsalmIntegration\Module\ArrayList\FromCallInference;
+
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template A
  *
  * @param iterable<A> $iter
@@ -22,6 +26,8 @@ function fromIterable(iterable $iter): array
 }
 
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template A
  *
  * @param list<A> $list
@@ -33,6 +39,8 @@ function from(array $list): array
 }
 
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template A
  *
  * @param non-empty-list<A> $list
@@ -44,6 +52,8 @@ function fromNonEmpty(array $list): array
 }
 
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template A
  *
  * @param A $value

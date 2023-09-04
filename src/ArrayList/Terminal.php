@@ -6,9 +6,9 @@ namespace Fp4\PHP\ArrayList;
 
 use Closure;
 use Fp4\PHP\Either as E;
-use Fp4\PHP\Either\Either;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
+use Fp4\PHP\PsalmIntegration\Module\ArrayList\FoldInference;
+use Fp4\PHP\PsalmIntegration\Module\ArrayList\PartitionCallRefinement;
 
 use function array_key_exists;
 use function in_array;
@@ -16,7 +16,7 @@ use function in_array;
 /**
  * @template A
  *
- * @return Closure(list<A>): Option<A>
+ * @return Closure(list<A>): O\Option<A>
  */
 function get(int $key): Closure
 {
@@ -37,9 +37,9 @@ function contains(mixed $value): Closure
  * @template A
  *
  * @param list<A> $list
- * @return Option<A>
+ * @return O\Option<A>
  */
-function first(array $list): Option
+function first(array $list): O\Option
 {
     return array_key_exists(0, $list)
         ? O\some($list[0])
@@ -50,9 +50,9 @@ function first(array $list): Option
  * @template A
  *
  * @param list<A> $list
- * @return Option<A>
+ * @return O\Option<A>
  */
-function second(array $list): Option
+function second(array $list): O\Option
 {
     return array_key_exists(1, $list)
         ? O\some($list[1])
@@ -63,9 +63,9 @@ function second(array $list): Option
  * @template A
  *
  * @param list<A> $list
- * @return Option<A>
+ * @return O\Option<A>
  */
-function third(array $list): Option
+function third(array $list): O\Option
 {
     return array_key_exists(2, $list)
         ? O\some($list[2])
@@ -76,9 +76,9 @@ function third(array $list): Option
  * @template A
  *
  * @param list<A> $list
- * @return Option<A>
+ * @return O\Option<A>
  */
-function last(array $list): Option
+function last(array $list): O\Option
 {
     $lastKey = array_key_last($list) ?? null;
 
@@ -92,11 +92,11 @@ function last(array $list): Option
  * @template B
  * @template TIn of list<A>
  *
- * @param callable(A): Option<B> $callback
+ * @param callable(A): O\Option<B> $callback
  * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
- *         ? Option<non-empty-list<B>>
- *         : Option<list<B>>
+ *         ? O\Option<non-empty-list<B>>
+ *         : O\Option<list<B>>
  * ))
  */
 function traverseOption(callable $callback): Closure
@@ -123,11 +123,11 @@ function traverseOption(callable $callback): Closure
  * @template B
  * @template TIn of list<A>
  *
- * @param callable(int, A): Option<B> $callback
+ * @param callable(int, A): O\Option<B> $callback
  * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
- *         ? Option<non-empty-list<B>>
- *         : Option<list<B>>
+ *         ? O\Option<non-empty-list<B>>
+ *         : O\Option<list<B>>
  * ))
  */
 function traverseOptionKV(callable $callback): Closure
@@ -155,11 +155,11 @@ function traverseOptionKV(callable $callback): Closure
  * @template E
  * @template TIn of list<A>
  *
- * @param callable(A): Either<E, B> $callback
+ * @param callable(A): E\Either<E, B> $callback
  * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
- *         ? Either<E, non-empty-list<B>>
- *         : Either<E, list<B>>
+ *         ? E\Either<E, non-empty-list<B>>
+ *         : E\Either<E, list<B>>
  * ))
  */
 function traverseEither(callable $callback): Closure
@@ -187,11 +187,11 @@ function traverseEither(callable $callback): Closure
  * @template E
  * @template TIn of list<A>
  *
- * @param callable(int, A): Either<E, B> $callback
+ * @param callable(int, A): E\Either<E, B> $callback
  * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
- *         ? Either<E, non-empty-list<B>>
- *         : Either<E, list<B>>
+ *         ? E\Either<E, non-empty-list<B>>
+ *         : E\Either<E, list<B>>
  * ))
  */
 function traverseEitherKV(callable $callback): Closure
@@ -340,6 +340,8 @@ function reindexKV(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see PartitionCallRefinement}.
+ *
  * @template A
  *
  * @param callable(A): bool $callback
@@ -364,6 +366,8 @@ function partition(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see PartitionCallRefinement}.
+ *
  * @template A
  *
  * @param callable(int, A): bool $callback
@@ -392,7 +396,7 @@ function partitionKV(callable $callback): Closure
  * @template R
  * @template A
  *
- * @param callable(A): Either<L, R> $callback
+ * @param callable(A): E\Either<L, R> $callback
  * @return Closure(list<A>): array{list<L>, list<R>}
  */
 function partitionMap(callable $callback): Closure
@@ -420,7 +424,7 @@ function partitionMap(callable $callback): Closure
  * @template R
  * @template A
  *
- * @param callable(int, A): Either<L, R> $callback
+ * @param callable(int, A): E\Either<L, R> $callback
  * @return Closure(list<A>): array{list<L>, list<R>}
  */
 function partitionMapKV(callable $callback): Closure
@@ -444,6 +448,8 @@ function partitionMapKV(callable $callback): Closure
 }
 
 /**
+ * Function call will be processed by {@see FoldInference} plugin hook.
+ *
  * @template TAcc
  * @template A
  *
@@ -465,6 +471,8 @@ function fold(mixed $initial, callable $callback): Closure
 }
 
 /**
+ * Function call will be processed by {@see FoldInference} plugin hook.
+ *
  * @template TAcc
  * @template A
  *

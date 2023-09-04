@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\Module\Option;
 
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Type\Widening;
 use Psalm\Plugin\EventHandler\AfterExpressionAnalysisInterface;
@@ -24,7 +23,7 @@ final class NoneConstInference implements AfterExpressionAnalysisInterface
             Widening::widen($event, [self::NONE]),
             O\map(fn() => pipe(
                 PsalmApi::$create->never(),
-                PsalmApi::$create->genericObject(Option::class),
+                PsalmApi::$create->genericObject(O\Option::class),
             )),
             O\tap(PsalmApi::$type->set($event->getExpr(), $event)),
             constNull(...),

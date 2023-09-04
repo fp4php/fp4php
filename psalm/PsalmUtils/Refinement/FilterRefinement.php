@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 use Closure;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Psalm\Internal\Analyzer\StatementsAnalyzer;
@@ -22,14 +21,14 @@ final class FilterRefinement
 {
     /**
      * @param non-empty-string $function
-     * @param Option<callable(Union): Option<Union>> $getKeyType
-     * @param callable(Union): Option<Union> $getValType
+     * @param O\Option<callable(Union): O\Option<Union>> $getKeyType
+     * @param callable(Union): O\Option<Union> $getValType
      * @param callable(RefineTypeParams, Union): Union $toReturnType
-     * @return Closure(AfterExpressionAnalysisEvent): Option
+     * @return Closure(AfterExpressionAnalysisEvent): O\Option
      */
     public static function refine(
         string $function,
-        Option $getKeyType,
+        O\Option $getKeyType,
         callable $getValType,
         callable $toReturnType,
         FunctionType $type,

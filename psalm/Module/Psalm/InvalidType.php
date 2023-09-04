@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fp4\PHP\PsalmIntegration\Module\Psalm;
 
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Psalm\CodeLocation;
 use Psalm\Issue\CodeIssue;
 use Psalm\IssueBuffer;
@@ -14,9 +13,9 @@ use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 final class InvalidType extends CodeIssue
 {
     /**
-     * @return Option<never>
+     * @return O\Option<never>
      */
-    public static function raise(string $type, AfterExpressionAnalysisEvent $event): Option
+    public static function raise(string $type, AfterExpressionAnalysisEvent $event): O\Option
     {
         $source = $event->getStatementsSource();
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Fp4\PHP;
 
+use Fp4\PHP\PsalmIntegration\Module\Bindable\BindableGetReturnTypeProvider;
+
 /**
  * @template-covariant T of object
  * @psalm-immutable
@@ -15,6 +17,9 @@ final class Bindable
     ) {
     }
 
+    /**
+     * Type will be inferred by {@see BindableGetReturnTypeProvider} plugin hook.
+     */
     public function __get(string $name): mixed
     {
         return $this->context[$name];

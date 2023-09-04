@@ -6,7 +6,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 
 use Closure;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Psalm\Plugin\EventHandler\Event\AfterExpressionAnalysisEvent;
 use Psalm\Type\Atomic\TClosure;
@@ -23,9 +22,9 @@ final class RefineTypeParams
     }
 
     /**
-     * @param callable(Union): Option<Union> $extractKey
-     * @param callable(Union): Option<Union> $extractValue
-     * @return Closure(AfterExpressionAnalysisEvent): Option<RefineTypeParams>
+     * @param callable(Union): O\Option<Union> $extractKey
+     * @param callable(Union): O\Option<Union> $extractValue
+     * @return Closure(AfterExpressionAnalysisEvent): O\Option<RefineTypeParams>
      */
     public static function from(callable $extractKey, callable $extractValue): Closure
     {

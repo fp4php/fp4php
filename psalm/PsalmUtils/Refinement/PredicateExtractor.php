@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement;
 use Closure;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\FunctionLike;
@@ -18,7 +17,7 @@ use function Fp4\PHP\Combinator\pipe;
 final class PredicateExtractor
 {
     /**
-     * @return Closure(AfterExpressionAnalysisEvent): Option<FunctionLike>
+     * @return Closure(AfterExpressionAnalysisEvent): O\Option<FunctionLike>
      */
     public static function extract(string $function): Closure
     {

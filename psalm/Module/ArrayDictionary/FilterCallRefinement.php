@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\Module\ArrayDictionary;
 use Closure;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
@@ -35,7 +34,7 @@ final class FilterCallRefinement implements AfterExpressionAnalysisInterface
 
     /**
      * @param non-empty-string $function
-     * @return Closure(AfterExpressionAnalysisEvent): Option<mixed>
+     * @return Closure(AfterExpressionAnalysisEvent): O\Option<mixed>
      */
     private static function refineFilter(string $function): Closure
     {

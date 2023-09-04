@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fp4\PHP\Either;
 
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 
 /**
  * @template E
@@ -34,6 +33,7 @@ function isRight(Either $e): bool
 /**
  * @template E
  * @template A
+ *
  * @param Either<E, A> $e
  * @return E|A
  */
@@ -47,10 +47,11 @@ function unwrap(Either $e): mixed
 /**
  * @template E
  * @template A
+ *
  * @param Either<E, A> $e
- * @return Option<E>
+ * @return O\Option<E>
  */
-function getLeft(Either $e): Option
+function getLeft(Either $e): O\Option
 {
     return isLeft($e) ? O\some($e->value) : O\none;
 }
@@ -58,10 +59,11 @@ function getLeft(Either $e): Option
 /**
  * @template E
  * @template A
+ *
  * @param Either<E, A> $e
- * @return Option<A>
+ * @return O\Option<A>
  */
-function getRight(Either $e): Option
+function getRight(Either $e): O\Option
 {
     return isLeft($e) ? O\none : O\some($e->value);
 }

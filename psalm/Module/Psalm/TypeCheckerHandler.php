@@ -8,7 +8,6 @@ use Closure;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -85,7 +84,7 @@ final class TypeCheckerHandler implements AfterExpressionAnalysisInterface
     }
 
     /**
-     * @return Closure(TLiteralString): Option<Type\Union>
+     * @return Closure(TLiteralString): O\Option<Type\Union>
      */
     private static function parseType(AfterExpressionAnalysisEvent $event): Closure
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\Either;
 
 use Closure;
+use Fp4\PHP\PsalmIntegration\Module\Either\FilterOrElseCallRefinement;
 
 /**
  * @template E
@@ -141,6 +142,8 @@ function orElse(callable $callback): Closure
 }
 
 /**
+ * Call will be inferred by {@see FilterOrElseCallRefinement} plugin hook.
+ *
  * @template EA
  * @template EB
  * @template A
@@ -161,6 +164,7 @@ function filterOrElse(callable $predicate, callable $else): Closure
 /**
  * @template E
  * @template A
+ *
  * @param Either<E, A> $e
  * @return Either<A, E>
  */

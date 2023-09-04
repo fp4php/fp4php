@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\ArrayDictionary;
 
+use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\FromCallInference;
+
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template K of array-key
  * @template A
  *
@@ -23,6 +27,8 @@ function fromIterable(iterable $iterable): array
 }
 
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template K of array-key
  * @template A
  *
@@ -35,6 +41,8 @@ function from(array $dictionary): array
 }
 
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template K of array-key
  * @template A
  *

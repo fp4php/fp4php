@@ -8,7 +8,6 @@ use Closure;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
@@ -67,9 +66,9 @@ final class PartitionCallRefinement implements AfterExpressionAnalysisInterface
     }
 
     /**
-     * @return Option<TArray>
+     * @return O\Option<TArray>
      */
-    private static function getArray(Union $original): Option
+    private static function getArray(Union $original): O\Option
     {
         return pipe(
             O\some($original),
@@ -82,9 +81,9 @@ final class PartitionCallRefinement implements AfterExpressionAnalysisInterface
     }
 
     /**
-     * @return Option<Union>
+     * @return O\Option<Union>
      */
-    private static function getLeftKeyType(Union $original): Option
+    private static function getLeftKeyType(Union $original): O\Option
     {
         return pipe(
             self::getArray($original),
@@ -93,9 +92,9 @@ final class PartitionCallRefinement implements AfterExpressionAnalysisInterface
     }
 
     /**
-     * @return Option<Union>
+     * @return O\Option<Union>
      */
-    private static function getLeftValueType(Union $original): Option
+    private static function getLeftValueType(Union $original): O\Option
     {
         return pipe(
             self::getArray($original),

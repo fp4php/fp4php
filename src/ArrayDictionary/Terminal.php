@@ -6,9 +6,9 @@ namespace Fp4\PHP\ArrayDictionary;
 
 use Closure;
 use Fp4\PHP\Either as E;
-use Fp4\PHP\Either\Either;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
+use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\PartitionCallRefinement;
+use Fp4\PHP\PsalmIntegration\Module\ArrayList\FoldInference;
 
 use function array_key_exists;
 
@@ -16,7 +16,7 @@ use function array_key_exists;
  * @template K of array-key
  * @template A
  *
- * @return Closure(array<K, A>): Option<A>
+ * @return Closure(array<K, A>): O\Option<A>
  */
 function get(int|string $key): Closure
 {
@@ -61,11 +61,11 @@ function keyExists(string|int $key): Closure
  * @template B
  * @template TIn of array<K, A>
  *
- * @param callable(A): Option<B> $callback
+ * @param callable(A): O\Option<B> $callback
  * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
- *         ? Option<non-empty-array<K, B>>
- *         : Option<array<K, B>>
+ *         ? O\Option<non-empty-array<K, B>>
+ *         : O\Option<array<K, B>>
  * ))
  */
 function traverseOption(callable $callback): Closure
@@ -93,11 +93,11 @@ function traverseOption(callable $callback): Closure
  * @template B
  * @template TIn of array<K, A>
  *
- * @param callable(K, A): Option<B> $callback
+ * @param callable(K, A): O\Option<B> $callback
  * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
- *         ? Option<non-empty-array<K, B>>
- *         : Option<array<K, B>>
+ *         ? O\Option<non-empty-array<K, B>>
+ *         : O\Option<array<K, B>>
  * ))
  */
 function traverseOptionKV(callable $callback): Closure
@@ -126,11 +126,11 @@ function traverseOptionKV(callable $callback): Closure
  * @template E
  * @template TIn of array<K, A>
  *
- * @param callable(A): Either<E, B> $callback
+ * @param callable(A): E\Either<E, B> $callback
  * @return (Closure(TIn): (
  *     TIn is non-empty-array<A>
- *         ? Either<E, non-empty-array<K, B>>
- *         : Either<E, array<K, B>>
+ *         ? E\Either<E, non-empty-array<K, B>>
+ *         : E\Either<E, array<K, B>>
  * ))
  */
 function traverseEither(callable $callback): Closure
@@ -159,11 +159,11 @@ function traverseEither(callable $callback): Closure
  * @template E
  * @template TIn of array<K, A>
  *
- * @param callable(K, A): Either<E, B> $callback
+ * @param callable(K, A): E\Either<E, B> $callback
  * @return (Closure(TIn): (
  *     TIn is non-empty-array<K, A>
- *         ? Either<E, non-empty-array<K, B>>
- *         : Either<E, array<K, B>>
+ *         ? E\Either<E, non-empty-array<K, B>>
+ *         : E\Either<E, array<K, B>>
  * ))
  */
 function traverseEitherKV(callable $callback): Closure
@@ -266,6 +266,8 @@ function allKV(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see PartitionCallRefinement}.
+ *
  * @template K of array-key
  * @template V
  *
@@ -291,6 +293,8 @@ function partition(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see PartitionCallRefinement}.
+ *
  * @template K of array-key
  * @template V
  *
@@ -321,7 +325,7 @@ function partitionKV(callable $callback): Closure
  * @template K of array-key
  * @template V
  *
- * @param callable(V): Either<L, R> $callback
+ * @param callable(V): E\Either<L, R> $callback
  * @return Closure(array<K, V>): list{array<K, L>, array<K, R>}
  */
 function partitionMap(callable $callback): Closure
@@ -350,7 +354,7 @@ function partitionMap(callable $callback): Closure
  * @template K of array-key
  * @template V
  *
- * @param callable(K, V): Either<L, R> $callback
+ * @param callable(K, V): E\Either<L, R> $callback
  * @return Closure(array<K, V>): list{array<K, L>, array<K, R>}
  */
 function partitionMapKV(callable $callback): Closure
@@ -374,6 +378,8 @@ function partitionMapKV(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see FoldInference}.
+ *
  * @template TAcc
  * @template K of array-key
  * @template V
@@ -396,6 +402,8 @@ function fold(mixed $initial, callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see FoldInference}.
+ *
  * @template TAcc
  * @template K of array-key
  * @template V

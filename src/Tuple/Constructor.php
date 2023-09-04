@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Fp4\PHP\Tuple;
 
+use Fp4\PHP\PsalmIntegration\Module\Tuple\FromCallInference;
+
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template T of non-empty-list<mixed>
  *
  * @param T $tuple
@@ -16,6 +20,8 @@ function from(array $tuple): array
 }
 
 /**
+ * Return type will be widen by {@see FromCallInference} plugin hook.
+ *
  * @template T of non-empty-list<mixed>
  *
  * @param T $tuple

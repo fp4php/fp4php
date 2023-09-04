@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable;
 use Closure;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
 use Psalm\Plugin\DynamicFunctionStorage;
@@ -18,7 +17,7 @@ use function Fp4\PHP\Combinator\pipe;
 final class BindableFunctionBuilder
 {
     /**
-     * @return Closure(DynamicFunctionStorageProviderEvent $event): Option<DynamicFunctionStorage>
+     * @return Closure(DynamicFunctionStorageProviderEvent $event): O\Option<DynamicFunctionStorage>
      */
     public static function buildStorage(BindableBuilder $with): Closure
     {

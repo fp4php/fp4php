@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\Module\ArrayList;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\Refinement\FilterRefinement;
@@ -50,9 +49,9 @@ final class PartitionCallRefinement implements AfterExpressionAnalysisInterface
     }
 
     /**
-     * @return Option<Union>
+     * @return O\Option<Union>
      */
-    private static function getLeftType(Union $original): Option
+    private static function getLeftType(Union $original): O\Option
     {
         return pipe(
             O\some($original),

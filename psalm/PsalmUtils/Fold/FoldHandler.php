@@ -8,7 +8,6 @@ use Fp4\PHP\ArrayDictionary as D;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Evidence as Ev;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\FunctionType;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Arg;
@@ -78,7 +77,7 @@ final class FoldHandler
      */
     public static function afterExpressionAnalysis(AfterExpressionAnalysisEvent $event): ?bool
     {
-        $widenInitial = fn(): Option => pipe(
+        $widenInitial = fn(): O\Option => pipe(
             O\some($event->getExpr()),
             O\filter(fn(Expr $expr) => $expr->hasAttribute('widenTypeAfterAnalysis')),
             O\flatMap(fn(Expr $expr) => pipe(
@@ -91,7 +90,7 @@ final class FoldHandler
             O\tap(fn($expr) => $expr->setAttribute('widenTypeAfterAnalysis', null)),
         );
 
-        $widenfoldFn = fn(): Option => pipe(
+        $widenFoldFn = fn(): O\Option => pipe(
             O\bindable(),
             O\bind(
                 foldFnExpr: fn() => pipe(
@@ -152,7 +151,7 @@ final class FoldHandler
             }),
         );
 
-        return pipe($widenInitial(), O\orElse($widenfoldFn), constNull(...));
+        return pipe($widenInitial(), O\orElse($widenFoldFn), constNull(...));
     }
 
     private static function handleEmptyArrayInitial(
@@ -160,7 +159,7 @@ final class FoldHandler
         Union $initialType,
         Union $foldFnReturn,
         AfterExpressionAnalysisEvent $event,
-    ): Option {
+    ): O\Option {
         return pipe(
             Ev\proveTrue($initialType->isEmptyArray()),
             O\flatMap(fn() => pipe(
@@ -179,7 +178,7 @@ final class FoldHandler
         Union $initialType,
         Union $foldFnReturnType,
         AfterExpressionAnalysisEvent $event,
-    ): Option {
+    ): O\Option {
         $codebase = $event->getCodebase();
         $source = $event->getStatementsSource();
 

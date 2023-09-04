@@ -6,6 +6,7 @@ namespace Fp4\PHP\ArrayDictionary;
 
 use Closure;
 use Fp4\PHP\Option as O;
+use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\FilterCallRefinement;
 use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\PropertyInference;
 
 /**
@@ -169,6 +170,8 @@ function flatMapKV(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see FilterCallRefinement}.
+ *
  * @template K of array-key
  * @template A
  *
@@ -191,6 +194,8 @@ function filter(callable $callback): Closure
 }
 
 /**
+ * Function call will be inferred by {@see FilterCallRefinement}.
+ *
  * @template K of array-key
  * @template A
  *

@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Bindable;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Bindable;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use Psalm\Type\Atomic\TGenericObject;
 use Psalm\Type\Atomic\TObjectWithProperties;
@@ -18,9 +17,9 @@ use function Fp4\PHP\Combinator\pipe;
 final class BindableFoldType
 {
     /**
-     * @return Option<Union[]>
+     * @return O\Option<Union[]>
      */
-    public static function for(Union $type): Option
+    public static function for(Union $type): O\Option
     {
         return pipe(
             $type,

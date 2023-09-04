@@ -7,7 +7,6 @@ namespace Fp4\PHP\PsalmIntegration\Module\Bindable;
 use Closure;
 use Fp4\PHP\ArrayDictionary as D;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Psalm\Issue\CodeIssue;
 use Psalm\IssueBuffer;
 use Psalm\Plugin\EventHandler\Event\MethodReturnTypeProviderEvent;
@@ -17,9 +16,9 @@ use function Fp4\PHP\Combinator\pipe;
 final class PropertyIsNotDefinedInScope extends CodeIssue
 {
     /**
-     * @return Option<never>
+     * @return O\Option<never>
      */
-    public static function raise(array $context, string $property, MethodReturnTypeProviderEvent $event): Option
+    public static function raise(array $context, string $property, MethodReturnTypeProviderEvent $event): O\Option
     {
         $source = $event->getSource();
         $error = "Property '{$property}' is not defined in the bindable scope.";
@@ -41,7 +40,7 @@ final class PropertyIsNotDefinedInScope extends CodeIssue
     }
 
     /**
-     * @return Closure(list<string|int>): Option<string>
+     * @return Closure(list<string|int>): O\Option<string>
      */
     private static function findSimilarKeys(string $actual): Closure
     {

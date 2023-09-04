@@ -140,6 +140,7 @@ function proveUnion(array $evidences): Closure
 
 /**
  * @template V
+ *
  * @param iterable<V> $iterable
  * @return Option<list<V>>
  */
@@ -181,6 +182,7 @@ function proveListOf(callable $valueEvidence): Closure
 
 /**
  * @template V
+ *
  * @param iterable<V> $iterable
  * @return Option<non-empty-list<V>>
  */
@@ -210,6 +212,7 @@ function proveNonEmptyListOf(callable $valueEvidence): Closure
 /**
  * @template K
  * @template V
+ *
  * @param iterable<K, V> $iterable
  * @return Option<array<K, V>>
  */
@@ -255,6 +258,7 @@ function proveArrayOf(callable $proveKey, callable $proveValue): Closure
 /**
  * @template K
  * @template V
+ *
  * @param iterable<K, V> $iterable
  * @return Option<non-empty-array<K, V>>
  */

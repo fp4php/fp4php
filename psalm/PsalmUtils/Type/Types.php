@@ -8,7 +8,6 @@ use Closure;
 use Fp4\PHP\ArrayDictionary as D;
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Expr;
 use Psalm\Internal\Type\TypeCombiner;
@@ -48,7 +47,7 @@ final class Types
 
     /**
      * @param Score $fromScope
-     * @return Closure(Expr): Option<Union>
+     * @return Closure(Expr): O\Option<Union>
      */
     public function get(object $fromScope): Closure
     {
@@ -77,7 +76,7 @@ final class Types
     }
 
     /**
-     * @return Closure(Union $from): Option<Union>
+     * @return Closure(Union $from): O\Option<Union>
      */
     public static function remove(Union $types): Closure
     {

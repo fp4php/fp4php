@@ -6,7 +6,6 @@ namespace Fp4\PHP\PsalmIntegration\PsalmUtils\Type;
 
 use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\Option as O;
-use Fp4\PHP\Option\Option;
 use Fp4\PHP\PsalmIntegration\PsalmUtils\PsalmApi;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -19,9 +18,9 @@ final class Widening
 {
     /**
      * @param non-empty-list<non-empty-string> $names
-     * @return Option<void>
+     * @return O\Option<void>
      */
-    public static function widen(AfterExpressionAnalysisEvent $event, array $names, AsNonLiteralTypeConfig $config = new AsNonLiteralTypeConfig()): Option
+    public static function widen(AfterExpressionAnalysisEvent $event, array $names, AsNonLiteralTypeConfig $config = new AsNonLiteralTypeConfig()): O\Option
     {
         return pipe(
             O\some($event->getExpr()),
