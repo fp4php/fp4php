@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fp4\PHP\ArrayDictionary;
 
 use Closure;
+use Fp4\PHP\Option as O;
 use Fp4\PHP\PsalmIntegration\Module\ArrayDictionary\PropertyInference;
 
 /**
@@ -204,6 +205,56 @@ function filterKV(callable $callback): Closure
         foreach ($dictionary as $k => $v) {
             if ($callback($k, $v)) {
                 $out[$k] = $v;
+            }
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template A
+ * @template B
+ *
+ * @param callable(A): O\Option<B> $callback
+ * @return Closure(array<K, A>): array<K, B>
+ */
+function filterMap(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $k => $a) {
+            $option = $callback($a);
+
+            if (O\isSome($option)) {
+                $out[$k] = $option->value;
+            }
+        }
+
+        return $out;
+    };
+}
+
+/**
+ * @template K of array-key
+ * @template A
+ * @template B
+ *
+ * @param callable(K, A): O\Option<B> $callback
+ * @return Closure(array<K, A>): array<K, B>
+ */
+function filterMapKV(callable $callback): Closure
+{
+    return function(array $dictionary) use ($callback) {
+        $out = [];
+
+        foreach ($dictionary as $k => $a) {
+            $option = $callback($k, $a);
+
+            if (O\isSome($option)) {
+                $out[$k] = $option->value;
             }
         }
 

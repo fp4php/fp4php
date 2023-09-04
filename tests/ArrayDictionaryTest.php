@@ -252,6 +252,97 @@ final class ArrayDictionaryTest extends TestCase
     }
 
     #[Test]
+    public static function filterMap(): void
+    {
+        pipe(
+            D\from([]),
+            D\filterMap(fn(int $num) => 0 !== $num % 2 ? O\some($num) : O\none),
+            Type\isSameAs('list<never>'),
+            Assert\equals([]),
+        );
+
+        pipe(
+            D\from([
+                'k1' => 1,
+                'k2' => 2,
+                'k3' => 3,
+                'k4' => 4,
+                'k5' => 5,
+                'k6' => 6,
+                'k7' => 7,
+                'k8' => 8,
+            ]),
+            D\filterMap(fn($num) => 0 === $num % 2 ? O\some($num) : O\none),
+            Type\isSameAs('array<string, int>'),
+            Assert\equals(['k2' => 2, 'k4' => 4, 'k6' => 6, 'k8' => 8]),
+        );
+
+        pipe(
+            D\from([
+                'k1' => 1,
+                'k2' => 2,
+                'k3' => 3,
+                'k4' => 4,
+                'k5' => 5,
+                'k6' => 6,
+                'k7' => 7,
+                'k8' => 8,
+            ]),
+            D\filterMap(fn($num) => 0 !== $num % 2 ? O\some($num) : O\none),
+            Type\isSameAs('array<string, int>'),
+            Assert\equals([
+                'k1' => 1,
+                'k3' => 3,
+                'k5' => 5,
+                'k7' => 7,
+            ]),
+        );
+    }
+
+    #[Test]
+    public static function filterMapKV(): void
+    {
+        pipe(
+            D\from([]),
+            D\filterMapKV(fn($_key, $value) => O\some($value)),
+            Type\isSameAs('list<never>'),
+            Assert\equals([]),
+        );
+
+        pipe(
+            D\from([
+                'k1' => 1,
+                'k2' => 2,
+                'k3' => 3,
+                'k4' => 4,
+                'k5' => 5,
+                'k6' => 6,
+                'k7' => 7,
+                'k8' => 8,
+            ]),
+            D\filterMapKV(fn($key, $num) => (0 === $num % 2) || ('k1' === $key) ? O\some($num) : O\none),
+            Type\isSameAs('list<int>'),
+            Assert\equals(['k1' => 1, 'k2' => 2, 'k4' => 4, 'k6' => 6, 'k8' => 8]),
+        );
+
+        pipe(
+            D\from([
+                'k1' => 1,
+                'k2' => 2,
+                'k3' => 3,
+                'k4' => 4,
+                'k5' => 5,
+                'k6' => 6,
+                'k7' => 7,
+                'k8' => 8,
+            ]),
+            D\filterMapKV(fn($key, $num) => (0 !== $num % 2) || ('k2' === $key) ? O\some($num) : O\none),
+            Type\isSameAs('list<int>'),
+            Assert\equals(['k1' => 1, 'k2' => 2, 'k3' => 3, 'k5' => 5, 'k7' => 7]),
+        );
+    }
+
+    #[Test]
     public static function reindex(): void
     {
         pipe(

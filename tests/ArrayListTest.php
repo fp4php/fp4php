@@ -434,7 +434,7 @@ final class ArrayListTest extends TestCase
             ]),
             L\property('prop2'),
             Type\isSameAs('non-empty-list<int>'),
-            Assert\same(['k1' => 0]),
+            Assert\same([0]),
         );
     }
 
