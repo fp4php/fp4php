@@ -32,8 +32,8 @@ final class PropertyInference implements AfterExpressionAnalysisInterface
                 ),
                 mapKindParam: fn(TArray $kind, Union $property) => PsalmApi::$create->union(
                     $kind instanceof TNonEmptyArray
-                        ? new TNonEmptyArray([P\left($kind->type_params), $property])
-                        : new TArray([P\left($kind->type_params), $property]),
+                        ? PsalmApi::$create->nonEmptyArray(P\left($kind->type_params), $property)
+                        : PsalmApi::$create->array(P\left($kind->type_params), $property),
                 ),
             ),
             constNull(...),
