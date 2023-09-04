@@ -9,6 +9,7 @@ use Fp4\PHP\Option as O;
 use Fp4\PHP\PsalmIntegration\Module\ArrayList\PropertyInference;
 
 use function array_slice;
+use function count;
 
 /**
  * @template A
@@ -323,4 +324,15 @@ function append(mixed $value): Closure
 function tail(array $list): array
 {
     return array_slice($list, offset: 1);
+}
+
+/**
+ * @template A
+ *
+ * @param list<A> $list
+ * @return list<A>
+ */
+function init(array $list): array
+{
+    return array_slice($list, 0, count($list) - 1);
 }

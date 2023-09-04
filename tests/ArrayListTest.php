@@ -379,6 +379,24 @@ final class ArrayListTest extends TestCase
     }
 
     #[Test]
+    public static function init(): void
+    {
+        pipe(
+            L\from([]),
+            L\init(...),
+            Type\isSameAs('list<never>'),
+            Assert\equals([]),
+        );
+
+        pipe(
+            L\from([1, 2, 3]),
+            L\init(...),
+            Type\isSameAs('list<int>'),
+            Assert\equals([1, 2]),
+        );
+    }
+
+    #[Test]
     public static function property(): void
     {
         pipe(
