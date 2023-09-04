@@ -13,6 +13,8 @@ final class CombinatorModule implements RegisterPsalmHooks
         $register([
             PipeErrorLocator::class,
             PipeFunctionStorageProvider::class,
+            TupledFunctionStorageProvider::class,
+            TupledReturnTypeProvider::class,
             CtorFunctionReturnTypeProvider::class,
         ]);
     }

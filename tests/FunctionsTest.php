@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Fp4\PHP\Test;
 
 use DateTimeImmutable;
+use Fp4\PHP\ArrayList as L;
 use Fp4\PHP\PHPUnit as Assert;
 use Fp4\PHP\PsalmIntegration as Type;
+use Fp4\PHP\Shape as S;
+use Fp4\PHP\Test\Fixture\InheritedObj;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -17,6 +20,7 @@ use function Fp4\PHP\Combinator\constVoid;
 use function Fp4\PHP\Combinator\ctor;
 use function Fp4\PHP\Combinator\id;
 use function Fp4\PHP\Combinator\pipe;
+use function Fp4\PHP\Combinator\tupled;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertNull;
@@ -75,6 +79,42 @@ final class FunctionsTest extends TestCase
             Type\isSameAs('Closure(string=, \DateTimeZone|null=): \DateTimeImmutable'),
             fn($createDateTime) => $createDateTime('2023-06-07'),
             Assert\equals(new DateTimeImmutable('2023-06-07')),
+        );
+    }
+
+    #[Test]
+    public static function tupled(): void
+    {
+        pipe(
+            L\from([
+                S\from(['test1', 40]),
+                S\from(['test2', 41]),
+                S\from(['test3', 42]),
+            ]),
+            L\map(tupled(fn($a, $b) => new InheritedObj($a, $b))),
+            Type\isSameAs('list<InheritedObj>'),
+            Assert\equals([
+                new InheritedObj(prop1: 'test1', prop2: 40),
+                new InheritedObj(prop1: 'test2', prop2: 41),
+                new InheritedObj(prop1: 'test3', prop2: 42),
+            ]),
+        );
+
+        pipe(
+            L\from([
+                S\from(['test1', 40]),
+                S\from(['test2', 41]),
+                S\from(['test3', 42]),
+            ]),
+            L\map(
+                tupled(ctor(InheritedObj::class)),
+            ),
+            Type\isSameAs('list<InheritedObj>'),
+            Assert\equals([
+                new InheritedObj(prop1: 'test1', prop2: 40),
+                new InheritedObj(prop1: 'test2', prop2: 41),
+                new InheritedObj(prop1: 'test3', prop2: 42),
+            ]),
         );
     }
 }

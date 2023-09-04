@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Fp4\PHP\Combinator;
 
 use Closure;
+use Fp4\PHP\PsalmIntegration\Module\Combinator\TupledFunctionStorageProvider;
+use Fp4\PHP\PsalmIntegration\Module\Combinator\TupledReturnTypeProvider;
 
 /**
  * @no-named-arguments
@@ -28,6 +30,21 @@ function ctor(string $ofClass): Closure
 {
     /** @psalm-suppress MixedMethodCall */
     return fn(mixed ...$args) => new $ofClass(...$args);
+}
+
+/**
+ * Type will be inferred and verified
+ * by {@see TupledFunctionStorageProvider} or {@see TupledReturnTypeProvider} plugin hooks.
+ *
+ * @template TIn of list<mixed>
+ * @template TOut
+ * @param Closure(mixed...): TOut $closure
+ * @return Closure(TIn): TOut
+ */
+function tupled(Closure $closure): Closure
+{
+    /** @psalm-suppress InvalidArgument */
+    return fn(array $tuple) => $closure(...$tuple);
 }
 
 /**
