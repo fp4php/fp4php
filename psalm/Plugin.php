@@ -12,6 +12,7 @@ use Fp4\PHP\PsalmIntegration\Module\Bindable\BindableModule;
 use Fp4\PHP\PsalmIntegration\Module\Combinator\CombinatorModule;
 use Fp4\PHP\PsalmIntegration\Module\Either\EitherModule;
 use Fp4\PHP\PsalmIntegration\Module\Option\OptionModule;
+use Fp4\PHP\PsalmIntegration\Module\Pair\PairModule;
 use Fp4\PHP\PsalmIntegration\Module\Psalm\PsalmModule;
 use Fp4\PHP\PsalmIntegration\Module\Shape\ShapeModule;
 use Fp4\PHP\PsalmIntegration\Module\Tuple\TupleModule;
@@ -51,6 +52,7 @@ final class Plugin implements PluginEntryPointInterface
                 new ShapeModule(),
                 new TupleModule(),
                 new EitherModule(),
+                new PairModule(),
             ]),
             L\tap(fn(RegisterPsalmHooks $hooks) => $hooks($register)),
         );

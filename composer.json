@@ -29,6 +29,9 @@
       "Fp4\\PHP\\PsalmIntegration\\": "psalm/"
     },
     "files": [
+      "src/Pair/Constructor.php",
+      "src/Pair/Terminal.php",
+      "src/Pair/Chainable.php",
       "src/Option/Constructor.php",
       "src/Option/Terminal.php",
       "src/Option/Chainable.php",
