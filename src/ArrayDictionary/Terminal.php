@@ -50,7 +50,7 @@ function values(array $dictionary): array
 /**
  * @return Closure(array<array-key, mixed>): bool
  */
-function keyExists(string|int $key): Closure
+function keyExists(int|string $key): Closure
 {
     return fn(array $dictionary) => array_key_exists($key, $dictionary);
 }

@@ -23,21 +23,17 @@ use function count;
 use function Fp4\PHP\Combinator\pipe;
 
 /**
- * @psalm-type Score
- *     = FunctionReturnTypeProviderEvent
- *     | MethodReturnTypeProviderEvent
- *     | AfterExpressionAnalysisEvent
- *     | StatementsSource
+ * @psalm-type Scope = FunctionReturnTypeProviderEvent | MethodReturnTypeProviderEvent | AfterExpressionAnalysisEvent | StatementsSource
  */
 final class Types
 {
     /**
-     * @param Score $toScope
+     * @param Scope $toScope
      * @return Closure(Union|Atomic): void
      */
     public function set(Expr $expr, object $toScope): Closure
     {
-        return function(Union|Atomic $type) use ($expr, $toScope): void {
+        return function(Atomic|Union $type) use ($expr, $toScope): void {
             self::getNodeTypeProvider($toScope)->setType(
                 node: $expr,
                 type: $type instanceof Atomic ? new Union([$type]) : $type,
@@ -46,7 +42,7 @@ final class Types
     }
 
     /**
-     * @param Score $fromScope
+     * @param Scope $fromScope
      * @return Closure(Expr): O\Option<Union>
      */
     public function get(object $fromScope): Closure
@@ -100,7 +96,7 @@ final class Types
     }
 
     /**
-     * @param Score $scope
+     * @param Scope $scope
      */
     private static function getNodeTypeProvider(object $scope): NodeTypeProvider
     {

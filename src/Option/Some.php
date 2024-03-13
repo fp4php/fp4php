@@ -17,6 +17,5 @@ final class Some implements Option
      */
     public function __construct(
         public readonly mixed $value,
-    ) {
-    }
+    ) {}
 }

@@ -252,7 +252,7 @@ final class OptionTest extends TestCase
 
         pipe(
             O\none,
-            O\tap(fn(stdClass $obj) => print_r($obj)),
+            O\tap(fn($obj) => print_r($obj)),
             Type\isSameAs('O\Option<never>'),
             Assert\instance(O\None::class),
         );
@@ -378,7 +378,7 @@ final class OptionTest extends TestCase
     }
 
     #[Test]
-    public static function filter(string|int $stringOrInt = 42): void
+    public static function filter(int|string $stringOrInt = 42): void
     {
         pipe(
             O\some($stringOrInt),

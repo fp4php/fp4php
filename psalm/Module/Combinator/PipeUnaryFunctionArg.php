@@ -20,14 +20,13 @@ final class PipeUnaryFunctionArg
         public readonly Arg $node,
         public readonly Union $input,
         public readonly Union $output,
-        public readonly TClosure|TCallable $original,
-    ) {
-    }
+        public readonly TCallable|TClosure $original,
+    ) {}
 
     /**
      * @return O\Option<self>
      */
-    public static function from(Arg $node, TClosure|TCallable $unaryFunction): O\Option
+    public static function from(Arg $node, TCallable|TClosure $unaryFunction): O\Option
     {
         return pipe(
             O\bindable(),

@@ -9,6 +9,4 @@ namespace Fp4\PHP\Either;
  * @template-covariant A
  * @psalm-inheritors Left<E>|Right<A>
  */
-interface Either
-{
-}
+interface Either {}

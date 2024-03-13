@@ -41,8 +41,7 @@ final class Refinement
         public readonly FunctionLike $predicate,
         public readonly StatementsAnalyzer $source,
         public readonly Context $context,
-    ) {
-    }
+    ) {}
 
     public function refine(): RefineTypeParams
     {
@@ -82,7 +81,7 @@ final class Refinement
                         changed_var_ids: $changed_var_ids,
                         referenced_var_ids: [$i->argument => true],
                         statements_analyzer: $this->source,
-                        template_type_map: $this->source->getTemplateTypeMap() ?: [],
+                        template_type_map: $this->source->getTemplateTypeMap() ?? [],
                         code_location: new CodeLocation($this->source, $i->return),
                     )),
                 ),

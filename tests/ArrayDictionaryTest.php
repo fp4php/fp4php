@@ -256,7 +256,7 @@ final class ArrayDictionaryTest extends TestCase
     {
         pipe(
             D\from([]),
-            D\filterMap(fn(int $num) => 0 !== $num % 2 ? O\some($num) : O\none),
+            D\filterMap(fn($num) => 0 !== $num % 2 ? O\some($num) : O\none),
             Type\isSameAs('array<never, never>'),
             Assert\equals([]),
         );

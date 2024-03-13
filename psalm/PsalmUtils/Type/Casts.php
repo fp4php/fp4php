@@ -39,7 +39,7 @@ final class Casts
      * @param class-string<TAtomic>|non-empty-list<class-string<TAtomic>> $class
      * @return Closure(Union): O\Option<TAtomic>
      */
-    public function toSingleAtomicOf(string|array $class): Closure
+    public function toSingleAtomicOf(array|string $class): Closure
     {
         return fn(Union $type) => pipe(
             O\some($type),
@@ -52,7 +52,7 @@ final class Casts
      * @param class-string|non-empty-list<class-string> $class
      * @return Closure(Union): O\Option<TGenericObject>
      */
-    public function toSingleGenericObjectOf(string|array $class): Closure
+    public function toSingleGenericObjectOf(array|string $class): Closure
     {
         return fn(Union $type) => pipe(
             O\some($type),

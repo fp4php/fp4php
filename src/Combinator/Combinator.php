@@ -74,9 +74,7 @@ function constNull(): mixed
     return null;
 }
 
-function constVoid(): void
-{
-}
+function constVoid(): void {}
 
 function constTrue(): bool
 {

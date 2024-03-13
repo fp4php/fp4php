@@ -8,6 +8,5 @@ abstract class AbstractObj
 {
     public function __construct(
         public readonly string $prop1,
-    ) {
-    }
+    ) {}
 }

@@ -75,7 +75,7 @@ final class PropertyInferenceHandler
                             context: $event->getContext(),
                             location: new CodeLocation($i->source, $call),
                         )),
-                        O\map(fn(TKeyedArray|TArray $shape) => $shape instanceof TKeyedArray
+                        O\map(fn(TArray|TKeyedArray $shape) => $shape instanceof TKeyedArray
                             ? $shape->properties
                             : []),
                     ),

@@ -88,7 +88,7 @@ final class PipeErrorLocator implements AfterExpressionAnalysisInterface
                     O\some($arg->value),
                     O\flatMap(PsalmApi::$type->get($event)),
                     O\flatMap(PsalmApi::$cast->toSingleAtomicOf([TClosure::class, TCallable::class])),
-                    O\flatMap(fn(TClosure|TCallable $function) => PipeUnaryFunctionArg::from($arg, $function)),
+                    O\flatMap(fn(TCallable|TClosure $function) => PipeUnaryFunctionArg::from($arg, $function)),
                 )),
             ),
         );

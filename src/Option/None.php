@@ -8,6 +8,4 @@ namespace Fp4\PHP\Option;
  * @psalm-immutable
  * @implements Option<never>
  */
-final class None implements Option
-{
-}
+final class None implements Option {}

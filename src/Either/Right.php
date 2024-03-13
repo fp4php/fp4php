@@ -15,6 +15,5 @@ final class Right implements Either
      */
     public function __construct(
         public readonly mixed $value,
-    ) {
-    }
+    ) {}
 }

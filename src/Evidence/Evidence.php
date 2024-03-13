@@ -99,7 +99,7 @@ function proveObject(mixed $value): Option
  * @param class-string<A>|non-empty-list<class-string<A>> $fqcn
  * @return Closure(mixed): Option<A>
  */
-function proveOf(string|array $fqcn, bool $invariant = false): Closure
+function proveOf(array|string $fqcn, bool $invariant = false): Closure
 {
     return function(mixed $value) use ($fqcn, $invariant) {
         if (!is_object($value)) {

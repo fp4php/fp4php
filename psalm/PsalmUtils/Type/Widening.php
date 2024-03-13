@@ -25,11 +25,11 @@ final class Widening
         return pipe(
             O\some($event->getExpr()),
             O\filterOf([FuncCall::class, ConstFetch::class]),
-            O\filter(fn(FuncCall|ConstFetch $c) => pipe(
+            O\filter(fn(ConstFetch|FuncCall $c) => pipe(
                 $names,
                 L\contains($c->name->getAttribute('resolvedName')),
             )),
-            O\filter(fn(FuncCall|ConstFetch $c) => $c instanceof ConstFetch || !$c->isFirstClassCallable()),
+            O\filter(fn(ConstFetch|FuncCall $c) => $c instanceof ConstFetch || !$c->isFirstClassCallable()),
             O\flatMap(PsalmApi::$type->get($event)),
             O\map(fn($t) => PsalmApi::$cast->toNonLiteralType($t, $config)),
             O\tap(PsalmApi::$type->set($event->getExpr(), $event)),

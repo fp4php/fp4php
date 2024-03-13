@@ -9,8 +9,7 @@ final class AsNonLiteralTypeConfig
     public function __construct(
         public readonly bool $preserveKeyedArrayShape = false,
         public readonly bool $transformNested = true,
-    ) {
-    }
+    ) {}
 
     public function stopTransformNested(): self
     {

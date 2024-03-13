@@ -37,7 +37,7 @@ final class CreateType
     /**
      * @param Union|Atomic|non-empty-list<Atomic> $type
      */
-    public function union(Union|Atomic|array $type): Union
+    public function union(array|Atomic|Union $type): Union
     {
         if ($type instanceof Union) {
             return $type;
@@ -130,7 +130,7 @@ final class CreateType
         );
     }
 
-    public function listAtomic(Union|Atomic $type): TKeyedArray
+    public function listAtomic(Atomic|Union $type): TKeyedArray
     {
         return pipe(
             self::union($type),
@@ -138,7 +138,7 @@ final class CreateType
         );
     }
 
-    public function list(Union|Atomic $type): Union
+    public function list(Atomic|Union $type): Union
     {
         return pipe(
             self::listAtomic($type),
@@ -146,7 +146,7 @@ final class CreateType
         );
     }
 
-    public function nonEmptyListAtomic(Union|Atomic $type): TKeyedArray
+    public function nonEmptyListAtomic(Atomic|Union $type): TKeyedArray
     {
         return pipe(
             self::union($type),
@@ -154,7 +154,7 @@ final class CreateType
         );
     }
 
-    public function nonEmptyList(Union|Atomic $type): Union
+    public function nonEmptyList(Atomic|Union $type): Union
     {
         return pipe(
             self::nonEmptyListAtomic($type),
@@ -162,7 +162,7 @@ final class CreateType
         );
     }
 
-    public function arrayAtomic(Union|Atomic $key = new TMixed(), Union|Atomic $value = new TMixed()): TArray
+    public function arrayAtomic(Atomic|Union $key = new TMixed(), Atomic|Union $value = new TMixed()): TArray
     {
         return new TArray([
             self::union($key),
@@ -170,7 +170,7 @@ final class CreateType
         ]);
     }
 
-    public function array(Union|Atomic $key = new TMixed(), Union|Atomic $value = new TMixed()): Union
+    public function array(Atomic|Union $key = new TMixed(), Atomic|Union $value = new TMixed()): Union
     {
         return pipe(
             self::arrayAtomic($key, $value),
@@ -178,7 +178,7 @@ final class CreateType
         );
     }
 
-    public function nonEmptyArrayAtomic(Union|Atomic $key = new TMixed(), Union|Atomic $value = new TMixed()): TArray
+    public function nonEmptyArrayAtomic(Atomic|Union $key = new TMixed(), Atomic|Union $value = new TMixed()): TArray
     {
         return new TNonEmptyArray([
             self::union($key),
@@ -186,7 +186,7 @@ final class CreateType
         ]);
     }
 
-    public function nonEmptyArray(Union|Atomic $key = new TMixed(), Union|Atomic $value = new TMixed()): Union
+    public function nonEmptyArray(Atomic|Union $key = new TMixed(), Atomic|Union $value = new TMixed()): Union
     {
         return pipe(
             self::nonEmptyArrayAtomic($key, $value),
@@ -220,16 +220,16 @@ final class CreateType
      * @param IntersectionType|list<IntersectionType> $withIntersections
      * @return Closure(Union|Atomic|non-empty-list<Union|Atomic>): TGenericObject
      */
-    public function genericObjectAtomic(string $class, Atomic|array $withIntersections = []): Closure
+    public function genericObjectAtomic(string $class, array|Atomic $withIntersections = []): Closure
     {
-        return fn(Union|Atomic|array $type_params) => new TGenericObject(
+        return fn(array|Atomic|Union $type_params) => new TGenericObject(
             value: $class,
             type_params: match (true) {
                 $type_params instanceof Union => [$type_params],
                 $type_params instanceof Atomic => [new Union([$type_params])],
                 default => pipe(
                     $type_params,
-                    L\map(fn(Union|Atomic $t) => $t instanceof Atomic ? new Union([$t]) : $t),
+                    L\map(fn(Atomic|Union $t) => $t instanceof Atomic ? new Union([$t]) : $t),
                 ),
             },
             extra_types: pipe(
@@ -243,9 +243,9 @@ final class CreateType
      * @param IntersectionType|list<IntersectionType> $withIntersections
      * @return Closure(Union|Atomic|non-empty-list<Union|Atomic>): Union
      */
-    public function genericObject(string $class, Atomic|array $withIntersections = []): Closure
+    public function genericObject(string $class, array|Atomic $withIntersections = []): Closure
     {
-        return fn(Union|Atomic|array $type_params) => pipe(
+        return fn(array|Atomic|Union $type_params) => pipe(
             $type_params,
             self::genericObjectAtomic($class, $withIntersections),
             self::union(...),

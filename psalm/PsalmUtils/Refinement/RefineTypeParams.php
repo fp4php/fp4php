@@ -18,8 +18,7 @@ final class RefineTypeParams
     public function __construct(
         public readonly Union $key,
         public readonly Union $value,
-    ) {
-    }
+    ) {}
 
     /**
      * @param callable(Union): O\Option<Union> $extractKey

@@ -136,7 +136,7 @@ function filter(callable $callback): Closure
  * @param class-string<B>|non-empty-list<class-string<B>> $fqcn
  * @return Closure(Option<A>): Option<B>
  */
-function filterOf(string|array $fqcn, bool $invariant = false): Closure
+function filterOf(array|string $fqcn, bool $invariant = false): Closure
 {
     return fn(Option $a) => pipe(
         $a,

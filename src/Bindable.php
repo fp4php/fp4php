@@ -14,8 +14,7 @@ final class Bindable
 {
     public function __construct(
         public readonly array $context = [],
-    ) {
-    }
+    ) {}
 
     /**
      * Type will be inferred by {@see BindableGetReturnTypeProvider} plugin hook.

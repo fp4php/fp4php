@@ -215,7 +215,7 @@ final class ArrayListTest extends TestCase
     {
         pipe(
             L\from([]),
-            L\filter(fn(int $num) => 0 !== $num % 2),
+            L\filter(fn($num) => 0 !== $num % 2),
             Type\isSameAs('list<never>'),
             Assert\equals([]),
         );
@@ -279,7 +279,7 @@ final class ArrayListTest extends TestCase
     {
         pipe(
             L\from([]),
-            L\filterMap(fn(int $num) => 0 !== $num % 2 ? O\some($num) : O\none),
+            L\filterMap(fn($num) => 0 !== $num % 2 ? O\some($num) : O\none),
             Type\isSameAs('list<never>'),
             Assert\equals([]),
         );
@@ -837,7 +837,7 @@ final class ArrayListTest extends TestCase
     {
         pipe(
             L\from([]),
-            L\reindex(fn(int $num) => Str\from('key'.$num)),
+            L\reindex(fn($num) => Str\from('key'.$num)),
             Type\isSameAs('array<string, never>'),
             Assert\equals([]),
         );
@@ -855,7 +855,7 @@ final class ArrayListTest extends TestCase
     {
         pipe(
             L\from([]),
-            L\reindexKV(fn(int $key, int $value) => Str\from('key-'.($key + $value))),
+            L\reindexKV(fn($key, $value) => Str\from('key-'.($key + $value))),
             Type\isSameAs('array<string, never>'),
             Assert\equals([]),
         );
